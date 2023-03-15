@@ -15,6 +15,7 @@ public class Admin extends User{
     @NotBlank(message = "This field can't be blank")
     @NotNull(message = "This field can't be null")
     private String email;
+
     public Admin() {
     }
 

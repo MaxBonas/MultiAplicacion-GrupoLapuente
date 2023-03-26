@@ -1,6 +1,5 @@
 package Lapuente.TareasUbicaciones.entities;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
@@ -21,14 +20,52 @@ public class Ubicacion {
     @NotNull(message = "This field can't be null")
     private String nombre;
 
-    @ManyToMany(mappedBy = "ubicaciones")
+    @OneToMany(mappedBy = "ubicacion")
     @JsonIgnore
     private Set<Tarea> tareas = new HashSet<>();
 
-    public Ubicacion() {}
+    @OneToMany(mappedBy = "ubicacion")
+    @JsonIgnore
+    private Set<TareaCumplida> tareasCumplidas = new HashSet<>();
+
+    public Ubicacion() {
+    }
 
     public Ubicacion(String nombre) {
         this.nombre = nombre;
     }
 
+    // Getters and setters
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public Set<Tarea> getTareas() {
+        return tareas;
+    }
+
+    public void setTareas(Set<Tarea> tareas) {
+        this.tareas = tareas;
+    }
+
+    public Set<TareaCumplida> getTareasCumplidas() {
+        return tareasCumplidas;
+    }
+
+    public void setTareasCumplidas(Set<TareaCumplida> tareasCumplidas) {
+        this.tareasCumplidas = tareasCumplidas;
+    }
 }

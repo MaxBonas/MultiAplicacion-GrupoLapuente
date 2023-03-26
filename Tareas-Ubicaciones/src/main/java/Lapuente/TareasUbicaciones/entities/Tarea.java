@@ -1,6 +1,5 @@
 package Lapuente.TareasUbicaciones.entities;
 
-
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -23,25 +22,15 @@ public class Tarea {
     @NotNull(message = "This field can't be null")
     private String descripcion;
 
-    private boolean cumplida;
-
-    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-    @JoinTable(
-            name = "tarea_ubicacion",
-            joinColumns = @JoinColumn(name = "tarea_id"),
-            inverseJoinColumns = @JoinColumn(name = "ubicacion_id"))
-    private Set<Ubicacion> ubicaciones = new HashSet<>();
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "worker_id")
-    private Worker worker;
+    @JoinColumn(name = "ubicacion_id")
+    private Ubicacion ubicacion;
 
     public Tarea() {}
 
-    public Tarea(String nombre, String descripcion, boolean cumplida) {
+    public Tarea(String nombre, String descripcion) {
         this.nombre = nombre;
         this.descripcion = descripcion;
-        this.cumplida = cumplida;
     }
 
     public Long getId() {
@@ -68,27 +57,11 @@ public class Tarea {
         this.descripcion = descripcion;
     }
 
-    public boolean isCumplida() {
-        return cumplida;
+    public Ubicacion getUbicacion() {
+        return ubicacion;
     }
 
-    public void setCumplida(boolean cumplida) {
-        this.cumplida = cumplida;
-    }
-
-    public Set<Ubicacion> getUbicaciones() {
-        return ubicaciones;
-    }
-
-    public void setUbicaciones(Set<Ubicacion> ubicaciones) {
-        this.ubicaciones = ubicaciones;
-    }
-
-    public Worker getWorker() {
-        return worker;
-    }
-
-    public void setWorker(Worker worker) {
-        this.worker = worker;
+    public void setUbicacion(Ubicacion ubicacion) {
+        this.ubicacion = ubicacion;
     }
 }

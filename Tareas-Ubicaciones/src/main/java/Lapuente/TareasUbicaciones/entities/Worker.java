@@ -1,27 +1,24 @@
 package Lapuente.TareasUbicaciones.entities;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
-public class Worker extends User{
+public class Worker extends User {
 
     private String cargo;
 
     @OneToMany(mappedBy = "worker")
     @JsonIgnore
-    private Set<Tarea> tareas = new HashSet<>();
+    private Set<TareaCumplida> tareasCumplidas = new HashSet<>();
 
     @OneToMany(mappedBy = "worker")
-    private TareasDiarias tareasDiarias = new ArrayList<>();
+    @JsonIgnore
+    private Set<AsignacionTurno> asignacionesTurno = new HashSet<>();
 
     public Worker() {}
 
@@ -30,7 +27,7 @@ public class Worker extends User{
         this.cargo = cargo;
     }
 
-// Getters and setters
+    // Getters and setters
 
     public String getCargo() {
         return cargo;
@@ -40,22 +37,19 @@ public class Worker extends User{
         this.cargo = cargo;
     }
 
-    public Set<Tarea> getTareas() {
-        return tareas;
+    public Set<TareaCumplida> getTareasCumplidas() {
+        return tareasCumplidas;
     }
 
-    public void setTareas(Set<Tarea> tareas) {
-        this.tareas = tareas;
+    public void setTareasCumplidas(Set<TareaCumplida> tareasCumplidas) {
+        this.tareasCumplidas = tareasCumplidas;
     }
 
-    public List<TareasDiarias> getTareasDiarias() {
-        return tareasDiarias;
+    public Set<AsignacionTurno> getAsignacionesTurno() {
+        return asignacionesTurno;
     }
 
-    public void setTareasDiarias(List<TareasDiarias> tareasDiarias) {
-        this.tareasDiarias = tareasDiarias;
-    }
-
-    public Thread getUbicacion() {
+    public void setAsignacionesTurno(Set<AsignacionTurno> asignacionesTurno) {
+        this.asignacionesTurno = asignacionesTurno;
     }
 }

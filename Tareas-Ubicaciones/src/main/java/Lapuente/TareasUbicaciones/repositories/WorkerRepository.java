@@ -11,9 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface WorkerRepository  extends JpaRepository<Worker, Long> {
+public interface WorkerRepository extends JpaRepository<Worker, Long> {
 
     Worker findByName(String name);
-
-    void asignarTarea(Long ubicacionId, Long tareaId);
 }

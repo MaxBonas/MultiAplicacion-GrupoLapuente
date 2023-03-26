@@ -14,7 +14,6 @@ import java.util.List;
 @Repository
 public interface TareaRepository extends JpaRepository<Tarea, Long> {
 
-        List<Tarea> findByWorker(Worker worker);
-
-        List<Tarea> findByUbicacionId(Long id);
+        List<Tarea> findByWorkerId(Long workerId);
+        List<Tarea> findByUbicacionId(Long ubicacionId);
 }

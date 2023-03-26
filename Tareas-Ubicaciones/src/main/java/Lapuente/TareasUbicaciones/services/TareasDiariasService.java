@@ -2,7 +2,7 @@ package Lapuente.TareasUbicaciones.services;
 
 import Lapuente.TareasUbicaciones.entities.TareasDiarias;
 import Lapuente.TareasUbicaciones.entities.Worker;
-import Lapuente.TareasUbicaciones.repositories.TareasDiariasRepository;
+import Lapuente.TareasUbicaciones.repositories.TareaCumplidaRepository;
 import Lapuente.TareasUbicaciones.services.interfaces.TareasDiariasServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,43 +14,43 @@ import java.util.Optional;
 public class TareasDiariasService implements TareasDiariasServiceInterface {
 
     @Autowired
-    private TareasDiariasRepository tareasDiariasRepository;
+    private TareaCumplidaRepository tareaCumplidaRepository;
 
     @Override
     public List<TareasDiarias> getAllTareasDiarias() {
-        return tareasDiariasRepository.findAll();
+        return tareaCumplidaRepository.findAll();
     }
 
     @Override
     public TareasDiarias getTareasDiariasById(Long id) {
-        return tareasDiariasRepository.findById(id).orElse(null);
+        return tareaCumplidaRepository.findById(id).orElse(null);
     }
 
     @Override
     public void saveOrUpdateTareasDiarias(TareasDiarias tareasDiarias) {
-        tareasDiariasRepository.save(tareasDiarias);
+        tareaCumplidaRepository.save(tareasDiarias);
     }
 
     @Override
     public void deleteTareasDiarias(Long id) {
-        tareasDiariasRepository.deleteById(id);
+        tareaCumplidaRepository.deleteById(id);
     }
 
     @Override
     public List<TareasDiarias> getTareasDiariasByWorker(Worker worker) {
-        return tareasDiariasRepository.findByWorker(worker);
+        return tareaCumplidaRepository.findByWorker(worker);
     }
 
     @Override
     public List<TareasDiarias> getTareasDiariasByUbicacion(String ubicacion) {
-        return tareasDiariasRepository.findByUbicacion(ubicacion);
+        return tareaCumplidaRepository.findByUbicacion(ubicacion);
     }
 
     @Override
     public void saveOrUpdateTareasDiarias(Long id, Boolean cumplida) {
-        TareasDiarias tareasDiarias = tareasDiariasRepository.findById(id).orElse(null);
+        TareasDiarias tareasDiarias = tareaCumplidaRepository.findById(id).orElse(null);
         tareasDiarias.setCumplida(cumplida);
-        tareasDiariasRepository.save(tareasDiarias);
+        tareaCumplidaRepository.save(tareasDiarias);
     }
 
     @Override

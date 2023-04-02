@@ -33,6 +33,12 @@ public class Tarea {
         this.descripcion = descripcion;
     }
 
+    public Tarea(String nombre, String descripcion, Ubicacion ubicacion) {
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.ubicacion = ubicacion;
+    }
+
     public Long getId() {
         return id;
     }

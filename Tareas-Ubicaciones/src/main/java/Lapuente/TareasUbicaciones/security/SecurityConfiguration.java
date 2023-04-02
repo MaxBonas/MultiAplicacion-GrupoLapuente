@@ -32,13 +32,13 @@ public class SecurityConfiguration {
         httpSecurity.httpBasic();
 
         httpSecurity.authorizeRequests()
-                .mvcMatchers(HttpMethod.GET, "/admin/**").hasRole("ADMIN")
-                .mvcMatchers(HttpMethod.POST, "/admin/**").hasRole("ADMIN")
-                .mvcMatchers(HttpMethod.PATCH, "/admin/**").hasRole("ADMIN")
-                .mvcMatchers(HttpMethod.PUT, "/admin/**").hasRole("ADMIN")
-                .mvcMatchers(HttpMethod.DELETE, "/admin/**").hasRole("ADMIN")
-                .mvcMatchers(HttpMethod.GET, "/worker/**").hasAnyRole("WORKER", "ADMIN")
-                .mvcMatchers(HttpMethod.PATCH, "/worker/**").hasAnyRole("WORKER", "ADMIN")
+                .antMatchers(HttpMethod.GET, "/admin/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST, "/admin/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PATCH, "/admin/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/admin/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/admin/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/worker/**").hasAnyRole("WORKER", "ADMIN")
+                .antMatchers(HttpMethod.PATCH, "/worker/**").hasAnyRole("WORKER", "ADMIN")
                 .anyRequest().permitAll();
 
         httpSecurity.csrf().disable();

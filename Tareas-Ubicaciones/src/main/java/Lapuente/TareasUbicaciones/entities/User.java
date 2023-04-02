@@ -8,8 +8,8 @@ import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 
-@Inheritance(strategy = InheritanceType.JOINED)
 @Entity
+@Table(name = "users")
 public abstract class User {
 
     @Id

@@ -18,7 +18,7 @@ public class Ubicacion {
 
     @NotBlank(message = "This field can't be blank")
     @NotNull(message = "This field can't be null")
-    private String nombre;
+    private String name;
 
     @OneToMany(mappedBy = "ubicacion")
     @JsonIgnore
@@ -31,8 +31,8 @@ public class Ubicacion {
     public Ubicacion() {
     }
 
-    public Ubicacion(String nombre) {
-        this.nombre = nombre;
+    public Ubicacion(String name) {
+        this.name = name;
     }
 
     // Getters and setters
@@ -45,12 +45,12 @@ public class Ubicacion {
         this.id = id;
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getName() {
+        return name;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Set<Tarea> getTareas() {

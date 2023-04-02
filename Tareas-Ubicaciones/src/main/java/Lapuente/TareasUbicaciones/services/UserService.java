@@ -16,6 +16,7 @@ public class UserService implements UserServiceInterface {
     @Autowired
     UserRepository userRepository;
 
+
     @Override
     public User getUserById(Long id) {
         return userRepository.findById(id).orElseThrow(() ->
@@ -36,4 +37,6 @@ public class UserService implements UserServiceInterface {
         userRepository.delete(user1);
         return "The User with id " + id + " has been removed correctly.";
     }
+
 }
+

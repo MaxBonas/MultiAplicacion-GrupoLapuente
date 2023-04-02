@@ -7,6 +7,6 @@ import java.util.Optional;
 
 public interface AdminServiceInterface {
     Admin createAdmin(String name, String email, String password);
-    Optional<Admin> getAdminByName(String name);
-    Optional<Admin> getAdminByEmail(String email);
+    Optional<Admin> findAdminByName(String name);
+    Optional<Admin> findAdminByEmail(String email);
 }

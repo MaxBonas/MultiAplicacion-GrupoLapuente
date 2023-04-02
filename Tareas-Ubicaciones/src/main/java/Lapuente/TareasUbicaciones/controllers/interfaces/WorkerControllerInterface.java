@@ -1,10 +1,11 @@
 package Lapuente.TareasUbicaciones.controllers.interfaces;
 
+import Lapuente.TareasUbicaciones.ENUMs.Turno;
 import Lapuente.TareasUbicaciones.entities.Tarea;
-import Lapuente.TareasUbicaciones.entities.TareasDiarias;
 import Lapuente.TareasUbicaciones.entities.Ubicacion;
 import Lapuente.TareasUbicaciones.entities.Worker;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -17,18 +18,9 @@ public interface WorkerControllerInterface {
 
     List<Tarea> getTareasByUbicacion(Long ubicacionId);
 
-    Tarea getTareaById(Long tareaId);
+    void informarTareasCumplidas(Long ubicacionId, Turno turno, List<Long> tareasCumplidasIds, UserDetails userDetails, String comentario);
 
-    void confirmarTarea(Long tareaId, Long ubicacionId, ConfirmacionTarea confirmacionTarea);
-
-    void asignarTareas(Long ubicacionId, Long tareaId);
-
-    List<TareasDiarias> getTareasDiarias();
-
-    void cambiarPassword(CambioPassword cambioPassword);
-
-    void agregarComentariosInforme(ComentariosInforme comentariosInforme);
-
-    List<TareasDiarias> getTareasDiariasSiguientes(LocalDate fecha);
+    void cambiarPassword(Long workerId, String oldPassword, String newPassword);
 
 }
+

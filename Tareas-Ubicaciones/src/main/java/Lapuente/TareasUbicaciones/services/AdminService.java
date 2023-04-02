@@ -25,12 +25,12 @@ public class AdminService implements AdminServiceInterface {
     }
 
     @Override
-    public Optional<Admin> getAdminByName(String name) {
+    public Optional<Admin> findAdminByName(String name) {
         return adminRepository.findByName(name);
     }
 
     @Override
-    public Optional<Admin> getAdminByEmail(String email) {
-        return adminRepository.findAdminByEmail(email);
+    public Optional<Admin> findAdminByEmail(String email) {
+        return adminRepository.findByEmail(email);
     }
 }

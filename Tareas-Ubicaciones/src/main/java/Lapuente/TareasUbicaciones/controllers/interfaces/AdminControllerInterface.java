@@ -1,67 +1,38 @@
 package Lapuente.TareasUbicaciones.controllers.interfaces;
 
+import Lapuente.TareasUbicaciones.DTOs.*;
 import Lapuente.TareasUbicaciones.entities.Tarea;
+import Lapuente.TareasUbicaciones.entities.TareaCumplida;
 import Lapuente.TareasUbicaciones.entities.Ubicacion;
 import Lapuente.TareasUbicaciones.entities.Worker;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 public interface AdminControllerInterface {
-    @PostMapping("/workers")
-@ResponseStatus(HttpStatus.CREATED)
-    Worker addWorker(@RequestBody Worker workerDTO);
 
-    @GetMapping("/workers")
-    @ResponseStatus(HttpStatus.OK)
+    Worker addWorker(WorkerDTO workerDTO);
+
     List<Worker> getAllWorkers();
 
-    @GetMapping("/tareas")
-    @ResponseStatus(HttpStatus.OK)
     List<Tarea> getAllTareas();
 
-    @PostMapping("/tareas")
-    @ResponseStatus(HttpStatus.CREATED)
-    Tarea addTarea(@RequestBody Tarea tareaDTO);
+    Tarea addTarea(TareaDTO tareaDTO);
 
-    @GetMapping("/ubicaciones")
-    @ResponseStatus(HttpStatus.OK)
     List<Ubicacion> getAllUbicaciones();
 
-    @PostMapping("/ubicaciones")
-    @ResponseStatus(HttpStatus.CREATED)
-    Ubicacion addUbicacion(@RequestBody Ubicacion ubicacion);
-/*
-    Admin addAdmin(Admin admin);
-    Admin getAdminById(Long id);
-    List<Admin> getAllAdmins();
-    Admin updateAdmin(Long id, Admin admin);
+    Ubicacion addUbicacion(UbicacionDTO ubicacionDTO);
 
-    ThirdParty addThirdParty(ThirdParty thirdParty);
-    ThirdParty getThirdPartyById(Long id);
-    List<ThirdParty> getAllThirdPartys();
-    ThirdParty updateThirdParty(Long id, ThirdParty thirdParty);
-    AccountHolder addAccountHolder(AccountHolder accountHolder);
-    AccountHolder getAccountHolderById(Long id);
-    List<AccountHolder> getAllAccountHolders();
-    AccountHolder updateAccountHolder(Long id, AccountHolder accountHolder);
-    String deleteUserById(Long id);
+    TareaCumplidaDTO updateTareaCumplida(Long tareaCumplidaId, TareaCumplidaDTO tareaCumplidaDTO);
 
+    List<TareaCumplida> getTareasCumplidasByUbicacionYPeriodo(Long ubicacionId, LocalDateTime fechaInicio, LocalDateTime fechaFin);
 
-    AccountPostDTO addAccountByAdmin(TypeAccount typeAccount, AccountPostDTO account);
-    Account getAccountById(Long id);
-    List<Account> getAllAccounts();
-    AccountGetDTO updateAccountByAdmin(Long id, AccountPostDTO account);
+    Ubicacion updateTareasDeUbicacion(Long ubicacionId, Set<TareaDTO> tareasDTO);
 
-    String deleteAccountById(Long id);
-
-    Account patchAdminAnyAccountBalance(Long accountId, BigDecimal amount);
-    AccountGetDTO patchStatusAccount (Long id);
-    AccountGetDTO validateAndActivateAccount(Long id);
-*/
 }

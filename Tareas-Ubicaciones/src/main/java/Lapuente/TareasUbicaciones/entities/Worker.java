@@ -16,10 +16,6 @@ public class Worker extends User {
     @JsonIgnore
     private Set<TareaCumplida> tareasCumplidas = new HashSet<>();
 
-    @OneToMany(mappedBy = "worker")
-    @JsonIgnore
-    private Set<AsignacionTurno> asignacionesTurno = new HashSet<>();
-
     public Worker() {}
 
     public Worker(String name, String password, String cargo) {
@@ -45,11 +41,4 @@ public class Worker extends User {
         this.tareasCumplidas = tareasCumplidas;
     }
 
-    public Set<AsignacionTurno> getAsignacionesTurno() {
-        return asignacionesTurno;
-    }
-
-    public void setAsignacionesTurno(Set<AsignacionTurno> asignacionesTurno) {
-        this.asignacionesTurno = asignacionesTurno;
-    }
 }

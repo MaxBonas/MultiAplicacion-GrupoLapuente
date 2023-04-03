@@ -53,4 +53,14 @@ public class WorkerController implements WorkerControllerInterface {
         workerService.cambiarPassword(workerId, oldPassword, newPassword);
     }
 
+    @GetMapping("/workersmenu")
+    public String workersMenu() {
+        return "workersmenu";
+    }
+
+    @GetMapping("/entrar")
+    public String entrar() {
+        return "workersmenu";
+    }
+
 }

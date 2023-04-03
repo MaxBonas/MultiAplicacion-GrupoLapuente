@@ -1,0 +1,78 @@
+/* Estilos globales */
+body {
+    background-color: #F8F8F8;
+    font-family: Arial, sans-serif;
+}
+
+/* Estilos para el encabezado */
+header {
+    background-color: #004A9E;
+    color: white;
+    padding: 20px;
+}
+
+/* Estilos para el contenido principal */
+main {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #F8F8F8;
+    border: 1px solid #004A9E;
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.2);
+    text-align: center; /* Para centrar el contenido */
+}
+
+main h2 {
+    font-size: 28px;
+    margin-top: 0;
+    color: #004A9E;
+}
+
+main p {
+    font-size: 18px;
+    color: #333;
+}
+
+main ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 30px 0;
+}
+
+main li {
+    margin-bottom: 15px;
+}
+
+main a {
+    display: inline-block;
+    background-color: #004A9E;
+    color: white;
+    padding: 12px 18px;
+    margin-right: 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s ease-in-out;
+}
+
+main a:hover {
+    background-color: #005CB9;
+}
+
+.button {
+    display: inline-block;
+    background-color: #F8F8F8;
+    color: #004A9E;
+    border: 1px solid #004A9E;
+    border-radius: 5px;
+    padding: 12px 18px;
+    margin-top: 30px;
+    font-size: 16px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.button:hover {
+    background-color: #004A9E;
+    color: #F8F8F8;
+}

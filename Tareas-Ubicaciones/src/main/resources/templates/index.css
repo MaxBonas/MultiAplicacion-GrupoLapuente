@@ -1,0 +1,120 @@
+/* Estilos globales */
+body {
+    background-color: #F8F8F8;
+    font-family: Arial, sans-serif;
+}
+
+/* Estilos para el encabezado */
+header {
+    background-color: #004A9E;
+    color: white;
+    padding: 20px;
+}
+
+/* Estilos para el menú de navegación */
+nav {
+    background-color: #004A9E;
+    border-bottom: 2px solid #F8F8F8;
+    padding: 10px;
+}
+
+nav ul li a {
+    font-size: 16px;
+    padding: 10px;
+    border-radius: 5px;
+    color: white;
+    text-decoration: none;
+    transition: background-color 0.3s ease-in-out;
+}
+
+nav ul li a:hover {
+    background-color: #F8F8F8;
+    color: #004A9E;
+}
+
+/* Estilos para el contenido principal */
+main {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #F8F8F8;
+    border: 1px solid #004A9E;
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.2);
+}
+
+main h2 {
+    font-size: 24px;
+    margin-top: 0;
+    color: #004A9E;
+}
+
+main p {
+    font-size: 18px;
+    color: #333;
+}
+
+main a {
+    display: inline-block;
+    background-color: #004A9E;
+    color: white;
+    padding: 10px;
+    margin-top: 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s ease-in-out;
+}
+
+main a:hover {
+    background-color: #005CB9;
+}
+
+/* Estilos para el formulario de inicio de sesión */
+form {
+    margin: 20px 0;
+}
+
+form div {
+    margin-bottom: 10px;
+}
+
+form label {
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+form input[type="text"],
+form input[type="password"] {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+}
+
+form button[type="submit"] {
+    display: block;
+    background-color: #004A9E;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    margin-top: 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+form button[type="submit"]:hover {
+    background-color: #005CB9;
+}
+
+#loginSuccess {
+    display: none;
+    font-size: 18px;
+    margin-top: 20px;
+    color: green;
+}
+
+.loginError {
+    color: red;
+}

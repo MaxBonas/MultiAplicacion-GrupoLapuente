@@ -46,6 +46,12 @@ public class AdminController {
         return workerService.getAllWorkers();
     }
 
+
+    @GetMapping("/admin")
+    public String admin() {
+        return "admin";
+    }
+
     @GetMapping("/tareas")
     @ResponseStatus(HttpStatus.OK)
     public List<Tarea> getAllTareas() {

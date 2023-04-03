@@ -81,8 +81,8 @@ public class TareasUbicacionesApplication implements CommandLineRunner {
 			roleRepository.save(new Role("WORKER", jefferson));
 		}
 
-		if (workerRepository.findByName("Jordi Jardí") == null) {
-			Worker jordi = new Worker("Jordi Jardí", passwordEncoder.encode("3patitos"), "Limpieza");
+		if (workerRepository.findByName("Jordi Jardi") == null) {
+			Worker jordi = new Worker("Jordi Jardi", passwordEncoder.encode("3patitos"), "Limpieza");
 			workerRepository.save(jordi);
 			roleRepository.save(new Role("WORKER", jordi));
 		}

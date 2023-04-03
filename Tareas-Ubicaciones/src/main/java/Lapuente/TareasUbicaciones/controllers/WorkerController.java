@@ -10,12 +10,13 @@ import Lapuente.TareasUbicaciones.services.interfaces.WorkerServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@RestController
+@Controller
 @RequestMapping("/worker")
 public class WorkerController implements WorkerControllerInterface {
 
@@ -54,12 +55,7 @@ public class WorkerController implements WorkerControllerInterface {
     }
 
     @GetMapping("/workersmenu")
-    public String workersMenu() {
-        return "workersmenu";
-    }
-
-    @GetMapping("/entrar")
-    public String entrar() {
+    public String workerMenu() {
         return "workersmenu";
     }
 

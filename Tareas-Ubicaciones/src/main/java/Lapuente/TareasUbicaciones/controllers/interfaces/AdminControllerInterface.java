@@ -29,7 +29,7 @@ public interface AdminControllerInterface {
 
     Ubicacion addUbicacion(UbicacionDTO ubicacionDTO);
 
-    TareaCumplidaDTO updateTareaCumplida(Long tareaCumplidaId, TareaCumplidaDTO tareaCumplidaDTO);
+    TareaCumplida updateTareaCumplida(Long tareaCumplidaId, TareaCumplidaDTO tareaCumplidaDTO);
 
     List<TareaCumplida> getTareasCumplidasByUbicacionYPeriodo(Long ubicacionId, LocalDateTime fechaInicio, LocalDateTime fechaFin);
 

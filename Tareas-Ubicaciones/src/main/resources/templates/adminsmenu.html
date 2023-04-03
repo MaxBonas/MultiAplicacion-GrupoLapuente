@@ -1,10 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Menú de Administrador</title>
+    <link rel="stylesheet" href="../static/css/styles.css" th:href="@{/css/styles.css}">
 </head>
 <body>
-
+<header>
+    <h1>Tareas y Ubicaciones</h1>
+    <p>Menú de Administrador</p>
+</header>
+<main>
+    <h2>Opciones de Administrador</h2>
+    <div class="button-container">
+        <ul>
+            <li><a href="/admin/workers">Ver Trabajadores</a></li>
+            <li><a href="/admin/ubicaciones">Ver Ubicaciones</a></li>
+            <li><a href="/admin/tareas">Ver Tareas</a></li>
+            <li><a href="/admin/ubicaciones/tareas">Asignar Tareas a Ubicaciones</a></li>
+            <li><a href="/admin/workers/new">Crear Trabajador</a></li>
+            <li><a href="/admin/ubicaciones/new">Crear Ubicación</a></li>
+            <li><a href="/admin/tareas/new">Crear Tarea</a></li>
+        </ul>
+    </div>
+    <a href="/" class="button">Volver al Inicio</a>
+</main>
 </body>
 </html>

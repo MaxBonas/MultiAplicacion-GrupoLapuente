@@ -11,6 +11,7 @@ import Lapuente.TareasUbicaciones.services.interfaces.WorkerServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -18,9 +19,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
-@RestController
+@Controller
 @RequestMapping("/admin")
-public class AdminController {
+public class AdminController implements AdminControllerInterface{
 
     @Autowired
     private WorkerServiceInterface workerService;
@@ -98,6 +99,16 @@ public class AdminController {
         return tareaCumplidaService.updateTareaCumplida(tareaCumplidaId, tareaCumplidaDTO);
     }
 
+    @GetMapping("/informes/periodo")
+    @ResponseStatus(HttpStatus.OK)
+    public List<TareaCumplida> getTareasCumplidasByUbicacionYPeriodo(
+            @RequestParam Long ubicacionId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaInicio,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaFin) {
+        return workerService.getTareasCumplidasByUbicacionYPeriodo(ubicacionId, fechaInicio, fechaFin);
+    }
+
+
     @PostMapping("/ubicaciones/{ubicacionId}/tareas")
     @ResponseStatus(HttpStatus.CREATED)
     public Ubicacion addTareaAUbicacion(@PathVariable Long ubicacionId, @RequestBody TareaDTO tareaDTO) {
@@ -108,6 +119,10 @@ public class AdminController {
     @ResponseStatus(HttpStatus.OK)
     public Ubicacion updateTareasDeUbicacion(@PathVariable Long ubicacionId, @RequestBody Set<TareaDTO> tareasDTO) {
         return ubicacionService.updateTareasDeUbicacion(ubicacionId, tareasDTO);
+    }
+    @GetMapping("/adminsmenu")
+    public String adminMenu() {
+        return "adminsmenu";
     }
 }
 

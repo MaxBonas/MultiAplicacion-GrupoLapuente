@@ -20,8 +20,11 @@ public class Ubicacion {
     @NotNull(message = "This field can't be null")
     private String name;
 
-    @OneToMany(mappedBy = "ubicacion")
-    @JsonIgnore
+
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "ubicacion_tarea",
+            joinColumns = @JoinColumn(name = "ubicacion_id"),
+            inverseJoinColumns = @JoinColumn(name = "tarea_id"))
     private Set<Tarea> tareas = new HashSet<>();
 
     @OneToMany(mappedBy = "ubicacion")
@@ -33,6 +36,12 @@ public class Ubicacion {
 
     public Ubicacion(String name) {
         this.name = name;
+    }
+
+    public Ubicacion(String name, Set<Tarea> tareas, Set<TareaCumplida> tareasCumplidas) {
+        this.name = name;
+        this.tareas = tareas;
+        this.tareasCumplidas = tareasCumplidas;
     }
 
     // Getters and setters

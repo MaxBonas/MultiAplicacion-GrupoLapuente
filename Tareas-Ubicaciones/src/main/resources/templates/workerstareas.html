@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Tareas de la Ubicación</title>
+  <link rel="stylesheet" href="../static/css/styles.css" th:href="@{/css/styles.css}">
+</head>
+<body>
+<header>
+  <h1>Tareas y Ubicaciones</h1>
+  <p>Tareas de la Ubicación</p>
+</header>
+<main>
+  <h2>Tareas</h2>
+  <form id="tareas-form" th:action="@{/worker/ubicaciones/{ubicacionId}/tareas/informar}" th:object="${tareaCumplida}" method="post" th:attr="data-ubicacion-id=${ubicacionId}">
+    <input type="hidden" name="ubicacionId" th:value="${ubicacionId}" />
+    <table>
+      <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Descripción</th>
+        <th>Realizada</th>
+      </tr>
+      </thead>
+      <tbody>
+      <!-- Itera sobre la lista de tareas y muestra los datos -->
+      <tr th:each="tarea : ${tareas}">
+        <td th:text="${tarea.name}"></td>
+        <td th:text="${tarea.descripcion}"></td>
+        <td><input type="checkbox" name="tareaId" th:value="${tarea.id}" /></td>
+      </tr>
+      </tbody>
+    </table>
+    <div>
+      <label for="comentario">Comentario:</label>
+      <textarea id="comentario" name="comentario" rows="4" cols="50"></textarea>
+    </div>
+    <div>
+      <label for="turno">Turno:</label>
+      <select name="turno" id="turno">
+        <option value="MAÑANA">Mañana</option>
+        <option value="TARDE">Tarde</option>
+      </select>
+    </div>
+    <button type="submit" class="button button-primary">Guardar</button>
+  </form>
+  <a href="/worker/ubicaciones" class="button">Cancelar</a>
+  <a href="/worker/workersmenu" class="button">Volver al Menú</a>
+</main>
+<script>
+    document.getElementById('tareas-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        // Muestra el mensaje
+        alert('Se han guardado los cambios correctamente.');
+
+        // Redirige a workersubicaciones.html después de un retraso de 2 segundos
+        setTimeout(function() {
+            window.location.href = '/worker/ubicaciones';
+        }, 2000);
+    });
+</script>
+</body>
+</html>

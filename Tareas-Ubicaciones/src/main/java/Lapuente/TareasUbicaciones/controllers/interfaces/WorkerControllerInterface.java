@@ -6,7 +6,9 @@ import Lapuente.TareasUbicaciones.entities.Ubicacion;
 import Lapuente.TareasUbicaciones.entities.Worker;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -14,11 +16,11 @@ import java.util.List;
 
 public interface WorkerControllerInterface {
 
-    List<Ubicacion> getAllUbicaciones();
+    String getAllUbicaciones(Model model);
 
-    List<Tarea> getTareasByUbicacion(Long ubicacionId);
+    String getTareasByUbicacion(Long ubicacionId, Model model);
 
-    void informarTareasCumplidas(Long ubicacionId, Turno turno, List<Long> tareasCumplidasIds, UserDetails userDetails, String comentario);
+    String informarTareasCumplidas(Long ubicacionId, List<Long> tareasCumplidasIds, Turno turno, UserDetails userDetails, String comentario, RedirectAttributes redirectAttributes);
 
     void cambiarPassword(Long workerId, String oldPassword, String newPassword);
 

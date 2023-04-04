@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Tareas y Ubicaciones</title>
+    <title>Tareas en Ubicaciones</title>
     <link rel="stylesheet" href="../static/css/styles.css" th:href="@{/css/styles.css}">
     <style>
 /* Estilos globales */
@@ -100,7 +100,8 @@ main a:hover {
     <h2>Bienvenido a Tareas y Ubicaciones</h2>
     <p>Esta es una aplicación para gestionar tareas y ubicaciones. Puede utilizarla para agregar, editar y eliminar tareas, ubicaciones y trabajadores.</p>
 
-    <form accept-charset="UTF-8" th:action="@{/login}" method="post">
+
+    <form id="login-form" accept-charset="UTF-8" th:action="@{/login}" method="post" onsubmit="return handleLoginFormSubmit(event);">
         <div>
             <label for="username">Usuario:</label>
             <input type="text" id="username" name="username" required autofocus>
@@ -114,24 +115,38 @@ main a:hover {
         </div>
     </form>
 
-    <div id="loginSuccess" style="display: none; color: green;">
-        ¡Inicio de sesión exitoso! Redirigiendo...
+    <div id="redirecting-message" style="display: none; color: green;">
+        Redirigiendo...
     </div>
     <div th:if="${loginError}">
         <p style="color: red;">Error en el inicio de sesión. Por favor, intenta nuevamente.</p>
     </div>
     <script>
-    // Si el inicio de sesión fue exitoso, muestra el mensaje y redirige después de un retraso.
-    (function() {
-        const loginSuccess = [[${loginSuccess}]];
-        if (loginSuccess) {
-            document.getElementById('loginSuccess').style.display = 'block';
-            setTimeout(function() {
-                window.location.href = "/workersmenu";
-            }, 3000); // 3000 milisegundos (3 segundos) de retraso antes de la redirección
+    function handleLoginFormSubmit(event) {
+        event.preventDefault();
+        const loginForm = document.getElementById('login-form');
+        const redirectingMessage = document.getElementById('redirecting-message');
+
+        // Validar el formulario (puede agregar más validaciones si es necesario)
+        const username = loginForm.username.value.trim();
+        const password = loginForm.password.value.trim();
+
+        if (username === '' || password === '') {
+            alert('Por favor, complete los campos de usuario y contraseña.');
+            return false;
         }
-    })();
+
+        // Mostrar el mensaje de redirección y esperar 2 segundos antes de enviar el formulario
+        redirectingMessage.style.display = 'block';
+        setTimeout(function() {
+            loginForm.submit();
+        }, 2000);
+
+        return false;
+    }
 </script>
 </main>
 </body>
 </html>
+
+

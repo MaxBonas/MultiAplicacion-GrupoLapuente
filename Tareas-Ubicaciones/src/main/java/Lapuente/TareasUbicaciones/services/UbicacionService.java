@@ -62,28 +62,36 @@ public class UbicacionService implements UbicacionServiceInterface {
 
     // Método para obtener las tareas asociadas a una ubicación
     public List<Tarea> getTareasByUbicacionId(Long id) {
-        return tareaRepository.findByUbicacionId(id);
+        Ubicacion ubicacion = ubicacionRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NO_CONTENT, "Ubicacion not found"));
+        return tareaRepository.findByUbicaciones(ubicacion);
     }
+
 
     @Override
     public Ubicacion addTareaAUbicacion(Long ubicacionId, TareaDTO tareaDTO) {
         Ubicacion ubicacion = findById(ubicacionId);
-        Tarea tarea = new Tarea(tareaDTO.getNombre(), tareaDTO.getDescripcion(), ubicacion);
+        Tarea tarea = new Tarea(tareaDTO.getName(), tareaDTO.getDescripcion());
         tareaRepository.save(tarea);
         ubicacion.getTareas().add(tarea);
+        tarea.getUbicaciones().add(ubicacion); // Agregar la ubicación a la tarea
         return ubicacionRepository.save(ubicacion);
     }
-
 
     @Override
     public Ubicacion updateTareasDeUbicacion(Long ubicacionId, Set<TareaDTO> tareasDTO) {
         Ubicacion ubicacion = findById(ubicacionId);
         Set<Tarea> tareas = tareasDTO.stream()
-                .map(tareaDTO -> new Tarea(tareaDTO.getNombre(), tareaDTO.getDescripcion(), ubicacion))
+                .map(tareaDTO -> {
+                    Tarea tarea = new Tarea(tareaDTO.getName(), tareaDTO.getDescripcion());
+                    tarea.getUbicaciones().add(ubicacion); // Agregar la ubicación a cada tarea
+                    return tarea;
+                })
                 .collect(Collectors.toSet());
         ubicacion.setTareas(tareas);
         tareaRepository.saveAll(tareas);
         return ubicacionRepository.save(ubicacion);
     }
+
 }
 

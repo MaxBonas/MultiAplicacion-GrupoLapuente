@@ -2,6 +2,7 @@ package Lapuente.TareasUbicaciones.services;
 
 import Lapuente.TareasUbicaciones.DTOs.TareaDTO;
 import Lapuente.TareasUbicaciones.entities.Tarea;
+import Lapuente.TareasUbicaciones.entities.Ubicacion;
 import Lapuente.TareasUbicaciones.repositories.TareaRepository;
 import Lapuente.TareasUbicaciones.repositories.UbicacionRepository;
 import Lapuente.TareasUbicaciones.services.interfaces.TareaServiceInterface;
@@ -17,7 +18,8 @@ public class TareaService implements TareaServiceInterface {
 
     @Autowired
     private TareaRepository tareaRepository;
-
+    @Autowired
+    private UbicacionRepository ubicacionRepository;
     @Override
     public List<Tarea> getAllTareas() {
         return tareaRepository.findAll();
@@ -32,13 +34,13 @@ public class TareaService implements TareaServiceInterface {
 
     @Override
     public Tarea saveTarea(TareaDTO tareaDTO) {
-        Tarea tarea = new Tarea(tareaDTO.getNombre(), tareaDTO.getDescripcion(), null);
+        Tarea tarea = new Tarea(tareaDTO.getName(), tareaDTO.getDescripcion());
         return tareaRepository.save(tarea);
     }
 
     @Override
     public Tarea updateTarea(TareaDTO tareaDTO) {
-        Tarea tarea = new Tarea(tareaDTO.getNombre(), tareaDTO.getDescripcion(), null);
+        Tarea tarea = new Tarea(tareaDTO.getName(), tareaDTO.getDescripcion());
         tarea.setId(tareaDTO.getId());
         return tareaRepository.save(tarea);
     }
@@ -50,7 +52,9 @@ public class TareaService implements TareaServiceInterface {
 
     @Override
     public List<Tarea> getTareasByUbicacion(Long id) {
-        return tareaRepository.findByUbicacionId(id);
+        Ubicacion ubicacion = ubicacionRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NO_CONTENT, "Ubicacion not found"));
+        return tareaRepository.findByUbicaciones(ubicacion);
     }
 }
 

@@ -68,7 +68,9 @@ public class WorkerService implements WorkerServiceInterface {
     @Override
     public void informarTareasCumplidas(Long ubicacionId, Turno turno, List<Long> tareasCumplidasIds, UserDetails userDetails, String comentario) {
         Worker worker = workerRepository.findByName(userDetails.getUsername());
-        List<Tarea> tareas = tareaRepository.findByUbicacionId(ubicacionId);
+        Ubicacion ubicacion = ubicacionRepository.findById(ubicacionId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NO_CONTENT, "Ubicacion not found"));
+        List<Tarea> tareas = tareaRepository.findByUbicaciones(ubicacion);
 
         LocalDateTime fechaCumplimiento = LocalDateTime.now();
 
@@ -80,9 +82,10 @@ public class WorkerService implements WorkerServiceInterface {
     }
 
 
+
     @Override
     public List<TareaCumplida> getTareasCumplidasByUbicacionYPeriodo(Long ubicacionId, LocalDateTime fechaInicio, LocalDateTime fechaFin) {
-        return tareaCumplidaRepository.findByTareaUbicacionIdAndFechaCumplimientoBetween(ubicacionId, fechaInicio, fechaFin);
+        return tareaCumplidaRepository.findByTareaUbicacionesIdAndFechaCumplimientoBetween(ubicacionId, fechaInicio, fechaFin);
     }
 
 

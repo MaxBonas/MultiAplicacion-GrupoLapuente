@@ -1,25 +1,25 @@
 package Lapuente.TareasUbicaciones.DTOs;
 
-import javax.persistence.Column;
+import java.util.Set;
 
 public class TareaDTO {
     private Long id;
-    private String nombre;
+    private String name;
     private String descripcion;
-    private Long ubicacionId;
+    private Set<Long> ubicacionesIds;
 
     // Constructor, getters y setters
 
-
-    public TareaDTO(String nombre, String descripcion, Long ubicacionId) {
-        this.nombre = nombre;
+    public TareaDTO(String name, String descripcion, Set<Long> ubicacionesIds) {
+        this.name = name;
         this.descripcion = descripcion;
-        this.ubicacionId = ubicacionId;
+        this.ubicacionesIds = ubicacionesIds;
     }
 
-
-
-
+    public TareaDTO(String name, String descripcion) {
+        this.name = name;
+        this.descripcion = descripcion;
+    }
 
     public Long getId() {
         return id;
@@ -29,12 +29,12 @@ public class TareaDTO {
         this.id = id;
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getName() {
+        return name;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDescripcion() {
@@ -45,12 +45,12 @@ public class TareaDTO {
         this.descripcion = descripcion;
     }
 
-    public Long getUbicacionId() {
-        return ubicacionId;
+    public Set<Long> getUbicacionesIds() {
+        return ubicacionesIds;
     }
 
-    public void setUbicacionId(Long ubicacionId) {
-        this.ubicacionId = ubicacionId;
+    public void setUbicacionesIds(Set<Long> ubicacionesIds) {
+        this.ubicacionesIds = ubicacionesIds;
     }
 }
 

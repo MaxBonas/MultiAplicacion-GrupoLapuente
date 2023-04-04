@@ -6,6 +6,14 @@
     <link rel="stylesheet" href="../static/css/styles.css" th:href="@{/css/styles.css}">
 </head>
 <body>
+<div th:if="${loginSuccess}">
+    <p style="color: green;">¡Inicio de sesión exitoso! Redirigiendo...</p>
+    <script>
+        setTimeout(function() {
+            document.querySelector('.login-success-message').style.display = 'none';
+        }, 2000); // 2000 milisegundos (2 segundos) de espera antes de ocultar el mensaje
+    </script>
+</div>
 <header>
     <h1>Tareas y Ubicaciones</h1>
     <p>Menú de Administrador</p>

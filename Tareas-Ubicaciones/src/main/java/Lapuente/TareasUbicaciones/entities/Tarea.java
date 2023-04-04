@@ -16,27 +16,26 @@ public class Tarea {
 
     @NotBlank(message = "This field can't be blank")
     @NotNull(message = "This field can't be null")
-    private String nombre;
+    private String name;
+
+    @ManyToMany(mappedBy = "tareas")
+    private Set<Ubicacion> ubicaciones = new HashSet<>();
 
     @NotBlank(message = "This field can't be blank")
     @NotNull(message = "This field can't be null")
     private String descripcion;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ubicacion_id")
-    private Ubicacion ubicacion;
-
     public Tarea() {}
 
-    public Tarea(String nombre, String descripcion) {
-        this.nombre = nombre;
+    public Tarea(String name, String descripcion) {
+        this.name = name;
         this.descripcion = descripcion;
     }
 
-    public Tarea(String nombre, String descripcion, Ubicacion ubicacion) {
-        this.nombre = nombre;
+    public Tarea(String name, String descripcion, Set<Ubicacion> ubicaciones) {
+        this.name = name;
+        this.ubicaciones = ubicaciones;
         this.descripcion = descripcion;
-        this.ubicacion = ubicacion;
     }
 
     public Long getId() {
@@ -47,12 +46,12 @@ public class Tarea {
         this.id = id;
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getName() {
+        return name;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDescripcion() {
@@ -63,11 +62,11 @@ public class Tarea {
         this.descripcion = descripcion;
     }
 
-    public Ubicacion getUbicacion() {
-        return ubicacion;
+    public Set<Ubicacion> getUbicaciones() {
+        return ubicaciones;
     }
 
-    public void setUbicacion(Ubicacion ubicacion) {
-        this.ubicacion = ubicacion;
+    public void setUbicaciones(Set<Ubicacion> ubicaciones) {
+        this.ubicaciones = ubicaciones;
     }
 }

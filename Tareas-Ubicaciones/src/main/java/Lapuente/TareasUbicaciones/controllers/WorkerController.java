@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -26,27 +28,37 @@ public class WorkerController implements WorkerControllerInterface {
     @Autowired
     private UbicacionServiceInterface ubicacionService;
 
-    @Override
     @GetMapping("/ubicaciones")
-    public List<Ubicacion> getAllUbicaciones() {
-        return ubicacionService.findAll();
+    public String getAllUbicaciones(Model model) {
+        List<Ubicacion> ubicaciones = ubicacionService.findAll();
+        model.addAttribute("ubicaciones", ubicaciones);
+        return "workersubicaciones";
     }
-
-    @Override
     @GetMapping("/ubicaciones/{ubicacionId}/tareas")
-    public List<Tarea> getTareasByUbicacion(@PathVariable Long ubicacionId) {
-        return ubicacionService.getTareasByUbicacionId(ubicacionId);
+    public String getTareasByUbicacion(@PathVariable Long ubicacionId, Model model) {
+        List<Tarea> tareas = ubicacionService.getTareasByUbicacionId(ubicacionId);
+        model.addAttribute("tareas", tareas);
+        return "workerstareas";
     }
 
-    @Override
     @PostMapping("/ubicaciones/{ubicacionId}/tareas/informar")
-    public void informarTareasCumplidas(@PathVariable Long ubicacionId,
-                                        @RequestParam Turno turno,
-                                        @RequestBody List<Long> tareasCumplidasIds,
-                                        @AuthenticationPrincipal UserDetails userDetails,
-                                        @RequestParam(required = false) String comentario) {
-        workerService.informarTareasCumplidas(ubicacionId, turno, tareasCumplidasIds, userDetails, comentario);
+    public String informarTareasCumplidas(@PathVariable Long ubicacionId,
+                                          @RequestParam("tareaId") List<Long> tareasCumplidasIds,
+                                          @RequestParam Turno turno,
+                                          @AuthenticationPrincipal UserDetails userDetails,
+                                          @RequestParam(required = false) String comentario,
+                                          RedirectAttributes redirectAttributes) {
+        try {
+            workerService.informarTareasCumplidas(ubicacionId, turno, tareasCumplidasIds, userDetails, comentario);
+            redirectAttributes.addFlashAttribute("message", "Tareas guardadas correctamente.");
+            return "redirect:/worker/ubicaciones";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Error al guardar las tareas.");
+            return "redirect:/worker/ubicaciones/" + ubicacionId + "/tareas";
+        }
     }
+
+
 
     @Override
     @PostMapping("/password")

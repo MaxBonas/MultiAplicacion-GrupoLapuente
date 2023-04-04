@@ -1,10 +1,14 @@
 package Lapuente.TareasUbicaciones.services;
 
 import Lapuente.TareasUbicaciones.DTOs.TareaCumplidaDTO;
+import Lapuente.TareasUbicaciones.entities.Tarea;
 import Lapuente.TareasUbicaciones.entities.TareaCumplida;
 import Lapuente.TareasUbicaciones.entities.Ubicacion;
 import Lapuente.TareasUbicaciones.entities.Worker;
 import Lapuente.TareasUbicaciones.repositories.TareaCumplidaRepository;
+import Lapuente.TareasUbicaciones.repositories.TareaRepository;
+import Lapuente.TareasUbicaciones.repositories.UbicacionRepository;
+import Lapuente.TareasUbicaciones.repositories.WorkerRepository;
 import Lapuente.TareasUbicaciones.services.interfaces.TareaCumplidaServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,13 +16,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 
 @Service
 public class TareaCumplidaService implements TareaCumplidaServiceInterface {
 
     @Autowired
     private TareaCumplidaRepository tareaCumplidaRepository;
+
+    @Autowired
+    private TareaRepository tareaRepository;
+
+    @Autowired
+    private WorkerRepository workerRepository;
+
+    @Autowired
+    private UbicacionRepository ubicacionRepository;
+
 
     @Override
     public List<TareaCumplida> getAllTareasCumplidas() {
@@ -47,7 +61,7 @@ public class TareaCumplidaService implements TareaCumplidaServiceInterface {
 
     @Override
     public List<TareaCumplida> getTareaCumplidaByUbicacion(Ubicacion ubicacion) {
-        return tareaCumplidaRepository.findByTarea_Ubicacion(ubicacion);
+        return tareaCumplidaRepository.findByTarea_Ubicaciones(ubicacion);
     }
 
     @Override
@@ -60,4 +74,15 @@ public class TareaCumplidaService implements TareaCumplidaServiceInterface {
         tareaCumplida.setTurno(tareaCumplidaDTO.getTurno());
         return tareaCumplidaRepository.save(tareaCumplida);
     }
+
+    public TareaCumplida save(TareaCumplidaDTO tareaCumplidaDTO) {
+        Tarea tarea = tareaRepository.findById(tareaCumplidaDTO.getTareaId()).orElseThrow(() -> new NoSuchElementException("Tarea no encontrada"));
+        Worker worker = workerRepository.findById(tareaCumplidaDTO.getWorkerId()).orElseThrow(() -> new NoSuchElementException("Trabajador no encontrado"));
+        Ubicacion ubicacion = ubicacionRepository.findById(tareaCumplidaDTO.getUbicacionId()).orElseThrow(() -> new NoSuchElementException("Ubicación no encontrada")); // Obtener la ubicación
+
+        TareaCumplida tareaCumplida = new TareaCumplida(tarea, worker, tareaCumplidaDTO.getCumplida(), tareaCumplidaDTO.getFechaCumplimiento(), tareaCumplidaDTO.getTurno(), tareaCumplidaDTO.getComentario());
+        tareaCumplida.setUbicacion(ubicacion); // Establecer la ubicación en la tarea cumplida
+        return tareaCumplidaRepository.save(tareaCumplida);
+    }
+
 }

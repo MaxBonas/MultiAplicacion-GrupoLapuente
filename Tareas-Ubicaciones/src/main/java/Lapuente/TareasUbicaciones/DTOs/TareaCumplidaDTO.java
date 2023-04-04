@@ -1,7 +1,6 @@
 package Lapuente.TareasUbicaciones.DTOs;
 
 import Lapuente.TareasUbicaciones.ENUMs.Turno;
-import Lapuente.TareasUbicaciones.entities.Worker;
 
 import javax.persistence.Column;
 import java.time.LocalDateTime;
@@ -10,8 +9,9 @@ public class TareaCumplidaDTO {
 
     private Long id;
     private Long tareaId;
-    private String tareaNombre;
+    private String tareaName;
     private Long workerId;
+    private Long ubicacionId;
     private Boolean cumplida;
     private String workerName;
     private LocalDateTime fechaCumplimiento;
@@ -23,10 +23,11 @@ public class TareaCumplidaDTO {
     public TareaCumplidaDTO() {
     }
 
-    public TareaCumplidaDTO(Long tareaId, String tareaNombre, Long workerId, boolean cumplida, String workerName, LocalDateTime fechaCumplimiento, Turno turno, String comentario) {
+    public TareaCumplidaDTO(Long tareaId, String tareaName, Long workerId, Long ubicacionId, Boolean cumplida, String workerName, LocalDateTime fechaCumplimiento, Turno turno, String comentario) {
         this.tareaId = tareaId;
-        this.tareaNombre = tareaNombre;
+        this.tareaName = tareaName;
         this.workerId = workerId;
+        this.ubicacionId = ubicacionId;
         this.cumplida = cumplida;
         this.workerName = workerName;
         this.fechaCumplimiento = fechaCumplimiento;
@@ -52,12 +53,12 @@ public class TareaCumplidaDTO {
         this.tareaId = tareaId;
     }
 
-    public String getTareaNombre() {
-        return tareaNombre;
+    public String getTareaName() {
+        return tareaName;
     }
 
-    public void setTareaNombre(String tareaNombre) {
-        this.tareaNombre = tareaNombre;
+    public void setTareaName(String tareaName) {
+        this.tareaName = tareaName;
     }
 
     public Long getWorkerId() {
@@ -105,5 +106,21 @@ public class TareaCumplidaDTO {
 
     public void setComentario(String comentario) {
         this.comentario = comentario;
+    }
+
+    public Long getUbicacionId() {
+        return ubicacionId;
+    }
+
+    public void setUbicacionId(Long ubicacionId) {
+        this.ubicacionId = ubicacionId;
+    }
+
+    public Boolean getCumplida() {
+        return cumplida;
+    }
+
+    public void setCumplida(Boolean cumplida) {
+        this.cumplida = cumplida;
     }
 }

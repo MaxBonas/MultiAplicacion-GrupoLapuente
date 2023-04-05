@@ -19,4 +19,5 @@ public interface InformeServiceInterface {
     List<Informe> findByUbicacion(Ubicacion ubicacion);
     List<Informe> findByWorker(Worker worker);
     void updateTareasCumplidasDeInforme(Long informeId, List<TareaCumplidaDTO> tareasCumplidas);
+    List<Informe> findByFechaBetweenAndTurnoAndUbicacionId(LocalDateTime start, LocalDateTime end, Turno turno, Long ubicacionId);
 }

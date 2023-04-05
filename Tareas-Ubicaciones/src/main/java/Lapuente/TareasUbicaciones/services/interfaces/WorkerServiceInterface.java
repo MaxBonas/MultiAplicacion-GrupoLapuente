@@ -19,4 +19,5 @@ public interface WorkerServiceInterface {
     List<TareaCumplida> getTareasCumplidasByUbicacionYPeriodo(Long ubicacionId, LocalDateTime fechaInicio, LocalDateTime fechaFin);
     void cambiarPassword(Long workerId, String oldPassword, String newPassword);
     List<TareaCumplida> getTareasCumplidasByWorkerAndTurno(Long workerId, Turno turno);
- }
+    Worker updateWorker(Long id, WorkerDTO workerDTO);
+}

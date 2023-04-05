@@ -10,7 +10,6 @@ public class WorkerDTO {
     private String name;
     private String password;
     private String cargo;
-    private Set<Role> roles;
 
     // Constructor, getters y setters
 
@@ -19,7 +18,6 @@ public class WorkerDTO {
         this.name = name;
         this.password = password;
         this.cargo = cargo;
-        this.roles = roles;
     }
 
     public Long getId() {
@@ -54,13 +52,6 @@ public class WorkerDTO {
         this.cargo = cargo;
     }
 
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
 }
 
 

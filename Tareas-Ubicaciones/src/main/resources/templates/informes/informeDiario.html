@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Informe Diario</title>
+  <link rel="stylesheet" href="/path/to/style.css"> <!-- Asegúrate de cambiar esto a la ruta correcta de tu archivo CSS -->
+</head>
+<body>
+<h1>Informe Diario</h1>
+<table>
+  <thead>
+  <tr>
+    <th>Fecha</th>
+    <th>Turno</th>
+    <th>Trabajador</th>
+    <th>Ubicación</th>
+    <th>Tarea</th>
+    <th>Cumplida</th>
+  </tr>
+  </thead>
+  <tbody>
+  <th:block th:each="informe : ${informes}">
+    <tr>
+      <td th:text="${informe.fecha}"></td>
+      <td th:text="${informe.turno}"></td>
+      <td th:text="${informe.worker.nombre}"></td>
+      <td th:text="${informe.ubicacion.nombre}"></td>
+      <td th:text="${informe.tarea.nombre}"></td>
+      <td th:text="${informe.cumplida}"></td>
+    </tr>
+  </th:block>
+  </tbody>
+</table>
+<!-- Aquí puedes agregar otros elementos que necesites -->
+</body>
+</html>

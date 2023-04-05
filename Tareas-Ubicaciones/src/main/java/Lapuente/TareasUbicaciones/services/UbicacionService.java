@@ -54,7 +54,8 @@ public class UbicacionService implements UbicacionServiceInterface {
     public void deleteById(Long id) {
         ubicacionRepository.deleteById(id);
     }
-    // Método para obtener las tareas asociadas a una ubicación
+
+    @Override
     public List<Tarea> getTareasByUbicacionId(Long id) {
         Ubicacion ubicacion = ubicacionRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NO_CONTENT, "Ubicacion not found"));
@@ -83,5 +84,13 @@ public class UbicacionService implements UbicacionServiceInterface {
         tareaRepository.saveAll(tareas);
         return ubicacionRepository.save(ubicacion);
     }
+
+    @Override
+    public Ubicacion updateUbicacion(Long id, UbicacionDTO ubicacionDTO) {
+        Ubicacion ubicacion = new Ubicacion(ubicacionDTO.getName());
+        ubicacion.setId(id);
+        return ubicacionRepository.save(ubicacion);
+    }
+
 }
 

@@ -39,9 +39,10 @@ public class TareaService implements TareaServiceInterface {
     }
 
     @Override
-    public Tarea updateTarea(TareaDTO tareaDTO) {
-        Tarea tarea = new Tarea(tareaDTO.getName(), tareaDTO.getDescripcion());
-        tarea.setId(tareaDTO.getId());
+    public Tarea updateTarea(Long id, TareaDTO tareaDTO) {
+        Tarea tarea = tareaRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NO_CONTENT, "Tarea not found"));
+        tarea.setName(tareaDTO.getName());
+        tarea.setDescripcion(tareaDTO.getDescripcion());
         return tareaRepository.save(tarea);
     }
 

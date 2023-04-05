@@ -17,5 +17,6 @@ public interface UbicacionServiceInterface {
     List<Tarea> getTareasByUbicacionId(Long id); // Nuevo método
     Ubicacion addTareaAUbicacion(Long ubicacionId, TareaDTO tareaDTO);
     Ubicacion updateTareasDeUbicacion(Long ubicacionId, Set<TareaDTO> tareasDTO);
+    Ubicacion updateUbicacion(Long id, UbicacionDTO ubicacionDTO);
 }
 

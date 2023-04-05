@@ -17,4 +17,6 @@ public interface InformeRepository extends JpaRepository<Informe, Long> {
     List<Informe> findByUbicacion(Ubicacion ubicacion);
     List<Informe> findByWorker(Worker worker);
     List<Informe> findByTurno(Turno turno);
+    List<Informe> findByFechaBetweenAndTurnoAndUbicacionId(LocalDateTime start, LocalDateTime end, Turno turno, Long ubicacionId);
+
 }

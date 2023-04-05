@@ -58,7 +58,6 @@ public class WorkerService implements WorkerServiceInterface {
         worker.setName(workerDTO.getName());
         worker.setPassword(workerDTO.getPassword());
         worker.setCargo(workerDTO.getCargo());
-        worker.setRoles(workerDTO.getRoles());
 
         return workerRepository.save(worker);
     }
@@ -121,5 +120,12 @@ public class WorkerService implements WorkerServiceInterface {
     @Override
     public List<TareaCumplida> getTareasCumplidasByWorkerAndTurno(Long workerId, Turno turno) {
         return tareaCumplidaRepository.findByWorkerIdAndTurno(workerId, turno);
+    }
+
+    @Override
+    public Worker updateWorker(Long id, WorkerDTO workerDTO) {
+        Worker worker = new Worker(workerDTO.getName(), workerDTO.getPassword(), workerDTO.getCargo());
+        worker.setId(id);
+        return workerRepository.save(worker);
     }
 }

@@ -92,4 +92,9 @@ public class InformeService implements InformeServiceInterface {
         // Guardamos el informe actualizado
         informeRepository.save(informe);
     }
+
+    @Override
+    public List<Informe> findByFechaBetweenAndTurnoAndUbicacionId(LocalDateTime start, LocalDateTime end, Turno turno, Long ubicacionId) {
+        return informeRepository.findByFechaBetweenAndTurnoAndUbicacionId(start, end, turno, ubicacionId);
+    }
 }

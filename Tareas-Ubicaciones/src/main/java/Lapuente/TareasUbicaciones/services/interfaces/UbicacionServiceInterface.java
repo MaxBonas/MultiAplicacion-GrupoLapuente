@@ -15,9 +15,7 @@ public interface UbicacionServiceInterface {
     void deleteById(Long id);
     List<Ubicacion> findByName(String name);
     List<Tarea> getTareasByUbicacionId(Long id); // Nuevo método
-
     Ubicacion addTareaAUbicacion(Long ubicacionId, TareaDTO tareaDTO);
-
     Ubicacion updateTareasDeUbicacion(Long ubicacionId, Set<TareaDTO> tareasDTO);
 }
 

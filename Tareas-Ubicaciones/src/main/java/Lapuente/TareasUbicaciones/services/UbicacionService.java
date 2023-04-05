@@ -36,7 +36,6 @@ public class UbicacionService implements UbicacionServiceInterface {
         return ubicacionRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                 "No existe la ubicacion con id: " + id + " en la base de datos"));
     }
-
     @Override
     public Ubicacion save(UbicacionDTO ubicacionDTO) {
         // Convertir el objeto UbicacionDTO a Ubicacion
@@ -47,27 +46,20 @@ public class UbicacionService implements UbicacionServiceInterface {
         // Guardar el objeto Ubicacion en el repositorio
         return ubicacionRepository.save(ubicacion);
     }
-
-
-
     @Override
     public List<Ubicacion> findByName(String name) {
         return ubicacionRepository.findByName(name);
     }
-
     @Override
     public void deleteById(Long id) {
         ubicacionRepository.deleteById(id);
     }
-
     // Método para obtener las tareas asociadas a una ubicación
     public List<Tarea> getTareasByUbicacionId(Long id) {
         Ubicacion ubicacion = ubicacionRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NO_CONTENT, "Ubicacion not found"));
         return tareaRepository.findByUbicaciones(ubicacion);
     }
-
-
     @Override
     public Ubicacion addTareaAUbicacion(Long ubicacionId, TareaDTO tareaDTO) {
         Ubicacion ubicacion = findById(ubicacionId);
@@ -77,7 +69,6 @@ public class UbicacionService implements UbicacionServiceInterface {
         tarea.getUbicaciones().add(ubicacion); // Agregar la ubicación a la tarea
         return ubicacionRepository.save(ubicacion);
     }
-
     @Override
     public Ubicacion updateTareasDeUbicacion(Long ubicacionId, Set<TareaDTO> tareasDTO) {
         Ubicacion ubicacion = findById(ubicacionId);
@@ -92,6 +83,5 @@ public class UbicacionService implements UbicacionServiceInterface {
         tareaRepository.saveAll(tareas);
         return ubicacionRepository.save(ubicacion);
     }
-
 }
 

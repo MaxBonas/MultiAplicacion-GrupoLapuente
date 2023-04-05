@@ -10,7 +10,5 @@ import java.util.List;
 
 @Repository
 public interface WorkerRepository extends JpaRepository<Worker, Long> {
-
     Worker findByName(String name);
-
 }

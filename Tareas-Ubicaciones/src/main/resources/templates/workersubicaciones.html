@@ -23,11 +23,11 @@
         <!-- Itera sobre la lista de ubicaciones y muestra los datos -->
         <tr th:each="ubicacion : ${ubicaciones}">
             <td th:text="${ubicacion.name}"></td>
-            <td><a th:href="@{/worker/ubicaciones/{id}/tareas(id=${ubicacion.id})}">Ver Tareas</a></td>
+            <td><a th:href="@{/worker/ubicaciones/{id}/tareas(id=${ubicacion.id})}">Informar Tareas</a></td>
         </tr>
         </tbody>
     </table>
-    <a href="/worker" class="button">Volver al Menú de Trabajadores</a>
+    <a href="/worker/workersmenu" class="button">Volver al Menú de Trabajadores</a>
 </main>
 </body>
 </html>

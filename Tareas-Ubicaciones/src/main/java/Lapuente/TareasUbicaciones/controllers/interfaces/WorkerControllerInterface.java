@@ -15,14 +15,9 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface WorkerControllerInterface {
-
     String getAllUbicaciones(Model model);
-
     String getTareasByUbicacion(Long ubicacionId, Model model);
-
     String informarTareasCumplidas(Long ubicacionId, List<Long> tareasCumplidasIds, Turno turno, UserDetails userDetails, String comentario, RedirectAttributes redirectAttributes);
-
     void cambiarPassword(Long workerId, String oldPassword, String newPassword);
-
 }
 

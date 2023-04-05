@@ -16,23 +16,13 @@ import java.util.List;
 import java.util.Set;
 
 public interface AdminControllerInterface {
-
     Worker addWorker(WorkerDTO workerDTO);
-
     List<Worker> getAllWorkers();
-
     List<Tarea> getAllTareas();
-
     Tarea addTarea(TareaDTO tareaDTO);
-
     List<Ubicacion> getAllUbicaciones();
-
     Ubicacion addUbicacion(UbicacionDTO ubicacionDTO);
-
     TareaCumplida updateTareaCumplida(Long tareaCumplidaId, TareaCumplidaDTO tareaCumplidaDTO);
-
     List<TareaCumplida> getTareasCumplidasByUbicacionYPeriodo(Long ubicacionId, LocalDateTime fechaInicio, LocalDateTime fechaFin);
-
     Ubicacion updateTareasDeUbicacion(Long ubicacionId, Set<TareaDTO> tareasDTO);
-
 }

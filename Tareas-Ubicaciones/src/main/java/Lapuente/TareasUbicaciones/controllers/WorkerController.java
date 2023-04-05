@@ -4,15 +4,21 @@ import Lapuente.TareasUbicaciones.ENUMs.Turno;
 import Lapuente.TareasUbicaciones.controllers.interfaces.WorkerControllerInterface;
 import Lapuente.TareasUbicaciones.entities.Tarea;
 import Lapuente.TareasUbicaciones.entities.Ubicacion;
+import Lapuente.TareasUbicaciones.entities.Worker;
+import Lapuente.TareasUbicaciones.repositories.TareaCumplidaRepository;
+import Lapuente.TareasUbicaciones.repositories.UbicacionRepository;
+import Lapuente.TareasUbicaciones.repositories.WorkerRepository;
 import Lapuente.TareasUbicaciones.services.interfaces.TareaServiceInterface;
 import Lapuente.TareasUbicaciones.services.interfaces.UbicacionServiceInterface;
 import Lapuente.TareasUbicaciones.services.interfaces.WorkerServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
@@ -27,6 +33,15 @@ public class WorkerController implements WorkerControllerInterface {
 
     @Autowired
     private UbicacionServiceInterface ubicacionService;
+
+    @Autowired
+    private WorkerRepository workerRepository;
+
+    @Autowired
+    private UbicacionRepository ubicacionRepository;
+
+    @Autowired
+    private TareaCumplidaRepository tareaCumplidaRepository;
 
     @GetMapping("/ubicaciones")
     public String getAllUbicaciones(Model model) {
@@ -57,8 +72,6 @@ public class WorkerController implements WorkerControllerInterface {
             return "redirect:/worker/ubicaciones/" + ubicacionId + "/tareas";
         }
     }
-
-
 
     @Override
     @PostMapping("/password")

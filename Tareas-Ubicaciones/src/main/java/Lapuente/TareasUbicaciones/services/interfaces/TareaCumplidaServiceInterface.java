@@ -9,18 +9,13 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TareaCumplidaServiceInterface {
-
     List<TareaCumplida> getAllTareasCumplidas();
-
     TareaCumplida getTareaCumplidaById(Long id);
-
     void deleteTareaCumplida(Long id);
-
     List<TareaCumplida> getTareaCumplidaByWorker(Worker worker);
-
     List<TareaCumplida> getTareaCumplidaByUbicacion(Ubicacion ubicacion);
-
     TareaCumplida updateTareaCumplida(Long tareaCumplidaId, TareaCumplidaDTO tareaCumplidaDTO);
     void saveOrUpdateTareaCumplida(TareaCumplida tareaCumplida);
+    TareaCumplida save(TareaCumplidaDTO tareaCumplidaDTO, Long informeId);
 }
 

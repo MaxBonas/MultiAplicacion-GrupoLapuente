@@ -1,5 +1,8 @@
 package Lapuente.TareasUbicaciones.services;
 
+import Lapuente.TareasUbicaciones.DTOs.InformeDTO;
+import Lapuente.TareasUbicaciones.DTOs.TareaCumplidaDTO;
+import Lapuente.TareasUbicaciones.DTOs.UbicacionDTO;
 import Lapuente.TareasUbicaciones.DTOs.WorkerDTO;
 import Lapuente.TareasUbicaciones.ENUMs.Turno;
 import Lapuente.TareasUbicaciones.entities.*;
@@ -13,7 +16,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class WorkerService implements WorkerServiceInterface {
@@ -32,6 +37,9 @@ public class WorkerService implements WorkerServiceInterface {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private InformeRepository informeRepository;
 
     @Override
     public List<Worker> getAllWorkers() {
@@ -74,21 +82,29 @@ public class WorkerService implements WorkerServiceInterface {
 
         LocalDateTime fechaCumplimiento = LocalDateTime.now();
 
+        // Crea un nuevo InformeDTO y guárdalo en la base de datos
+        List<TareaCumplidaDTO> tareasCumplidasDTO = new ArrayList<>();
         for (Tarea tarea : tareas) {
             boolean cumplida = tareasCumplidasIds.contains(tarea.getId());
-            TareaCumplida tareaCumplida = new TareaCumplida(tarea, worker, cumplida, fechaCumplimiento, turno, comentario);
+            TareaCumplidaDTO tareaCumplidaDTO = new TareaCumplidaDTO(tarea.getId(), tarea.getName(), worker.getId(), ubicacion.getId(), cumplida, worker.getName(), fechaCumplimiento, turno);
+            tareasCumplidasDTO.add(tareaCumplidaDTO);
+        }
+        InformeDTO informeDTO = new InformeDTO(fechaCumplimiento, ubicacion.getId(), turno, worker.getId(), comentario, tareasCumplidasDTO);
+        Informe informe = new Informe(informeDTO, worker, ubicacion);
+        informe = informeRepository.save(informe);
+
+        for (Tarea tarea : tareas) {
+            boolean cumplida = tareasCumplidasIds.contains(tarea.getId());
+            TareaCumplida tareaCumplida = new TareaCumplida(tarea, worker, ubicacion, cumplida, fechaCumplimiento, turno, informe);
             tareaCumplidaRepository.save(tareaCumplida);
         }
     }
-
 
 
     @Override
     public List<TareaCumplida> getTareasCumplidasByUbicacionYPeriodo(Long ubicacionId, LocalDateTime fechaInicio, LocalDateTime fechaFin) {
         return tareaCumplidaRepository.findByTareaUbicacionesIdAndFechaCumplimientoBetween(ubicacionId, fechaInicio, fechaFin);
     }
-
-
     @Override
     public void cambiarPassword(Long workerId, String oldPassword, String newPassword) {
         Worker worker = workerRepository.findById(workerId).orElseThrow(() ->
@@ -102,10 +118,8 @@ public class WorkerService implements WorkerServiceInterface {
                     "La contraseña actual proporcionada es incorrecta.");
         }
     }
-
     @Override
     public List<TareaCumplida> getTareasCumplidasByWorkerAndTurno(Long workerId, Turno turno) {
         return tareaCumplidaRepository.findByWorkerIdAndTurno(workerId, turno);
     }
-
 }

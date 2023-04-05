@@ -16,14 +16,12 @@ public abstract class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     @NotBlank(message = "This field can't be blank")
-    @NotNull(message = "This field can't be null")
     private String name;
 
-
+    @Column(nullable = false)
     @NotBlank(message = "This field can't be blank")
-    @NotNull(message = "This field can't be null")
     private String password;
 
 
@@ -32,6 +30,12 @@ public abstract class User {
     private Set<Role> roles = new HashSet<>(); // A Set is a List without duplicates
 
     public User(String name, String password) {
+        this.name = name;
+        this.password = password;
+    }
+
+    public User(Long id, String name, String password) {
+        this.id = id;
         this.name = name;
         this.password = password;
     }

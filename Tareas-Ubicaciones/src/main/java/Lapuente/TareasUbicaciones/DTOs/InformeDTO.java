@@ -8,23 +8,23 @@ import java.util.List;
 public class InformeDTO {
     private Long id;
     private LocalDateTime fecha;
-    private UbicacionDTO ubicacion;
+    private Long ubicacionId;
     private Turno turno;
     private List<TareaCumplidaDTO> tareasCumplidas;
-    private Long workerId; // Añadido
-    private Long parejaId; // Añadido
+    private Long workerId;
+    private String comentario;
 
     // Constructor, getters y setters
 
-
-    public InformeDTO(LocalDateTime fecha, UbicacionDTO ubicacion, Turno turno, List<TareaCumplidaDTO> tareasCumplidas, Long workerId, Long parejaId) {
+    public InformeDTO(LocalDateTime fecha, Long ubicacionId, Turno turno, Long workerId, String comentario, List<TareaCumplidaDTO> tareasCumplidas) {
         this.fecha = fecha;
-        this.ubicacion = ubicacion;
+        this.ubicacionId = ubicacionId;
         this.turno = turno;
-        this.tareasCumplidas = tareasCumplidas;
         this.workerId = workerId;
-        this.parejaId = parejaId;
+        this.comentario = comentario;
+        this.tareasCumplidas = tareasCumplidas;
     }
+
 
     public Long getWorkerId() {
         return workerId;
@@ -32,14 +32,6 @@ public class InformeDTO {
 
     public void setWorkerId(Long workerId) {
         this.workerId = workerId;
-    }
-
-    public Long getParejaId() {
-        return parejaId;
-    }
-
-    public void setParejaId(Long parejaId) {
-        this.parejaId = parejaId;
     }
 
     public Long getId() {
@@ -58,12 +50,12 @@ public class InformeDTO {
         this.fecha = fecha;
     }
 
-    public UbicacionDTO getUbicacion() {
-        return ubicacion;
+    public Long getUbicacionId() {
+        return ubicacionId;
     }
 
-    public void setUbicacion(UbicacionDTO ubicacion) {
-        this.ubicacion = ubicacion;
+    public void setUbicacionId(Long ubicacionId) {
+        this.ubicacionId = ubicacionId;
     }
 
     public Turno getTurno() {
@@ -80,5 +72,13 @@ public class InformeDTO {
 
     public void setTareasCumplidas(List<TareaCumplidaDTO> tareasCumplidas) {
         this.tareasCumplidas = tareasCumplidas;
+    }
+
+    public String getComentario() {
+        return comentario;
+    }
+
+    public void setComentario(String comentario) {
+        this.comentario = comentario;
     }
 }

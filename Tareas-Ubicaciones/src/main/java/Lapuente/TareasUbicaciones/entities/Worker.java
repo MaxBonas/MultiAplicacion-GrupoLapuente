@@ -23,6 +23,16 @@ public class Worker extends User {
         this.cargo = cargo;
     }
 
+    public Worker(Long id, String name, String password, String cargo, Set<TareaCumplida> tareasCumplidas) {
+        super(id, name, password);
+        this.cargo = cargo;
+        this.tareasCumplidas = tareasCumplidas;
+    }
+
+    public Worker(String cargo, Set<TareaCumplida> tareasCumplidas) {
+        this.cargo = cargo;
+        this.tareasCumplidas = tareasCumplidas;
+    }
     // Getters and setters
 
     public String getCargo() {

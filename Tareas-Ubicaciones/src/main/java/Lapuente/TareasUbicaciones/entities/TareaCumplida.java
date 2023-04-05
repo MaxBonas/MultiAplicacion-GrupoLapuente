@@ -24,28 +24,40 @@ public class TareaCumplida {
     @JoinColumn(name = "ubicacion_id")
     private Ubicacion ubicacion;
 
-    @Column(nullable = true, columnDefinition = "TINYINT(1) DEFAULT NULL")
-    private Boolean cumplida;
+    @Column(nullable = true)
+    private boolean cumplida;
 
 
     private LocalDateTime fechaCumplimiento;
 
     private Turno turno;
 
-    @Column(length = 2000) // Limitar el tamaño del comentario a 2000 caracteres, ajusta según tus necesidades
-    private String comentario; // Añadir el atributo comentario
-
-    public TareaCumplida(Tarea tarea, Worker worker, boolean cumplida, LocalDateTime fechaCumplimiento, Turno turno, String comentario) {
-        this.tarea = tarea;
-        this.worker = worker;
-        this.cumplida = cumplida;
-        this.fechaCumplimiento = fechaCumplimiento;
-        this.turno = turno;
-        this.comentario = comentario; // Incluir el comentario en el constructor
-    }
+    @ManyToOne
+    @JoinColumn(name = "informe_id", nullable = false)
+    private Informe informe;
 
     public TareaCumplida() {}
 
+    public TareaCumplida(Tarea tarea, Worker worker, Ubicacion ubicacion, Boolean cumplida, LocalDateTime fechaCumplimiento, Turno turno, Informe informe) {
+        this.tarea = tarea;
+        this.worker = worker;
+        this.ubicacion = ubicacion;
+        this.cumplida = cumplida;
+        this.fechaCumplimiento = fechaCumplimiento;
+        this.turno = turno;
+        this.informe = informe;
+    }
+
+    public TareaCumplida(Long id, Tarea tarea, Worker worker, Ubicacion ubicacion, Boolean cumplida, LocalDateTime fechaCumplimiento, Turno turno, Informe informe) {
+        this.id = id;
+        this.tarea = tarea;
+        this.worker = worker;
+        this.ubicacion = ubicacion;
+        this.cumplida = cumplida;
+        this.fechaCumplimiento = fechaCumplimiento;
+        this.turno = turno;
+        this.informe = informe;
+    }
 
     // SETTERS Y GETTERS
 
@@ -105,11 +117,19 @@ public class TareaCumplida {
         this.ubicacion = ubicacion;
     }
 
-    public String getComentario() {
-        return comentario;
+    public void setCumplida(Boolean cumplida) {
+        this.cumplida = cumplida;
     }
 
-    public void setComentario(String comentario) {
-        this.comentario = comentario;
+    public Informe getInforme() {
+        return informe;
+    }
+
+    public void setInforme(Informe informe) {
+        this.informe = informe;
+    }
+
+    public boolean isCumplida() {
+        return cumplida;
     }
 }

@@ -44,6 +44,13 @@ public class Ubicacion {
         this.tareasCumplidas = tareasCumplidas;
     }
 
+    public Ubicacion(Long id, String name, Set<Tarea> tareas, Set<TareaCumplida> tareasCumplidas) {
+        this.id = id;
+        this.name = name;
+        this.tareas = tareas;
+        this.tareasCumplidas = tareasCumplidas;
+    }
+
     // Getters and setters
 
     public Long getId() {

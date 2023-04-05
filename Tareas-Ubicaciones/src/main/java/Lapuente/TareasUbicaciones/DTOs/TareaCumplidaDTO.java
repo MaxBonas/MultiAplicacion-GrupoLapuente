@@ -16,14 +16,11 @@ public class TareaCumplidaDTO {
     private String workerName;
     private LocalDateTime fechaCumplimiento;
     private Turno turno;
-    @Column(length = 2000)
-    private String comentario;
-
 
     public TareaCumplidaDTO() {
     }
 
-    public TareaCumplidaDTO(Long tareaId, String tareaName, Long workerId, Long ubicacionId, Boolean cumplida, String workerName, LocalDateTime fechaCumplimiento, Turno turno, String comentario) {
+    public TareaCumplidaDTO(Long tareaId, String tareaName, Long workerId, Long ubicacionId, Boolean cumplida, String workerName, LocalDateTime fechaCumplimiento, Turno turno) {
         this.tareaId = tareaId;
         this.tareaName = tareaName;
         this.workerId = workerId;
@@ -32,7 +29,6 @@ public class TareaCumplidaDTO {
         this.workerName = workerName;
         this.fechaCumplimiento = fechaCumplimiento;
         this.turno = turno;
-        this.comentario = comentario;
     }
 
 // Getters and setters
@@ -98,14 +94,6 @@ public class TareaCumplidaDTO {
 
     public void setTurno(Turno turno) {
         this.turno = turno;
-    }
-
-    public String getComentario() {
-        return comentario;
-    }
-
-    public void setComentario(String comentario) {
-        this.comentario = comentario;
     }
 
     public Long getUbicacionId() {

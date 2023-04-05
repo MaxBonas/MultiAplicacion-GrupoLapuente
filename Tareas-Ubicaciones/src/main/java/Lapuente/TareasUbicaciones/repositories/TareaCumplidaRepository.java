@@ -16,6 +16,7 @@ public interface TareaCumplidaRepository extends JpaRepository<TareaCumplida, Lo
     List<TareaCumplida> findByTarea_Ubicaciones(Ubicacion ubicacion);
     List<TareaCumplida> findByWorkerIdAndTurno(Long workerId, Turno turno);
     List<TareaCumplida> findByTareaUbicacionesIdAndFechaCumplimientoBetween(Long ubicacionId, LocalDateTime fechaInicio, LocalDateTime fechaFin);
-    @Query("SELECT new Lapuente.TareasUbicaciones.DTOs.TareaCumplidaDTO(tc.tarea.id, tc.tarea.name, tc.worker.id, tc.ubicacion.id, tc.cumplida, tc.worker.name, tc.fechaCumplimiento, tc.turno, tc.comentario) FROM TareaCumplida tc")
+    @Query("SELECT new Lapuente.TareasUbicaciones.DTOs.TareaCumplidaDTO(tc.tarea.id, tc.tarea.name, tc.worker.id, tc.ubicacion.id, tc.cumplida, tc.worker.name, tc.fechaCumplimiento, tc.turno) FROM TareaCumplida tc")
     List<TareaCumplidaDTO> findAllTareaCumplida();
+    Turno findTurnoByWorkerAndUbicacion(Worker worker, Ubicacion ubicacion);
 }

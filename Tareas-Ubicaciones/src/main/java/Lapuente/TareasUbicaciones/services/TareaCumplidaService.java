@@ -1,14 +1,8 @@
 package Lapuente.TareasUbicaciones.services;
 
 import Lapuente.TareasUbicaciones.DTOs.TareaCumplidaDTO;
-import Lapuente.TareasUbicaciones.entities.Tarea;
-import Lapuente.TareasUbicaciones.entities.TareaCumplida;
-import Lapuente.TareasUbicaciones.entities.Ubicacion;
-import Lapuente.TareasUbicaciones.entities.Worker;
-import Lapuente.TareasUbicaciones.repositories.TareaCumplidaRepository;
-import Lapuente.TareasUbicaciones.repositories.TareaRepository;
-import Lapuente.TareasUbicaciones.repositories.UbicacionRepository;
-import Lapuente.TareasUbicaciones.repositories.WorkerRepository;
+import Lapuente.TareasUbicaciones.entities.*;
+import Lapuente.TareasUbicaciones.repositories.*;
 import Lapuente.TareasUbicaciones.services.interfaces.TareaCumplidaServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,7 +26,8 @@ public class TareaCumplidaService implements TareaCumplidaServiceInterface {
 
     @Autowired
     private UbicacionRepository ubicacionRepository;
-
+    @Autowired
+    private InformeRepository informeRepository;
 
     @Override
     public List<TareaCumplida> getAllTareasCumplidas() {
@@ -75,14 +70,14 @@ public class TareaCumplidaService implements TareaCumplidaServiceInterface {
         return tareaCumplidaRepository.save(tareaCumplida);
     }
 
-    public TareaCumplida save(TareaCumplidaDTO tareaCumplidaDTO) {
+    @Override
+    public TareaCumplida save(TareaCumplidaDTO tareaCumplidaDTO, Long informeId) {
         Tarea tarea = tareaRepository.findById(tareaCumplidaDTO.getTareaId()).orElseThrow(() -> new NoSuchElementException("Tarea no encontrada"));
         Worker worker = workerRepository.findById(tareaCumplidaDTO.getWorkerId()).orElseThrow(() -> new NoSuchElementException("Trabajador no encontrado"));
         Ubicacion ubicacion = ubicacionRepository.findById(tareaCumplidaDTO.getUbicacionId()).orElseThrow(() -> new NoSuchElementException("Ubicación no encontrada")); // Obtener la ubicación
-
-        TareaCumplida tareaCumplida = new TareaCumplida(tarea, worker, tareaCumplidaDTO.getCumplida(), tareaCumplidaDTO.getFechaCumplimiento(), tareaCumplidaDTO.getTurno(), tareaCumplidaDTO.getComentario());
+        Informe informe = informeRepository.findById(informeId).orElseThrow(() -> new NoSuchElementException("Informe no encontrado"));
+        TareaCumplida tareaCumplida = new TareaCumplida(tarea, worker, ubicacion, tareaCumplidaDTO.getCumplida(), tareaCumplidaDTO.getFechaCumplimiento(), tareaCumplidaDTO.getTurno(), informe);
         tareaCumplida.setUbicacion(ubicacion); // Establecer la ubicación en la tarea cumplida
         return tareaCumplidaRepository.save(tareaCumplida);
     }
-
 }

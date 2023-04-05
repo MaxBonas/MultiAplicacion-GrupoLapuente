@@ -38,6 +38,13 @@ public class Tarea {
         this.descripcion = descripcion;
     }
 
+    public Tarea(Long id, String name, Set<Ubicacion> ubicaciones, String descripcion) {
+        this.id = id;
+        this.name = name;
+        this.ubicaciones = ubicaciones;
+        this.descripcion = descripcion;
+    }
+
     public Long getId() {
         return id;
     }

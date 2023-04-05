@@ -1,11 +1,13 @@
 package Lapuente.TareasUbicaciones;
 
+import Lapuente.TareasUbicaciones.DTOs.InformeDTO;
 import Lapuente.TareasUbicaciones.DTOs.TareaCumplidaDTO;
 import Lapuente.TareasUbicaciones.DTOs.TareaDTO;
 import Lapuente.TareasUbicaciones.DTOs.UbicacionDTO;
 import Lapuente.TareasUbicaciones.ENUMs.Turno;
 import Lapuente.TareasUbicaciones.entities.*;
 import Lapuente.TareasUbicaciones.repositories.*;
+import Lapuente.TareasUbicaciones.services.InformeService;
 import Lapuente.TareasUbicaciones.services.TareaCumplidaService;
 import Lapuente.TareasUbicaciones.services.TareaService;
 import Lapuente.TareasUbicaciones.services.UbicacionService;
@@ -19,9 +21,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @SpringBootApplication
 @EntityScan(basePackages = "Lapuente.TareasUbicaciones.entities")
@@ -48,6 +48,10 @@ public class TareasUbicacionesApplication implements CommandLineRunner {
 
 	@Autowired
 	TareaCumplidaService tareaCumplidaService;
+	@Autowired
+	InformeRepository informeRepository;
+	@Autowired
+	InformeService informeService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(TareasUbicacionesApplication.class, args);
@@ -114,12 +118,12 @@ public class TareasUbicacionesApplication implements CommandLineRunner {
 		Tarea tareaSaved9 = tareaService.saveTarea(tarea9);
 
 // Crear ubicaciones
-		UbicacionDTO ubicacion1 = new UbicacionDTO( "APLANADORA 1000");
-		UbicacionDTO ubicacion2 = new UbicacionDTO( "PASILLO 15A");
-		UbicacionDTO ubicacion3 = new UbicacionDTO( "FLEJELADORA 320");
-		UbicacionDTO ubicacion4 = new UbicacionDTO( "PERFILADORA 250");
-		UbicacionDTO ubicacion5 = new UbicacionDTO( "ALMACÉN ENTRADA");
-		UbicacionDTO ubicacion6 = new UbicacionDTO( "METRALLA 123");
+		UbicacionDTO ubicacion1 = new UbicacionDTO("APLANADORA 1000");
+		UbicacionDTO ubicacion2 = new UbicacionDTO("PASILLO 15A");
+		UbicacionDTO ubicacion3 = new UbicacionDTO("FLEJELADORA 320");
+		UbicacionDTO ubicacion4 = new UbicacionDTO("PERFILADORA 250");
+		UbicacionDTO ubicacion5 = new UbicacionDTO("ALMACÉN ENTRADA");
+		UbicacionDTO ubicacion6 = new UbicacionDTO("METRALLA 123");
 
 		Ubicacion ubicacionSaved1 = ubicacionService.save(ubicacion1);
 		Ubicacion ubicacionSaved2 = ubicacionService.save(ubicacion2);
@@ -179,17 +183,38 @@ public class TareasUbicacionesApplication implements CommandLineRunner {
 		ubicacionService.updateTareasDeUbicacion(ubicacionSaved5.getId(), tareasUbicacion5);
 		ubicacionService.updateTareasDeUbicacion(ubicacionSaved6.getId(), tareasUbicacion6);
 
-		// Crear TareaCumplida de ejemplo
+// Crear TareaCumplida de ejemplo e informes de ejemplo:
 		Worker workerCristian = workerRepository.findByName("Cristian Cristiano");
 		Worker workerJeff = workerRepository.findByName("Jeff Jefferson");
 		Worker workerJordi = workerRepository.findByName("Jordi Jardi");
 
-		TareaCumplidaDTO tareaCumplida1 = new TareaCumplidaDTO(tareaSaved1.getId(), tareaSaved1.getName(), workerCristian.getId(), ubicacionSaved1.getId(),true, workerCristian.getName(), LocalDateTime.now().minusDays(1), Turno.MAÑANA, "Tarea realizada sin problemas.");
-		TareaCumplidaDTO tareaCumplida2 = new TareaCumplidaDTO(tareaSaved2.getId(), tareaSaved2.getName(), workerJeff.getId(), ubicacionSaved2.getId(), false, workerJeff.getName(), LocalDateTime.now().minusDays(1), Turno.TARDE, "No fue posible completar la tarea.");
-		TareaCumplidaDTO tareaCumplida3 = new TareaCumplidaDTO(tareaSaved3.getId(), tareaSaved3.getName(), workerJordi.getId(), ubicacionSaved3.getId(), true, workerJordi.getName(), LocalDateTime.now().minusDays(2), Turno.MAÑANA, "Tarea finalizada con éxito.");
+		TareaCumplidaDTO tareaCumplida1 = new TareaCumplidaDTO(tareaSaved1.getId(), tareaSaved1.getName(), workerCristian.getId(), ubicacionSaved1.getId(), true, workerCristian.getName(), LocalDateTime.now().minusDays(1), Turno.MANANA);
+		TareaCumplidaDTO tareaCumplida2 = new TareaCumplidaDTO(tareaSaved2.getId(), tareaSaved2.getName(), workerJeff.getId(), ubicacionSaved2.getId(), false, workerJeff.getName(), LocalDateTime.now().minusDays(1), Turno.TARDE);
+		TareaCumplidaDTO tareaCumplida3 = new TareaCumplidaDTO(tareaSaved3.getId(), tareaSaved3.getName(), workerJordi.getId(), ubicacionSaved3.getId(), true, workerJordi.getName(), LocalDateTime.now().minusDays(2), Turno.MANANA);
 
-		TareaCumplida tareaCumplidaSaved1 = tareaCumplidaService.save(tareaCumplida1);
-		TareaCumplida tareaCumplidaSaved2 = tareaCumplidaService.save(tareaCumplida2);
-		TareaCumplida tareaCumplidaSaved3 = tareaCumplidaService.save(tareaCumplida3);
+		List<TareaCumplidaDTO> tareasCumplidas1 = new ArrayList<>();
+		tareasCumplidas1.add(tareaCumplida1);
+		tareasCumplidas1.add(tareaCumplida2);
+
+		List<TareaCumplidaDTO> tareasCumplidas2 = new ArrayList<>();
+		tareasCumplidas2.add(tareaCumplida3);
+
+		InformeDTO informe1 = new InformeDTO(LocalDateTime.now().minusDays(1), ubicacionSaved1.getId(), Turno.MANANA, workerCristian.getId(), "Informe de prueba1", tareasCumplidas1);
+		InformeDTO informe2 = new InformeDTO(LocalDateTime.now().minusDays(2), ubicacionSaved2.getId(), Turno.MANANA, workerJordi.getId(), "Informe de prueba2", tareasCumplidas2);
+
+		Informe informeSaved1 = informeService.save(new Informe(informe1, workerCristian, ubicacionSaved1));
+		Informe informeSaved2 = informeService.save(new Informe(informe2, workerJordi, ubicacionSaved2));
+
+// Actualizar las tareas cumplidas del informe 1
+		TareaCumplidaDTO tareaCumplida4 = new TareaCumplidaDTO(tareaSaved4.getId(), tareaSaved4.getName(), workerCristian.getId(), ubicacionSaved1.getId(), true, workerCristian.getName(), LocalDateTime.now().minusDays(1), Turno.MANANA);
+		List<TareaCumplidaDTO> tareasCumplidasActualizadas = new ArrayList<>(tareasCumplidas1);
+		tareasCumplidasActualizadas.add(tareaCumplida4);
+		informeService.updateTareasCumplidasDeInforme(informeSaved1.getId(), tareasCumplidasActualizadas);
+
+		// Agregar una tarea cumplida al informe 2
+		TareaCumplidaDTO tareaCumplida5 = new TareaCumplidaDTO(tareaSaved5.getId(), tareaSaved5.getName(), workerJordi.getId(), ubicacionSaved2.getId(), true, workerJordi.getName(), LocalDateTime.now().minusDays(2), Turno.MANANA);
+		tareasCumplidas2.add(tareaCumplida5);
+		informeService.updateTareasCumplidasDeInforme(informeSaved2.getId(), tareasCumplidas2);
+
 	}
 }

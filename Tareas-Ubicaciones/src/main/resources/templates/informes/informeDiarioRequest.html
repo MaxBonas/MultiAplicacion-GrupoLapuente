@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Informe Diario</title>
+  <link rel="stylesheet" href="../../static/css/styles.css" th:href="@{/css/styles.css}">
+</head>
+<body>
+<h1>Informe Diario</h1>
+<form method="get" th:action="@{/admin/informes/diario}">
+  <label for="fecha">Fecha:</label>
+  <input type="date" id="fecha" name="fecha" required>
+  <button type="submit">Buscar</button>
+</form>
+</body>
+</html>

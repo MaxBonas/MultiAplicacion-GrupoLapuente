@@ -1,6 +1,7 @@
 package Lapuente.TareasUbicaciones.DTOs;
 
 import Lapuente.TareasUbicaciones.ENUMs.Turno;
+import Lapuente.TareasUbicaciones.entities.TareaCumplida;
 
 import javax.persistence.Column;
 import java.time.LocalDateTime;

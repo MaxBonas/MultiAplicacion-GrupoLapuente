@@ -33,10 +33,6 @@ public class Informe {
     @Enumerated(EnumType.STRING)
     private Turno turno;
 
-    @ManyToOne
-    @JoinColumn(name = "worker_id", nullable = false)
-    private Worker worker;
-
     @OneToMany(mappedBy = "informe", cascade = CascadeType.ALL)
     private List<TareaCumplida> tareasCumplidas;
 
@@ -48,28 +44,25 @@ public class Informe {
     }
 
     // Constructor con parámetros
-    public Informe(LocalDateTime fecha, Ubicacion ubicacion, Turno turno, Worker worker, String comentario) {
+    public Informe(LocalDateTime fecha, Ubicacion ubicacion, Turno turno, String comentario) {
         this.fecha = fecha;
         this.ubicacion = ubicacion;
         this.turno = turno;
-        this.worker = worker;
         this.comentario = comentario;
     }
 
-    public Informe(Long id, LocalDateTime fecha, Ubicacion ubicacion, Turno turno, Worker worker, String comentario) {
+    public Informe(Long id, LocalDateTime fecha, Ubicacion ubicacion, Turno turno, String comentario) {
         this.id = id;
         this.fecha = fecha;
         this.ubicacion = ubicacion;
         this.turno = turno;
-        this.worker = worker;
         this.comentario = comentario;
     }
 
-    public Informe(InformeDTO informeDTO, Worker worker, Ubicacion ubicacion) {
+    public Informe(InformeDTO informeDTO, Ubicacion ubicacion) {
         this.fecha = informeDTO.getFecha();
         this.ubicacion = ubicacion;
         this.turno = informeDTO.getTurno();
-        this.worker = worker;
         this.comentario = informeDTO.getComentario();
         this.tareasCumplidas = new ArrayList<>();
     }
@@ -105,14 +98,6 @@ public class Informe {
 
     public void setTurno(Turno turno) {
         this.turno = turno;
-    }
-
-    public Worker getWorker() {
-        return worker;
-    }
-
-    public void setWorker(Worker worker) {
-        this.worker = worker;
     }
 
     public List<TareaCumplida> getTareasCumplidas() {

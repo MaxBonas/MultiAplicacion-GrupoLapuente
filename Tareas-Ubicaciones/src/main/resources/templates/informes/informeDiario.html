@@ -1,36 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <title>Informe Diario</title>
-  <link rel="stylesheet" href="/path/to/style.css"> <!-- Asegúrate de cambiar esto a la ruta correcta de tu archivo CSS -->
+  <link rel="stylesheet" href="../../static/css/styles.css" th:href="@{/css/styles.css}">
 </head>
 <body>
 <h1>Informe Diario</h1>
 <table>
   <thead>
   <tr>
-    <th>Fecha</th>
+    <th>Ubicación</th>
+    <th>Hora</th>
     <th>Turno</th>
     <th>Trabajador</th>
-    <th>Ubicación</th>
     <th>Tarea</th>
     <th>Cumplida</th>
   </tr>
   </thead>
   <tbody>
-  <th:block th:each="informe : ${informes}">
-    <tr>
-      <td th:text="${informe.fecha}"></td>
-      <td th:text="${informe.turno}"></td>
-      <td th:text="${informe.worker.nombre}"></td>
-      <td th:text="${informe.ubicacion.nombre}"></td>
-      <td th:text="${informe.tarea.nombre}"></td>
-      <td th:text="${informe.cumplida}"></td>
-    </tr>
-  </th:block>
+  <tr th:each="ubicacion, mapEntry : ${reporteAgrupado}">
+    <td th:text="${ubicacion.name}" rowspan="${mapEntry.value.values().stream().mapToInt(List::size).sum()}"></td>
+    <td th:each="turno, turnoEntry : ${mapEntry.value}">
+    <td th:text="${turno}" rowspan="${turnoEntry.value.size()}"></td>
+  <tr th:each="reporte : ${turnoEntry.value}">
+    <td th:text="${reporte.fecha != null ? #dates.format(#conversions.convert(reporte.fecha, java.util.Date), 'HH:mm') : ''}"></td>
+    <td th:text="${reporte.trabajador != null ? reporte.trabajador.name : ''}"></td>
+    <td th:text="${reporte.tarea.name}"></td>
+    <td th:text="${reporte.cumplida != null ? (reporte.cumplida ? 'Sí' : 'No') : 'No'}"></td>
+  </tr>
+  </td>
+  </tr>
   </tbody>
 </table>
-<!-- Aquí puedes agregar otros elementos que necesites -->
+
 </body>
 </html>

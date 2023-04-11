@@ -1,12 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Informe Turno y Ubicación</title>
-  <!-- Aquí puedes agregar tus hojas de estilo y scripts -->
+  <title>Informe Mensual</title>
+  <link rel="stylesheet" href="../../static/css/styles.css" th:href="@{/css/styles.css}">
 </head>
 <body>
-<h1>Informe Turno y Ubicación</h1>
-<!-- Aquí puedes agregar el contenido de la tabla de informes por turno y ubicación y otros elementos que necesites -->
+<h1>Informe Mensual</h1>
+<table>
+  <thead>
+  <tr>
+    <th>Mes</th>
+    <th>Total de Turnos</th>
+    <th>Total de Trabajadores</th>
+    <th>Total de Ubicaciones</th>
+    <th>Total de Tareas</th>
+    <th>Tareas Cumplidas</th>
+    <th>Porcentaje de Cumplimiento</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="informeMensual : ${informesMensuales}">
+    <td th:text="${informeMensual.mes}"></td>
+    <td th:text="${informeMensual.totalTurnos}"></td>
+    <td th:text="${informeMensual.totalTrabajadores}"></td>
+    <td th:text="${informeMensual.totalUbicaciones}"></td>
+    <td th:text="${informeMensual.totalTareas}"></td>
+    <td th:text="${informeMensual.tareasCumplidas}"></td>
+    <td th:text="${informeMensual.porcentajeCumplimiento}"></td>
+  </tr>
+  </tbody>
+</table>
+<!-- Aquí puedes agregar otros elementos que necesites -->
+
 </body>
 </html>

@@ -20,6 +20,9 @@ public class WorkerDTO {
         this.cargo = cargo;
     }
 
+    public WorkerDTO() {
+    }
+
     public Long getId() {
         return id;
     }

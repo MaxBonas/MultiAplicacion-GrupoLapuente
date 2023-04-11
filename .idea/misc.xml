@@ -7,6 +7,13 @@
       </list>
     </option>
   </component>
+  <component name="ProjectResources">
+    <resource url="http://www.thymeleaf.org" location="$PROJECT_DIR$/Tareas-Ubicaciones/src/main/resources/xhtml1-strict-thymeleaf-4.dtd" />
+    <resource url="http://www.thymeleaf.org/dtd/xhtml1-strict.dtd" location="$PROJECT_DIR$/Tareas-Ubicaciones/src/main/resources/xhtml1-strict-thymeleaf-4.dtd" />
+    <resource url="http://www.w3.org/TR/xhtml1/DTD/xhtml-lat1.ent" location="$PROJECT_DIR$/Tareas-Ubicaciones/src/main/resources/xhtml1-strict-thymeleaf-4.dtd" />
+    <resource url="http://www.w3.org/TR/xhtml1/DTD/xhtml-special.ent" location="$PROJECT_DIR$/Tareas-Ubicaciones/src/main/resources/xhtml1-strict-thymeleaf-4.dtd" />
+    <resource url="http://www.w3.org/TR/xhtml1/DTD/xhtml-symbol.ent" location="$PROJECT_DIR$/Tareas-Ubicaciones/src/main/resources/xhtml1-strict-thymeleaf-4.dtd" />
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_17" project-jdk-name="corretto-17" project-jdk-type="JavaSDK" />
   <component name="ProjectType">
     <option name="id" value="jpab" />

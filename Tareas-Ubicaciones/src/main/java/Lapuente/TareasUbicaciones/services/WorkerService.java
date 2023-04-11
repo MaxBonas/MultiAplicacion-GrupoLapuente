@@ -88,8 +88,8 @@ public class WorkerService implements WorkerServiceInterface {
             TareaCumplidaDTO tareaCumplidaDTO = new TareaCumplidaDTO(tarea.getId(), tarea.getName(), worker.getId(), ubicacion.getId(), cumplida, worker.getName(), fechaCumplimiento, turno);
             tareasCumplidasDTO.add(tareaCumplidaDTO);
         }
-        InformeDTO informeDTO = new InformeDTO(fechaCumplimiento, ubicacion.getId(), turno, worker.getId(), comentario, tareasCumplidasDTO);
-        Informe informe = new Informe(informeDTO, worker, ubicacion);
+        InformeDTO informeDTO = new InformeDTO(fechaCumplimiento, ubicacion.getId(), turno, comentario, tareasCumplidasDTO);
+        Informe informe = new Informe(informeDTO, ubicacion);
         informe = informeRepository.save(informe);
 
         for (Tarea tarea : tareas) {

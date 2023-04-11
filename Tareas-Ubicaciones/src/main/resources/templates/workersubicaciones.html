@@ -11,7 +11,7 @@
     <p>Ubicaciones de Trabajo</p>
 </header>
 <main>
-    <h2>Ubicaciones</h2>
+    <h2>¿En que ubicación has trabajado?</h2>
     <table>
         <thead>
         <tr>
@@ -23,7 +23,7 @@
         <!-- Itera sobre la lista de ubicaciones y muestra los datos -->
         <tr th:each="ubicacion : ${ubicaciones}">
             <td th:text="${ubicacion.name}"></td>
-            <td><a th:href="@{/worker/ubicaciones/{id}/tareas(id=${ubicacion.id})}">Informar Tareas</a></td>
+            <td><a th:href="@{/worker/ubicaciones/{id}/selectturno(id=${ubicacion.id})}">Informar Tareas</a></td>
         </tr>
         </tbody>
     </table>

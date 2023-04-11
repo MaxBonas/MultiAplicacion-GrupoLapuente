@@ -60,6 +60,10 @@ public class SecurityConfiguration {
                 .permitAll()
                 .and()
                 .logout()
+                .logoutUrl("/logout") // Agrega esta línea para especificar una URL de logout
+                .logoutSuccessUrl("/") // Agrega esta línea para especificar la URL a la que se redirige después de cerrar sesión
+                .invalidateHttpSession(true) // Asegúrese de que la sesión HTTP se invalide después de cerrar sesión
+                .deleteCookies("JSESSIONID") // Elimina la cookie de la sesión después de cerrar sesión
                 .permitAll();
 
         httpSecurity.csrf().disable();

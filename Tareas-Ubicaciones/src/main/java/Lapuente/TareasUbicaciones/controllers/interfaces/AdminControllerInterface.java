@@ -7,6 +7,7 @@ import Lapuente.TareasUbicaciones.entities.TareaCumplida;
 import Lapuente.TareasUbicaciones.entities.Ubicacion;
 import Lapuente.TareasUbicaciones.entities.Worker;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Set;
 
 public interface AdminControllerInterface {
+    String adminMenu();
     String addWorker(WorkerDTO workerDTO, RedirectAttributes redirectAttributes);
     String getAllWorkers(Model model);
     String getAllTareas(Model model);
@@ -38,8 +40,10 @@ public interface AdminControllerInterface {
     String getUbicacion(Long id, Model model);
     String addTareaAUbicacion(Long ubicacionId, TareaDTO tareaDTO, RedirectAttributes redirectAttributes);
     String updateTareasDeUbicacion(Long ubicacionId, Set<TareaDTO> tareasDTO, RedirectAttributes redirectAttributes);
-    String getInformeDiario(LocalDate fecha, Model model);
+    ResponseEntity<byte[]> getInformeDiario(LocalDate fecha);
     String getInformeTurnoUbicacion(LocalDate fecha, Turno turno, Long ubicacionId, Model model);
     String getInformeMensual(YearMonth mes, Model model);
+    String getInformeDiarioRequest(Model model);
+    String showCreateWorkerForm(Model model);
 }
 

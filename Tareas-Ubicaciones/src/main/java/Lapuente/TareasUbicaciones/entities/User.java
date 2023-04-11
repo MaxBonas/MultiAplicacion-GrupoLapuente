@@ -16,7 +16,7 @@ public abstract class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true, nullable = false, length = 191)
     @NotBlank(message = "This field can't be blank")
     private String name;
 

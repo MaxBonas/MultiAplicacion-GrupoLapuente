@@ -1,5 +1,6 @@
 package Lapuente.TareasUbicaciones.services;
 
+import Lapuente.TareasUbicaciones.DTOs.InformeDTO;
 import Lapuente.TareasUbicaciones.DTOs.TareaCumplidaDTO;
 import Lapuente.TareasUbicaciones.ENUMs.Turno;
 import Lapuente.TareasUbicaciones.entities.*;
@@ -11,7 +12,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,10 +31,7 @@ public class InformeService implements InformeServiceInterface {
     @Autowired
     UbicacionRepository ubicacionRepository;
 
-    @Override
-    public Informe save(Informe informe) {
-        return informeRepository.save(informe);
-    }
+
 
     @Override
     public List<Informe> findAll() {
@@ -64,8 +65,18 @@ public class InformeService implements InformeServiceInterface {
     }
 
     @Override
-    public List<Informe> findByWorker(Worker worker) {
-        return informeRepository.findByWorker(worker);
+    public Informe save(Informe informe) {
+        LocalDateTime fechaInicio = informe.getFecha().toLocalDate().atStartOfDay();
+        LocalDateTime fechaFin = informe.getFecha().toLocalDate().atTime(23, 59, 59);
+        List<Informe> informesExistente = informeRepository.findAllByUbicacionAndFechaBetweenAndTurno(informe.getUbicacion(), fechaInicio, fechaFin, informe.getTurno());
+
+        if (!informesExistente.isEmpty()) {
+            Informe informeExistente = informesExistente.get(0);
+            informeExistente.setComentario(informe.getComentario());
+            return informeRepository.save(informeExistente);
+        }
+
+        return informeRepository.save(informe);
     }
 
     @Override
@@ -97,4 +108,6 @@ public class InformeService implements InformeServiceInterface {
     public List<Informe> findByFechaBetweenAndTurnoAndUbicacionId(LocalDateTime start, LocalDateTime end, Turno turno, Long ubicacionId) {
         return informeRepository.findByFechaBetweenAndTurnoAndUbicacionId(start, end, turno, ubicacionId);
     }
+
+
 }

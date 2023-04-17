@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Menú de Trabajadores</title>
+  <link rel="stylesheet" href="../../static/css/styles.css" th:href="@{/css/styles.css}">
+  <script th:src="@{/js/logo.js}"></script>
+</head>
+<body onload="updateLogo('${session.sociedadSeleccionadaId}')">
+<header>
+  <h1 style="text-align:center;">Tareas y Ubicaciones</h1>
+  <p style="text-align:center; font-size:24px;">Menú de Trabajadores</p>
+  <img id="logo" class="logo" src="" alt="Logotipo">
+</header>
+<main>
+  <h2 style="text-align:center;">Opciones de Trabajador</h2>
+  <a th:href="@{/worker/{sociedadId}/ubicaciones(sociedadId=${worker.sociedad.id})}" class="button button-primary">Ver Ubicaciones</a>
+  <ul>
+    <li><a style="font-size:18px;" href="/worker/{sociedadId}/password">Cambiar Contraseña</a></li>
+  </ul>
+  <a href="/logout" class="button">Salir</a>
+</main>
+</body>
+</html>

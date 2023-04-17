@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Ver Trabajadores</title>
+  <link rel="stylesheet" href="../../static/css/styles.css" th:href="@{/css/styles.css}">
+  <script th:src="@{/js/logo.js}"></script>
+</head>
+<body onload="updateLogo('${session.sociedadSeleccionadaId}')">
+<header>
+  <h1>Trabajadores</h1>
+  <img id="logo" class="logo" src="" alt="Logotipo">
+</header>
+<main>
+  <table>
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Nombre</th>
+      <th>Cargo</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="worker : ${workers}">
+      <td th:text="${worker.id}"></td>
+      <td th:text="${worker.name}"></td>
+      <td th:text="${worker.cargo}"></td>
+    </tr>
+    </tbody>
+  </table>
+</main>
+<a href="/admin/{sociedadId}/adminsmenu" th:href="@{/admin/{sociedadId}/adminsmenu(sociedadId=${session.sociedadId})}" class="button">Volver al Menú de Administrador</a>
+</body>
+</html>

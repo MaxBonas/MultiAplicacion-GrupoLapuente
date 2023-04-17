@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Elegir Turno</title>
+  <link rel="stylesheet" href="../../static/css/styles.css" th:href="@{/css/styles.css}">
+  <script th:src="@{/js/logo.js}"></script>
+</head>
+<body onload="updateLogo('${session.sociedadSeleccionadaId}')">
+<header>
+  <h1>Tareas y Ubicaciones</h1>
+  <p>Elegir Turno</p>
+  <img id="logo" class="logo" src="" alt="Logotipo">
+</header>
+<main>
+  <h2>¿En qué turno has trabajado?</h2>
+  <form th:action="@{'/worker/' + ${worker.sociedad.id} + '/ubicaciones/' + ${ubicacionId} + '/tareas'}" method="get">
+    <input type="hidden" name="ubicacionId" th:value="${ubicacionId}" />
+    <div>
+      <label for="turno">Turno:</label>
+      <select name="turno" id="turno" class="large-select">
+        <option value="MANANA">Mañana</option>
+        <option value="TARDE">Tarde</option>
+      </select>
+    </div>
+    <button type="submit" class="button button-primary">Continuar</button>
+  </form>
+  <a href="/worker/ubicaciones" class="button">Cancelar</a>
+  <a th:href="@{/worker/{sociedadId}/workersmenu(sociedadId=${worker.sociedad.id})}" class="button">Volver al Menú</a>
+</main>
+</body>
+</html>

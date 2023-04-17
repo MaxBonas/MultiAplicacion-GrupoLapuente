@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Ver Tareas</title>
+  <link rel="stylesheet" href="../../static/css/styles.css" th:href="@{/css/styles.css}">
+  <style>
+    .button-container {
+      display: flex;
+      flex-direction: row;
+      gap: 3px;
+    }
+    .button {
+      font-size: calc(1rem - 1pt);
+      padding: calc(0.5rem - 1px) calc(1rem - 1px);
+      margin: 0 3px;
+    }
+    .table-container {
+      margin-bottom: 1rem;
+    }
+  </style>
+  <script th:src="@{/js/logo.js}"></script>
+</head>
+<body onload="updateLogo('${session.sociedadSeleccionadaId}')">
+<header>
+  <h1>Tareas</h1>
+  <img id="logo" class="logo" src="" alt="Logotipo">
+</header>
+<main>
+  <th:block th:each="ubicacion : ${tareasAgrupadasPorUbicacion.entrySet()}">
+    <div class="table-container">
+      <h2 th:text="${ubicacion.key}"></h2>
+      <table>
+        <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Descripción</th>
+          <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="tareaEntry : ${ubicacion.value}">
+          <td th:text="${tareaEntry.right.left}"></td>
+          <td th:text="${tareaEntry.right.right}"></td>
+          <td>
+            <div class="button-container">
+              <a th:href="@{'/admin/tareas/editar/' + ${tareaEntry.left}}" class="button">Editar</a>
+              <a th:href="@{'/admin/tareas/borrar/' + ${tareaEntry.left}}" class="button" onclick="return confirm('¿Estás seguro de que deseas eliminar esta tarea?');">Borrar</a>
+            </div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </th:block>
+</main>
+<a href="/admin/{sociedadId}/adminsmenu" th:href="@{/admin/{sociedadId}/adminsmenu(sociedadId=${session.sociedadId})}" class="button">Volver al Menú de Administrador</a>
+</body>
+</html>

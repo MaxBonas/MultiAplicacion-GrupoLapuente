@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Ubicaciones de Trabajo</title>
+    <link rel="stylesheet" href="../../static/css/styles.css" th:href="@{/css/styles.css}">
+    <script th:src="@{/js/logo.js}"></script>
+</head>
+<body onload="updateLogo('${session.sociedadSeleccionadaId}')">
+<header>
+    <h1>Tareas y Ubicaciones</h1>
+    <p>Ubicaciones de Trabajo</p>
+    <img id="logo" class="logo" src="" alt="Logotipo">
+</header>
+<main>
+    <h2>¿En que ubicación has trabajado?</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Itera sobre la lista de ubicaciones y muestra los datos -->
+        <tr th:each="ubicacion : ${ubicaciones}">
+            <td th:text="${ubicacion.name}"></td>
+            <td><a th:href="@{/worker/{sociedadId}/ubicaciones/{id}/selectturno(sociedadId=${worker.sociedad.id}, id=${ubicacion.id})}">Informar Tareas</a></td>
+        </tr>
+        </tbody>
+    </table>
+    <a th:href="@{/worker/{sociedadId}/workersmenu(sociedadId=${worker.sociedad.id})}" class="button">Volver al Menú de Trabajadores</a>
+</main>
+</body>
+</html>

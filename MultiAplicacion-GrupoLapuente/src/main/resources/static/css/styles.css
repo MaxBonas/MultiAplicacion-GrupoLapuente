@@ -1,0 +1,144 @@
+/* Estilos globales */
+body {
+    background-color: #F8F8F8;
+    font-family: Arial, sans-serif;
+}
+
+/* Estilos para el encabezado */
+header {
+    background-color: #004A9E;
+    color: white;
+    padding: 20px;
+}
+
+/* Estilos para el contenido principal */
+main {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #F8F8F8;
+    border: 1px solid #004A9E;
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.2);
+    text-align: center; /* Para centrar el contenido */
+}
+
+main h2 {
+    font-size: 28px;
+    margin-top: 0;
+    color: #004A9E;
+}
+
+main p {
+    font-size: 18px;
+    color: #333;
+}
+
+main ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 30px 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+main li {
+    margin-bottom: 15px;
+    width: 45%;
+}
+
+main a {
+    display: block;
+    background-color: #004A9E;
+    color: white;
+    padding: 12px 18px;
+    margin-right: 15px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s ease-in-out;
+}
+
+main a:hover {
+    background-color: #005CB9;
+}
+
+.button {
+    display: inline-block;
+    background-color: #0072C6;
+    color: #FFFFFF;
+    border: 1px solid #0072C6;
+    border-radius: 5px;
+    padding: 12px 18px;
+    margin-top: 30px;
+    font-size: 16px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.button:hover {
+    background-color: #005CB9;
+    color: #FFFFFF;
+}
+
+.button-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+  color: #ffffff;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+table, th, td {
+  border: 1px solid black;
+}
+
+th, td {
+  padding: 8px;
+  text-align: left;
+}
+
+.large-select {
+  font-size: 1.2rem;
+  padding: 0.5rem;
+}
+.logo {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    max-width: 200px; /* Ajusta esto al tamaño que desees para el logotipo */
+    padding: 5px; /* Ajusta el espacio entre la imagen y el borde del fondo blanco */
+    background-color: #ffffff;
+    border: 1px solid #000000; /* Color del borde, cámbialo si es necesario */
+    border-radius: 5px; /* Ajusta el radio del borde para redondear las esquinas */
+    box-sizing: border-box;
+}
+
+/* Estilos para la página de error */
+.error-page {
+  background-color: #004A9E;
+}
+
+/* Estilos para el contenedor de error */
+.error-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #FFFFFF;
+  border: 1px solid #004A9E;
+  box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.2);
+  text-align: center; /* Para centrar el contenido */
+}
+.container {
+    display: flex;
+    align-items: center;
+}
+h1, h2, h3, h4, h5, h6 {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

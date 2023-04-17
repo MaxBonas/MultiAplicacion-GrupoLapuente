@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Editar Tarea</title>
+  <link rel="stylesheet" href="../../static/css/styles.css" th:href="@{/css/styles.css}">
+  <script th:src="@{/js/logo.js}"></script>
+</head>
+<body onload="updateLogo('${session.sociedadSeleccionadaId}')">
+<header>
+  <h1>Editar Tarea</h1>
+  <img id="logo" class="logo" src="" alt="Logotipo">
+</header>
+<main>
+  <form th:action="@{/admin/tareas/{id}(id=${tareaDTO.id})}" th:object="${tareaDTO}" method="post">
+    <input type="hidden" name="_method" value="PUT" />
+    <label for="name">Nombre:</label>
+    <input type="text" th:field="*{name}" id="name" required>
+
+    <label for="descripcion">Descripción:</label>
+    <input type="text" th:field="*{descripcion}" id="descripcion" required>
+
+    <button type="submit">Actualizar Tarea</button>
+  </form>
+</main>
+<a href="/admin/{sociedadId}/adminsmenu" th:href="@{/admin/{sociedadId}/adminsmenu(sociedadId=${session.sociedadId})}" class="button">Volver al Menú de Administrador</a>
+
+</body>
+</html>

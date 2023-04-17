@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Menú de Administrador</title>
+    <link rel="stylesheet" href="../../static/css/styles.css" th:href="@{/css/styles.css}">
+    <script th:src="@{/js/logo.js}"></script>
+</head>
+<body onload="updateLogo('${session.sociedadSeleccionadaId}')">
+<header>
+    <h1>Tareas y Ubicaciones</h1>
+    <p>Menú de Administrador</p>
+    <img id="logo" class="logo" src="" alt="Logotipo">
+</header>
+<main>
+    <h2>Opciones de Administrador</h2>
+    <div class="button-container">
+        <ul>
+            <li><a th:href="@{/admin/{sociedadId}/workers(sociedadId=${session.sociedadId})}">Ver Trabajadores</a></li>
+            <li><a th:href="@{/admin/{sociedadId}/ubicaciones-tareas(sociedadId=${session.sociedadId})}">Ver Ubicaciones y Tareas</a></li>
+            <li><a th:href="@{/admin/{sociedadId}/crear-trabajador(sociedadId=${session.sociedadId})}">Crear Trabajador</a></li>
+            <li><a th:href="@{/admin/{sociedadId}/crear-ubicacion(sociedadId=${session.sociedadId})}">Crear Ubicación</a></li>
+            <li><a th:href="@{/admin/{sociedadId}/crear-tarea(sociedadId=${session.sociedadId})}">Crear Tarea</a></li>
+            <li><a th:href="@{/admin/{sociedadId}/informes/diario/request(sociedadId=${session.sociedadId})}">Informe Diario</a></li>
+            <li><a th:href="@{/admin/{sociedadId}/informes/turno-ubicacion/request(sociedadId=${session.sociedadId})}">Informe Turno y Ubicación</a></li>
+            <li><a th:href="@{/admin/{sociedadId}/informes/mensual/request(sociedadId=${session.sociedadId})}">Informe Mensual</a></li>
+            <li><a th:href="@{/admin/{sociedadId}/cambio-sociedad(sociedadId=${session.sociedadId})}">Cambiar Sociedad</a></li>
+        </ul>
+    </div>
+    <!-- ... -->
+
+    <a href="/logout" class="button">Salir</a>
+</main>
+</body>
+</html>

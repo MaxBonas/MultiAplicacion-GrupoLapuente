@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Cambio de Sociedad</title>
+    <link rel="stylesheet" href="../../static/css/styles.css" th:href="@{/css/styles.css}">
+    <script th:src="@{/js/logo.js}"></script>
+</head>
+<body onload="updateLogo('${session.sociedadSeleccionadaId}')">
+<header>
+    <h1>Cambio de Sociedad</h1>
+    <img id="logo" class="logo" src="" alt="Logotipo">
+</header>
+<main>
+    <form th:action="@{/admin/{sociedadId}/cambiar-sociedad(sociedadId=${session.sociedadId})}" method="post">
+        <label for="sociedadId">Sociedad a gestionar:</label>
+        <select id="sociedadId" name="sociedadId" th:value="${session.sociedadId}">
+            <option th:each="sociedad : ${sociedades}"
+                    th:value="${sociedad.id}"
+                    th:text="${sociedad.name}"
+                    th:selected="${session.sociedadId == sociedad.id}">
+            </option>
+        </select>
+        <button type="submit">Cambiar Sociedad</button>
+    </form>
+    <a href="/admin/{sociedadId}/adminsmenu" th:href="@{/admin/{sociedadId}/adminsmenu(sociedadId=${session.sociedadId})}" class="button">Volver al Menú de Administrador</a>
+</main>
+</body>
+</html>

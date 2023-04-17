@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Informe Turno y Ubicación</title>
+  <link rel="stylesheet" href="../../static/css/styles.css" th:href="@{/css/styles.css}">
+</head>
+<body>
+<h1>Informe Turno y Ubicación</h1>
+<table>
+  <thead>
+  <tr>
+    <th>Fecha</th>
+    <th>Turno</th>
+    <th>Trabajador</th>
+    <th>Ubicación</th>
+    <th>Tarea</th>
+    <th>Cumplida</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="informe : ${informes}">
+    <td th:text="${informe.fecha}"></td>
+    <td th:text="${informe.turno}"></td>
+    <td th:text="${informe.worker.name}"></td>
+    <td th:text="${informe.ubicacion.name}"></td>
+    <td th:text="${informe.tarea.name}"></td>
+    <td th:text="${informe.cumplida}"></td>
+  </tr>
+  </tbody>
+</table>
+<!-- Aquí puedes agregar otros elementos que necesites -->
+</body>
+</html>

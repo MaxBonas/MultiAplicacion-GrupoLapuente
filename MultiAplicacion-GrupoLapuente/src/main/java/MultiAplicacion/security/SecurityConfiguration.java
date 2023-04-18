@@ -49,7 +49,7 @@ public class SecurityConfiguration {
                 .antMatchers(HttpMethod.DELETE, "/admin/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.GET, "/worker/**").hasAnyRole("WORKER", "ADMIN")
                 .antMatchers(HttpMethod.PATCH, "/worker/**").hasAnyRole("WORKER", "ADMIN")
-                .antMatchers("/", "/index", "/login-error").permitAll() // permitir acceso a la página de inicio y error de inicio de sesión
+                .antMatchers("/", "/index", "/login-error", "/public/**").permitAll() // permitir acceso a la página de inicio y error de inicio de sesión
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()

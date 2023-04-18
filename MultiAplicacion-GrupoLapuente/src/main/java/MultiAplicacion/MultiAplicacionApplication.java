@@ -74,7 +74,7 @@ public class MultiAplicacionApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) {
-///*
+/*
 		Sociedad goodPolish = new Sociedad("GoodPolish S.L:");
 		Sociedad lapuente = new Sociedad("Lapuente S.L:");
 		Sociedad spb = new Sociedad("Stainless Products BCN S.L:");
@@ -266,7 +266,7 @@ public class MultiAplicacionApplication implements CommandLineRunner {
 		informeService.updateTareasCumplidasDeInforme(informeSaved2.getId(), tareasCumplidas2);
 
 		// Comprueba que las listas no estén vacías
-//*/
+*/
 	}
 
 }

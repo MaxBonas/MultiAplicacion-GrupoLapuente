@@ -16,6 +16,9 @@ header {
     background-color: #004A9E;
     color: white;
     padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 /* Estilos para el contenido principal */
@@ -88,16 +91,83 @@ main a:hover {
     background-color: #004A9E;
     color: #F8F8F8;
 }
+.logo-container {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: #FFF;
+    padding: 5px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.2);
+}
+.logo {
+    max-height: 80px;
+}
+form div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 18px;
+}
 
+form label {
+    font-size: 22px;
+    margin-bottom: 10px;
+}
+
+form input[type="text"],
+form input[type="password"] {
+    font-size: 22px;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.2);
+    width: 100%;
+    max-width: 400px;
+}
+
+form button[type="submit"] {
+    font-size: 22px;
+    background-color: #004A9E;
+    color: #FFF;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+form button[type="submit"]:hover {
+    background-color: #005CB9;
+}
+header {
+  position: relative;
+}
+
+header img {
+  position: absolute;
+  top: 0;
+  right: 0;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+header h1, header h4 {
+  z-index: 1;
+  position: relative;
+}
     </style>
 </head>
 <body>
 <header>
-    <h1>Tareas y Ubicaciones</h1>
-    <p>Esta es una aplicación básica para gestionar tareas y ubicaciones.</p>
+    <div class="logo-container">
+        <img src="../public/GL horizontal.png" alt="Logo" class="logo" th:src="@{/img/GL horizontal.png}">
+    </div>
+    <h1>MultiAplicacion Grupo Lapuente</h1>
+    <h4>Esta es una aplicación básica para gestionar varios aspectos de cada sociedad y obtener informes.</h4>
 </header>
 <main>
-    <h2>Bienvenido a Tareas y Ubicaciones</h2>
+    <h2>Bienvenido a nuestra MultiAplicación</h2>
     <p>Esta es una aplicación para gestionar tareas y ubicaciones. Puede utilizarla para agregar, editar y eliminar tareas, ubicaciones y trabajadores.</p>
 
 

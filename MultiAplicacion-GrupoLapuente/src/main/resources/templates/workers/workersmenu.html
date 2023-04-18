@@ -14,9 +14,9 @@
 </header>
 <main>
   <h2 style="text-align:center;">Opciones de Trabajador</h2>
-  <a th:href="@{/worker/{sociedadId}/ubicaciones(sociedadId=${worker.sociedad.id})}" class="button button-primary">Ver Ubicaciones</a>
+  <a style="font-size:22px;" th:href="@{/worker/{sociedadId}/ubicaciones(sociedadId=${worker.sociedad.id})}" class="button">Ver Ubicaciones</a>
   <ul>
-    <li><a style="font-size:18px;" href="/worker/{sociedadId}/password">Cambiar Contraseña</a></li>
+    <li><a style="font-size:18px;" href="/worker/{sociedadId}/password" class="button button-small">Cambiar Contraseña</a></li>
   </ul>
   <a href="/logout" class="button">Salir</a>
 </main>

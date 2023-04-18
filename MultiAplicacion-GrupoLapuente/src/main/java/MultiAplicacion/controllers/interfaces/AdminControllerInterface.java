@@ -13,12 +13,11 @@ import java.time.YearMonth;
 
 public interface AdminControllerInterface {
     String adminMenu(@PathVariable Long sociedadId, Model model, HttpServletRequest request);
-    String addWorker(WorkerDTO workerDTO, RedirectAttributes redirectAttributes);
+    String addWorker(@PathVariable("sociedadId") Long sociedadId, @ModelAttribute WorkerDTO workerDTO, RedirectAttributes redirectAttributes);
     String getAllWorkers(@PathVariable Long sociedadId, Model model);
-    String getAllTareas(Model model);
     String addTarea(TareaDTO tareaDTO, RedirectAttributes redirectAttributes);
-    String getAllUbicaciones(Model model);
-    String addUbicacion(UbicacionDTO ubicacionDTO, RedirectAttributes redirectAttributes);
+    String getAllUbicaciones(@PathVariable("sociedadId") Long sociedadId, Model model);
+    String addUbicacion(@PathVariable("sociedadId") Long sociedadId, @ModelAttribute UbicacionDTO ubicacionDTO, RedirectAttributes redirectAttributes);
     String getWorker(Long id, Model model);
     String getTarea(Long id, Model model);
     String getUbicacion(Long id, Model model);

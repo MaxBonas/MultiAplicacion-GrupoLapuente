@@ -28,6 +28,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.webjars.NotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotBlank;
@@ -73,9 +74,6 @@ public class AdminController implements AdminControllerInterface {
     @Autowired
     private SociedadService sociedadService;
 
-    // Asumiendo que el usuario ya tiene una Sociedad seleccionada
-    private Sociedad sociedadActual;
-
     @GetMapping("/adminsmenu")
     public String adminMenu(@PathVariable Long sociedadId, Model model, HttpServletRequest request) {
         request.getSession().setAttribute("sociedadId", sociedadId);
@@ -114,8 +112,8 @@ public class AdminController implements AdminControllerInterface {
         return "admins/crear-trabajador";
     }
     @PostMapping("/crear-trabajador")
-    public String addWorker(@ModelAttribute WorkerDTO workerDTO, RedirectAttributes redirectAttributes) {
-        workerDTO.setSociedadId(sociedadActual.getId());
+    public String addWorker(@PathVariable("sociedadId") Long sociedadId, @ModelAttribute WorkerDTO workerDTO, RedirectAttributes redirectAttributes) {
+        workerDTO.setSociedadId(sociedadId);
         workerService.saveWorker(workerDTO);
         redirectAttributes.addFlashAttribute("message", "Trabajador creado exitosamente");
         return "redirect:/admin/{sociedadId}/workers";
@@ -156,20 +154,6 @@ public class AdminController implements AdminControllerInterface {
         return "admins/editar-tarea";
     }
 
-    @GetMapping("/tareas")
-    public String getAllTareas(Model model) {
-        Map<String, List<Pair<Long, Pair<String, String>>>> tareasAgrupadasPorUbicacion = tareaService.getAllTareas().stream()
-                .flatMap(tarea -> tarea.getUbicaciones().stream()
-                        .map(ubicacion -> new AbstractMap.SimpleEntry<>(tarea, ubicacion.getName())))
-                .collect(Collectors.groupingBy(
-                        entry -> entry.getValue(),
-                        Collectors.mapping(entry -> Pair.of(entry.getKey().getId(), Pair.of(entry.getKey().getName(), entry.getKey().getDescripcion())), Collectors.toList())
-                ));
-        model.addAttribute("tareasAgrupadasPorUbicacion", tareasAgrupadasPorUbicacion);
-        return "admins/tareas";
-    }
-
-
     @PostMapping("/tareas")
     public String addTarea(@ModelAttribute TareaDTO tareaDTO, RedirectAttributes redirectAttributes) {
         tareaService.saveTarea(tareaDTO);
@@ -182,15 +166,30 @@ public class AdminController implements AdminControllerInterface {
         return "admins/crear-tarea";
     }
     @GetMapping("/ubicaciones")
-    public String getAllUbicaciones(Model model) {
-        List<Ubicacion> ubicaciones = ubicacionService.findAllBySociedad(sociedadActual);
+    public String getAllUbicaciones(@PathVariable("sociedadId") Long sociedadId, Model model) {
+        // Encuentra la sociedad por ID o arroja una excepción si no se encuentra.
+        Sociedad sociedad = sociedadService.findById(sociedadId)
+                .orElseThrow(() -> new NotFoundException("Sociedad no encontrada con el ID: " + sociedadId));
+
+        List<Ubicacion> ubicaciones = ubicacionService.findAllBySociedad(sociedad);
         model.addAttribute("ubicaciones", ubicaciones);
+
+        Map<String, List<Pair<Long, Pair<String, String>>>> tareasAgrupadasPorUbicacion = ubicaciones.stream()
+                .collect(Collectors.toMap(
+                        Ubicacion::getName,
+                        ubicacion -> ubicacion.getTareas().stream()
+                                .map(tarea -> Pair.of(tarea.getId(), Pair.of(tarea.getName(), tarea.getDescripcion())))
+                                .collect(Collectors.toList())
+                ));
+
+        model.addAttribute("tareasAgrupadasPorUbicacion", tareasAgrupadasPorUbicacion);
+
         return "admins/ubicaciones";
     }
 
     @PostMapping("/ubicaciones")
-    public String addUbicacion(@ModelAttribute UbicacionDTO ubicacionDTO, RedirectAttributes redirectAttributes) {
-        ubicacionDTO.setSociedadId(sociedadActual.getId());
+    public String addUbicacion(@PathVariable("sociedadId") Long sociedadId, @ModelAttribute UbicacionDTO ubicacionDTO, RedirectAttributes redirectAttributes) {
+        ubicacionDTO.setSociedadId(sociedadId);
         ubicacionService.save(ubicacionDTO);
         redirectAttributes.addFlashAttribute("message", "Ubicación creada exitosamente");
         return "redirect:/admin/{sociedadId}/ubicaciones";

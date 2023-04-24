@@ -14,6 +14,8 @@
 <main>
   <!-- Aquí puedes agregar un formulario para crear una nueva ubicación -->
 </main>
-<a href="/admin/{sociedadId}/adminsmenu" th:href="@{/admin/{sociedadId}/adminsmenu(sociedadId=${session.sociedadId})}" class="button">Volver al Menú de Administrador</a>
+<div class="button-group">
+  <a href="/admin/{sociedadId}/adminsmenu" th:href="@{/admin/{sociedadId}/adminsmenu(sociedadId=${session.sociedadId})}" class="button">Volver al Menú de Administrador</a>
+</div>
 </body>
 </html>

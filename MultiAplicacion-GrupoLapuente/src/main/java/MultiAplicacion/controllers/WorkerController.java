@@ -1,5 +1,7 @@
 package MultiAplicacion.controllers;
 
+import MultiAplicacion.DTOs.TareaCumplidaDTO;
+import MultiAplicacion.DTOs.TareaCumplidaListWrapper;
 import MultiAplicacion.ENUMs.Turno;
 import MultiAplicacion.controllers.interfaces.WorkerControllerInterface;
 import MultiAplicacion.entities.*;
@@ -15,17 +17,20 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Controller
 @RequestMapping("/worker/{sociedadId}")
 public class WorkerController implements WorkerControllerInterface {
+    private final Logger logger = LoggerFactory.getLogger(WorkerController.class);
 
     @Autowired
     private WorkerServiceInterface workerService;
@@ -60,69 +65,72 @@ public class WorkerController implements WorkerControllerInterface {
         Worker worker = workerService.findByName(userDetails.getUsername());
         model.addAttribute("worker", worker);
         model.addAttribute("ubicacionId", ubicacionId);
+
         return "workers/workersturno";
     }
-
-
     @GetMapping("/ubicaciones/{ubicacionId}/tareas")
-    public String getTareasByUbicacion(@PathVariable Long ubicacionId,
-                                       @RequestParam Turno turno,
-                                       Model model) {
-        List<Tarea> tareas = ubicacionService.getTareasByUbicacionId(ubicacionId);
+    public String showTareas(@PathVariable Long sociedadId, @PathVariable Long ubicacionId, @RequestParam Turno turno, Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        Worker worker = workerService.findByName(userDetails.getUsername());
         Ubicacion ubicacion = ubicacionService.findById(ubicacionId);
-        LocalDateTime fechaActual = LocalDateTime.now();
-        List<TareaCumplida> tareasCumplidas = tareaCumplidaService.findTareasNoInformadasByUbicacionAndFechaAndTurno(ubicacion, fechaActual, turno);
+        LocalDateTime fecha = LocalDateTime.now();
 
-        model.addAttribute("ubicacionId", ubicacionId);
-        model.addAttribute("turno", turno);
+        workerService.crearTareasCumplidasVacias(worker.getId(), ubicacionId, fecha, turno);
+        List<TareaCumplida> tareasCumplidasNo = tareaCumplidaService.findTareasCumplidasByUbicacionAndFechaAndTurnoAndCumplida(ubicacion, fecha, turno, false);
+        List<TareaCumplida> tareasCumplidasSi = tareaCumplidaService.findTareasCumplidasByUbicacionAndFechaAndTurnoAndCumplida(ubicacion, fecha, turno, true);
+
+        model.addAttribute("worker", worker);
         model.addAttribute("ubicacion", ubicacion);
-        model.addAttribute("fechaActual", fechaActual);
+        model.addAttribute("turnoInformado", turno);
+        model.addAttribute("tareasCumplidasNo", tareasCumplidasNo);
+        model.addAttribute("tareasCumplidasSi", tareasCumplidasSi);
+        TareaCumplida tareaCumplida = new TareaCumplida();
+        model.addAttribute("tareaCumplida", tareaCumplida);
+        TareaCumplidaListWrapper tareaCumplidaListWrapper = new TareaCumplidaListWrapper();
+        tareaCumplidaListWrapper.setTareasCumplidas(tareasCumplidasNo);
+        model.addAttribute("tareaCumplidaListWrapper", tareaCumplidaListWrapper);
 
-        // Crea un mapa que relacione la Tarea con su correspondiente TareaCumplida
-        Map<Tarea, TareaCumplida> tareaTareaCumplidaMap = new HashMap<>();
-        for (Tarea tarea : tareas) {
-            TareaCumplida tareaCumplida = tareasCumplidas.stream()
-                    .filter(tc -> tc.getTarea().getId().equals(tarea.getId()))
-                    .findFirst()
-                    .orElse(null);
-            tareaTareaCumplidaMap.put(tarea, tareaCumplida);
-        }
-
-        // Añade el mapa al modelo
-        model.addAttribute("tareaTareaCumplidaMap", tareaTareaCumplidaMap);
-
-        // Obtén el comentario para la ubicación, fecha y turno
-        Optional<String> comentario = tareaCumplidaService.findComentarioByUbicacionAndFechaAndTurno(ubicacion, fechaActual, turno);
-        model.addAttribute("comentario", comentario.orElse(""));
 
         return "workers/workerstareas";
     }
 
-    @PostMapping("/ubicaciones/{ubicacionId}/tareas/informar")
-    public String informarTareasCumplidas(@PathVariable Long ubicacionId,
-                                          @RequestParam(value = "tareaId", required = false) List<Long> tareasCumplidasIds,
-                                          @RequestParam Turno turno,
-                                          @AuthenticationPrincipal UserDetails userDetails,
-                                          @RequestParam(required = false) String comentario,
-                                          RedirectAttributes redirectAttributes) {
-        try {
-            workerService.informarTareasCumplidas(ubicacionId, turno, tareasCumplidasIds, userDetails, comentario);
-            redirectAttributes.addFlashAttribute("message", "Tareas guardadas correctamente.");
-            return "redirect:/worker/" + workerRepository.findByName(userDetails.getUsername()).orElseThrow().getSociedad().getId() + "/ubicaciones";
-        } catch (IllegalArgumentException e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Error al guardar las tareas: " + e.getMessage());
-            return "redirect:/worker/" + workerRepository.findByName(userDetails.getUsername()).orElseThrow().getSociedad().getId() + "/ubicaciones/" + ubicacionId + "/tareas";
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Error al guardar las tareas.");
-            return "redirect:/worker/" + workerRepository.findByName(userDetails.getUsername()).orElseThrow().getSociedad().getId() + "/ubicaciones/" + ubicacionId + "/tareas";
+    @PostMapping("/ubicaciones/{ubicacionId}/tareas")
+    public String updateTareas(@PathVariable Long sociedadId, @PathVariable Long ubicacionId, @RequestParam Turno turno, @ModelAttribute("tareaCumplidaListWrapper") TareaCumplidaListWrapper tareaCumplidaListWrapper, RedirectAttributes redirectAttributes) {
+        List<TareaCumplida> tareasCumplidasNo = tareaCumplidaListWrapper.getTareasCumplidas();
+
+        logger.info("TareasCumplidasNo: {}", tareasCumplidasNo);
+
+        for (TareaCumplida tareaCumplida : tareasCumplidasNo) {
+            logger.info("TareaCumplida ID: {}", tareaCumplida.getId());
+            tareaCumplidaService.updateTareaCumplida(tareaCumplida.getId(), tareaCumplida);
         }
+
+        redirectAttributes.addAttribute("turno", turno);
+        return "redirect:/worker/" + sociedadId + "/ubicaciones/" + ubicacionId + "/tareas";
+    }
+    @GetMapping("/password")
+    public String showChangePasswordForm(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        model.addAttribute("worker", workerService.findByName(userDetails.getUsername()));
+        return "workers/cambiar-password";
     }
 
-    @Override
     @PostMapping("/password")
-    public void cambiarPassword(@RequestParam Long workerId, @RequestParam String oldPassword, @RequestParam String newPassword) {
-        workerService.cambiarPassword(workerId, oldPassword, newPassword);
+    public String cambiarPassword(@AuthenticationPrincipal UserDetails userDetails, @RequestParam String oldPassword, @RequestParam String newPassword, @RequestParam String confirmNewPassword, RedirectAttributes redirectAttributes) {
+        Worker worker = workerService.findByName(userDetails.getUsername());
+
+        if (!newPassword.equals(confirmNewPassword)) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Las contraseñas nuevas no coinciden");
+            return "redirect:/worker/" + worker.getSociedad().getId() + "/password";
+        }
+
+        try {
+            workerService.cambiarPassword(worker.getId(), oldPassword, newPassword);
+            redirectAttributes.addFlashAttribute("successMessage", "Contraseña cambiada exitosamente");
+        } catch (ResponseStatusException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getReason());
+        }
+        return "redirect:/worker/" + worker.getSociedad().getId() + "/workersmenu";
     }
+
 
     @GetMapping("/workersmenu")
     public String workerMenu(Model model, @AuthenticationPrincipal UserDetails userDetails) {

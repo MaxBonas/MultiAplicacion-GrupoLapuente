@@ -24,7 +24,9 @@
         </select>
         <button type="submit">Cambiar Sociedad</button>
     </form>
-    <a href="/admin/{sociedadId}/adminsmenu" th:href="@{/admin/{sociedadId}/adminsmenu(sociedadId=${session.sociedadId})}" class="button">Volver al Menú de Administrador</a>
 </main>
+<div class="button-group">
+    <a href="/admin/{sociedadId}/adminsmenu" th:href="@{/admin/{sociedadId}/adminsmenu(sociedadId=${session.sociedadId})}" class="button">Volver al Menú de Administrador</a>
+</div>
 </body>
 </html>

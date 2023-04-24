@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface InformeRepository extends JpaRepository<Informe, Long> {
@@ -16,6 +17,7 @@ public interface InformeRepository extends JpaRepository<Informe, Long> {
     List<Informe> findByTurno(Turno turno);
     List<Informe> findByFechaBetweenAndTurnoAndUbicacionId(LocalDateTime start, LocalDateTime end, Turno turno, Long ubicacionId);
     List<Informe> findAllByUbicacionAndFechaBetweenAndTurno(Ubicacion ubicacion, LocalDateTime fechaInicio, LocalDateTime fechaFin, Turno turno);
-
+    List<Informe> findAllByFechaBetweenAndTurno(LocalDateTime fechaInicio, LocalDateTime fechaFin, Turno turno);
+    Optional<Informe> findFirstByUbicacionAndFechaAndTurno(Ubicacion ubicacion, LocalDateTime fecha, Turno turno);
 }
 

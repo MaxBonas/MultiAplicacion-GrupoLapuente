@@ -2,13 +2,25 @@
 body {
     background-color: #F8F8F8;
     font-family: Arial, sans-serif;
+    font-size: 18px;
 }
 
 /* Estilos para el encabezado */
 header {
-    background-color: #004A9E;
+    background-color: #00416A;
     color: white;
     padding: 20px;
+    position: relative;
+}
+
+header::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background-color: #CF0A2C;
 }
 
 /* Estilos para el contenido principal */
@@ -17,19 +29,18 @@ main {
     margin: 0 auto;
     padding: 20px;
     background-color: #F8F8F8;
-    border: 1px solid #004A9E;
+    border: 1px solid #00416A;
     box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.2);
-    text-align: center; /* Para centrar el contenido */
+    text-align: center;
 }
 
 main h2 {
     font-size: 28px;
     margin-top: 0;
-    color: #004A9E;
+    color: #00416A;
 }
 
 main p {
-    font-size: 18px;
     color: #333;
 }
 
@@ -39,7 +50,7 @@ main ul {
     margin: 30px 0;
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: space-evenly;
 }
 
 main li {
@@ -47,9 +58,9 @@ main li {
     width: 45%;
 }
 
-main a {
-    display: block;
-    background-color: #004A9E;
+main a, .button {
+    display: inline-block;
+    background-color: #00416A;
     color: white;
     padding: 12px 18px;
     margin-right: 15px;
@@ -60,89 +71,177 @@ main a {
 }
 
 main a:hover {
-    background-color: #005CB9;
+    background-color: #005385;
 }
 
 .button {
-    display: inline-block;
-    background-color: #0072C6;
-    color: #FFFFFF;
-    border: 1px solid #0072C6;
-    border-radius: 5px;
-    padding: 12px 18px;
-    margin-top: 30px;
+    background-color: #00619F;
+    border: 1px solid #00619F;
     font-size: 16px;
     cursor: pointer;
-    text-decoration: none;
-    transition: background-color 0.3s ease-in-out;
-}
-
-.button:hover {
-    background-color: #005CB9;
-    color: #FFFFFF;
 }
 
 .button-primary {
-  background-color: #007bff;
-  border-color: #007bff;
-  color: #ffffff;
+    background-color: #007bff;
+    border-color: #007bff;
+    color: #ffffff;
 }
+
 table {
-  border-collapse: collapse;
-  width: 100%;
+    border-collapse: collapse;
+    width: 100%;
 }
 
 table, th, td {
-  border: 1px solid black;
+    border: 1px solid black;
 }
 
 th, td {
-  padding: 8px;
-  text-align: left;
+    padding: 8px;
+    text-align: left;
 }
 
-.large-select {
-  font-size: 1.2rem;
-  padding: 0.5rem;
+
+
+input[type="text"], textarea, .large-select {
+    font-size: 20px;
+    padding: 0.5rem;
 }
+
 .logo {
     position: absolute;
-    top: 20px;
-    right: 20px;
-    max-width: 200px; /* Ajusta esto al tamaño que desees para el logotipo */
-    padding: 5px; /* Ajusta el espacio entre la imagen y el borde del fondo blanco */
+    top: 10px;
+    left: 10px;
+    max-width: 200px;
+    padding: 5px;
     background-color: #ffffff;
-    border: 1px solid #000000; /* Color del borde, cámbialo si es necesario */
-    border-radius: 5px; /* Ajusta el radio del borde para redondear las esquinas */
+    border: 1px solid #000000;
+    border-radius: 5px;
     box-sizing: border-box;
 }
 
 /* Estilos para la página de error */
 .error-page {
-  background-color: #004A9E;
+    background-color: #00416A;
 }
 
 /* Estilos para el contenedor de error */
 .error-container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
-  background-color: #FFFFFF;
-  border: 1px solid #004A9E;
-  box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.2);
-  text-align: center; /* Para centrar el contenido */
-}
-.container {
-    display: flex;
-    align-items: center;
-}
-h1, h2, h3, h4, h5, h6 {
+    max-width: 800px;
+    margin: 0 auto;
+    padding:20px;
+    background-color: #FFFFFF;
+    border: 1px solid #00416A;
+     box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.2);
     text-align: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+    }
+
+.container-return {
+                        justify-content: center;
+                        align-items: center;
+                        margin: 20px;
+                        text-align: center;
+                        position: absolute;
+                        bottom: 20px;
+                        left: 50%;
+                        transform: translateX(-50%);
+                    }
+
+.container {
+                        display: flex;
+                        align-items: center;
+                    }
+
+h1, h2, h3, h4, h5, h6 {
+                        text-align: center;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                    }
+
 .button-small {
-  font-size: 16px;
-  padding: 8px 12px;
+                        font-size: 16px;
+                        padding: 8px 12px;
+                    }
+
+.menu-button {
+                        width: 100%;
+                        text-align: center;
+                        box-sizing: border-box;
+                        min-width: 220px;
+                        max-width: 300px;
+                    }
+
+/* Estilos para los formularios y campos de texto */
+.form-group {
+                        display: flex;
+                        flex-direction: row;
+                        align-items: center;
+                        justify-content: space-between;
+                        margin-bottom: 20px;
+}
+
+.form-group asignartareas{
+                        display: flex;
+                        flex-direction: row;
+                        align-items: center;
+                        justify-content: space-between;
+                        margin-bottom: 20px;
+}
+
+.form-group.asignartareas textarea[name=descripcion] {
+  width: 500px; /* ajusta la anchura deseada */
+  font-size: 15px;
+}
+
+label {
+                        width: 30%;
+                        text-align: right;
+                        margin-right: 10px;
+}
+
+input[type="text"], input[type="password"] {
+                        width: 60%;
+                        padding: 8px;
+                        font-size: 16px;
+                        border: 1px solid #cccccc;
+                        border-radius: 4px;
+                        box-sizing: border-box;
+}
+
+button[type="submit"] {
+                        font-size: 16px;
+                        padding: 8px 12px;
+                        background-color: #00619F;
+                        color: #FFFFFF;
+                        border: 1px solid #00619F;
+                        border-radius: 5px;
+                        cursor: pointer;
+                        text-decoration: none;
+                        transition: background-color 0.3s ease-in-out;
+}
+
+button[type="submit"]:hover {
+                        background-color: #005385;
+                        color: #FFFFFF;
+}
+
+/* Estilos específicos para el campo de descripción */
+input#descripcion {
+                        height: 60px;
+                        resize: vertical;
+}
+
+/* Centrar botones en el medio */
+.button-group {
+                        text-align: center;
+}
+
+.button-group button,
+.button-group a.button {
+                        display: inline-block;
+}
+
+table td {
+    font-size: 14px;
 }

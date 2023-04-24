@@ -1,12 +1,6 @@
 package MultiAplicacion;
 
-import MultiAplicacion.DTOs.InformeDTO;
-import MultiAplicacion.DTOs.TareaCumplidaDTO;
-import MultiAplicacion.DTOs.TareaDTO;
-import MultiAplicacion.DTOs.UbicacionDTO;
-import MultiAplicacion.ENUMs.Turno;
-import MultiAplicacion.entities.*;
-import MultiAplicacion.repositories.*;
+
 import MultiAplicacion.repositories.AdminRepository;
 import MultiAplicacion.repositories.InformeRepository;
 import MultiAplicacion.repositories.RoleRepository;
@@ -14,7 +8,6 @@ import MultiAplicacion.repositories.SociedadRepository;
 import MultiAplicacion.repositories.TareaRepository;
 import MultiAplicacion.repositories.UbicacionRepository;
 import MultiAplicacion.repositories.WorkerRepository;
-import MultiAplicacion.services.*;
 import MultiAplicacion.services.InformeService;
 import MultiAplicacion.services.SociedadService;
 import MultiAplicacion.services.TareaCumplidaService;
@@ -29,8 +22,11 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.time.LocalDateTime;
-import java.util.*;
+//TODO arreglar el metodo InformarTarea en el controlador y en la vista
+//TODO hacer funcional el CambioSociedad.
+//TODO arreglar crear tarea y crear ubicacion en la vista
+//TODO Cambiar el InformeDiario para que sea una vista html y luego un excel (basarse en la vista ubicaciones.html)
+//TODO Conjugar la sociedadid de la url con la seguridad para evitar consultas intersociedades
 
 @SpringBootApplication
 @EntityScan(basePackages = "MultiAplicacion.entities")

@@ -4,7 +4,29 @@
   <meta charset="UTF-8">
   <title>Ver Trabajadores</title>
   <link rel="stylesheet" href="../../static/css/styles.css" th:href="@{/css/styles.css}">
+  <style>
+    .button-container {
+      display: flex;
+      flex-direction: row;
+      gap: 3px;
+    }
+    .button {
+      font-size: calc(1rem - 1pt);
+      padding: calc(0.5rem - 1px) calc(1rem - 1px);
+      margin: 0 3px;
+    }
+    .table-container {
+      margin-bottom: 1rem;
+    }
+  </style>
   <script th:src="@{/js/logo.js}"></script>
+  <script>
+  function confirmDelete(url) {
+    if (confirm("¿Estás seguro de que deseas eliminar este elemento?")) {
+      window.location.href = url;
+    }
+  }
+</script>
 </head>
 <body onload="updateLogo('${session.sociedadSeleccionadaId}')">
 <header>
@@ -12,12 +34,14 @@
   <img id="logo" class="logo" src="" alt="Logotipo">
 </header>
 <main>
+  <a class="button" th:href="@{/admin/{sociedadId}/crear-trabajador(sociedadId=${session.sociedadId})}">Crear Trabajador</a></li>
   <table>
     <thead>
     <tr>
       <th>ID</th>
       <th>Nombre</th>
       <th>Cargo</th>
+      <th>Acciones</th>
     </tr>
     </thead>
     <tbody>
@@ -25,10 +49,18 @@
       <td th:text="${worker.id}"></td>
       <td th:text="${worker.name}"></td>
       <td th:text="${worker.cargo}"></td>
+      <td style="width: 198px; padding-right: 5px;">
+        <div class="button-container">
+          <a th:href="@{/admin/{sociedadId}/workers/editar/{workerId}(sociedadId=${session.sociedadId}, workerId=${worker.id})}" class="button">Editar</a>
+          <button class="button" th:onclick="'confirmDelete(\'/admin/' + ${session.sociedadId} + '/workers/' + ${worker.id} + '/delete\')'">Borrar</button>
+        </div>
+      </td>
     </tr>
     </tbody>
   </table>
 </main>
-<a href="/admin/{sociedadId}/adminsmenu" th:href="@{/admin/{sociedadId}/adminsmenu(sociedadId=${session.sociedadId})}" class="button">Volver al Menú de Administrador</a>
+<div class="button-group">
+  <a href="/admin/{sociedadId}/adminsmenu" th:href="@{/admin/{sociedadId}/adminsmenu(sociedadId=${session.sociedadId})}" class="button">Volver al Menú de Administrador</a>
+</div>
 </body>
 </html>

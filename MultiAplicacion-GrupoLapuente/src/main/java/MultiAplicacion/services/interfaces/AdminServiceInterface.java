@@ -6,7 +6,7 @@ import MultiAplicacion.entities.Sociedad;
 import java.util.Optional;
 
 public interface AdminServiceInterface {
-    Admin createAdmin(String name, String email, String password, Sociedad sociedad);
+    Admin createAdmin(String name, String email, String password, Long sociedadId);
     Optional<Admin> findAdminByName(String name);
     Optional<Admin> findAdminByEmail(String email);
 }

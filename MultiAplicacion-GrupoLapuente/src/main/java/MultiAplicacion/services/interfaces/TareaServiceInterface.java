@@ -12,4 +12,6 @@ public interface TareaServiceInterface {
     Tarea updateTarea(Long id, TareaDTO tarea);
     void deleteTareaById(Long id);
     List<Tarea> getTareasByUbicacion(Long id);
+    List<Tarea> findAllDistinctByName();
+    List<Tarea> findAllOrderedById();
 }

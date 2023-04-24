@@ -116,6 +116,9 @@ public class UbicacionService implements UbicacionServiceInterface {
 
         return availableUbicaciones;
     }
+    public List<Ubicacion> findAllBySociedadOrderedById(Sociedad sociedad) {
+        return ubicacionRepository.findAllBySociedadOrderById(sociedad);
+    }
 
 }
 

@@ -12,7 +12,7 @@
     <img id="logo" class="logo" src="" alt="Logotipo">
 </header>
 <main>
-    <form th:action="@{/admin/crear-trabajador}" th:object="${workerDTO}" method="post">
+    <form th:action="@{/admin/{sociedadId}/crear-trabajador(sociedadId=${session.sociedadId})}" th:object="${workerDTO}" method="post">
         <div class="form-group">
             <label for="name">Nombre:</label>
             <input type="text" th:field="*{name}" id="name" required>
@@ -31,7 +31,8 @@
         <button type="submit">Crear Trabajador</button>
     </form>
 </main>
-<a href="/admin/{sociedadId}/adminsmenu" th:href="@{/admin/{sociedadId}/adminsmenu(sociedadId=${session.sociedadId})}" class="button">Volver al Menú de Administrador</a>
-
+<div class="button-group">
+    <a href="/admin/{sociedadId}/adminsmenu" th:href="@{/admin/{sociedadId}/adminsmenu(sociedadId=${session.sociedadId})}" class="button">Volver al Menú de Administrador</a>
+</div>
 </body>
 </html>

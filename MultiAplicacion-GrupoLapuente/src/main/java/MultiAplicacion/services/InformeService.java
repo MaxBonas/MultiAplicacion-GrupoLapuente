@@ -68,36 +68,10 @@ public class InformeService implements InformeServiceInterface {
 
         if (!informesExistente.isEmpty()) {
             Informe informeExistente = informesExistente.get(0);
-            informeExistente.setComentario(informe.getComentario());
             return informeRepository.save(informeExistente);
         }
 
         return informeRepository.save(informe);
-    }
-
-    @Override
-    public void updateTareasCumplidasDeInforme(Long informeId, List<TareaCumplidaDTO> tareasCumplidas) {
-        Informe informe = informeRepository.findById(informeId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NO_CONTENT, "Informe not found"));
-
-        // Creamos la lista de tareas cumplidas
-        List<TareaCumplida> tareaCumplidaList = tareasCumplidas.stream()
-                .map(tareaCumplidaDTO -> {
-                    Tarea tarea = tareaRepository.findById(tareaCumplidaDTO.getTareaId())
-                            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NO_CONTENT, "Tarea not found"));
-                    Worker worker = workerRepository.findById(tareaCumplidaDTO.getWorkerId())
-                            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NO_CONTENT, "Worker not found"));
-                    Ubicacion ubicacion = ubicacionRepository.findById(tareaCumplidaDTO.getUbicacionId())
-                            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NO_CONTENT, "Ubicacion not found"));
-                    return new TareaCumplida(tarea, worker, ubicacion, tareaCumplidaDTO.getCumplida(), tareaCumplidaDTO.getFechaCumplimiento(), tareaCumplidaDTO.getTurno(), informe);
-                })
-                .collect(Collectors.toList());
-
-        // Actualizamos las tareas cumplidas del informe
-        informe.setTareasCumplidas(tareaCumplidaList);
-
-        // Guardamos el informe actualizado
-        informeRepository.save(informe);
     }
 
     @Override

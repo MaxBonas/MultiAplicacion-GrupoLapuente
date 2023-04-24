@@ -15,11 +15,13 @@ public class TareaCumplidaDTO {
     private String workerName;
     private LocalDateTime fechaCumplimiento;
     private Turno turno;
+    private String comentario;
 
     public TareaCumplidaDTO() {
     }
 
-    public TareaCumplidaDTO(Long tareaId, String tareaName, Long workerId, Long ubicacionId, Boolean cumplida, String workerName, LocalDateTime fechaCumplimiento, Turno turno) {
+    public TareaCumplidaDTO(Long id, Long tareaId, String tareaName, Long workerId, Long ubicacionId, Boolean cumplida, String workerName, LocalDateTime fechaCumplimiento, Turno turno, String comentario) {
+        this.id = id;
         this.tareaId = tareaId;
         this.tareaName = tareaName;
         this.workerId = workerId;
@@ -28,9 +30,22 @@ public class TareaCumplidaDTO {
         this.workerName = workerName;
         this.fechaCumplimiento = fechaCumplimiento;
         this.turno = turno;
+        this.comentario = comentario;
     }
 
-// Getters and setters
+    public TareaCumplidaDTO(Long tareaId, String tareaName, Long workerId, Long ubicacionId, Boolean cumplida, String workerName, LocalDateTime fechaCumplimiento, Turno turno, String comentario) {
+        this.tareaId = tareaId;
+        this.tareaName = tareaName;
+        this.workerId = workerId;
+        this.ubicacionId = ubicacionId;
+        this.cumplida = cumplida;
+        this.workerName = workerName;
+        this.fechaCumplimiento = fechaCumplimiento;
+        this.turno = turno;
+        this.comentario = comentario;
+    }
+
+    // Getters and setters
 
     public Long getId() {
         return id;
@@ -109,5 +124,12 @@ public class TareaCumplidaDTO {
 
     public void setCumplida(Boolean cumplida) {
         this.cumplida = cumplida;
+    }
+
+    public String getComentario() {
+        return comentario;
+    }
+    public void setComentario(String comentario) {
+        this.comentario = comentario;
     }
 }

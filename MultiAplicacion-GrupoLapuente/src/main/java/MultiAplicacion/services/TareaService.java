@@ -57,5 +57,12 @@ public class TareaService implements TareaServiceInterface {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NO_CONTENT, "Ubicacion not found"));
         return tareaRepository.findByUbicaciones(ubicacion);
     }
+    public List<Tarea> findAllDistinctByName() {
+        return tareaRepository.findAllDistinctByName();
+    }
+    public List<Tarea> findAllOrderedById() {
+        return tareaRepository.findAllByOrderById();
+    }
+
 }
 

@@ -11,15 +11,13 @@ public class InformeDTO {
     private Long ubicacionId;
     private Turno turno;
     private List<TareaCumplidaDTO> tareasCumplidas;
-    private String comentario;
 
     // Constructor, getters y setters
 
-    public InformeDTO(LocalDateTime fecha, Long ubicacionId, Turno turno, String comentario, List<TareaCumplidaDTO> tareasCumplidas) {
+    public InformeDTO(LocalDateTime fecha, Long ubicacionId, Turno turno, List<TareaCumplidaDTO> tareasCumplidas) {
         this.fecha = fecha;
         this.ubicacionId = ubicacionId;
         this.turno = turno;
-        this.comentario = comentario;
         this.tareasCumplidas = tareasCumplidas;
     }
 
@@ -63,11 +61,4 @@ public class InformeDTO {
         this.tareasCumplidas = tareasCumplidas;
     }
 
-    public String getComentario() {
-        return comentario;
-    }
-
-    public void setComentario(String comentario) {
-        this.comentario = comentario;
-    }
 }

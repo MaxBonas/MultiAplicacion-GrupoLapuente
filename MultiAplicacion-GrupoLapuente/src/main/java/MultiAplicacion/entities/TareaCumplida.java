@@ -32,23 +32,26 @@ public class TareaCumplida {
 
     private Turno turno;
 
+    private String comentario;
+
     @ManyToOne
-    @JoinColumn(name = "informe_id", nullable = false)
+    @JoinColumn(name = "informe_id", nullable = true)
     private Informe informe;
 
     public TareaCumplida() {}
 
-    public TareaCumplida(Tarea tarea, Worker worker, Ubicacion ubicacion, Boolean cumplida, LocalDateTime fechaCumplimiento, Turno turno, Informe informe) {
+    public TareaCumplida(Tarea tarea, Worker worker, Ubicacion ubicacion, boolean cumplida, LocalDateTime fechaCumplimiento, Turno turno, String comentario, Informe informe) {
         this.tarea = tarea;
         this.worker = worker;
         this.ubicacion = ubicacion;
         this.cumplida = cumplida;
         this.fechaCumplimiento = fechaCumplimiento;
         this.turno = turno;
+        this.comentario = comentario;
         this.informe = informe;
     }
 
-    public TareaCumplida(Long id, Tarea tarea, Worker worker, Ubicacion ubicacion, Boolean cumplida, LocalDateTime fechaCumplimiento, Turno turno, Informe informe) {
+    public TareaCumplida(Long id, Tarea tarea, Worker worker, Ubicacion ubicacion, boolean cumplida, LocalDateTime fechaCumplimiento, Turno turno, String comentario, Informe informe) {
         this.id = id;
         this.tarea = tarea;
         this.worker = worker;
@@ -56,9 +59,9 @@ public class TareaCumplida {
         this.cumplida = cumplida;
         this.fechaCumplimiento = fechaCumplimiento;
         this.turno = turno;
+        this.comentario = comentario;
         this.informe = informe;
     }
-
     // SETTERS Y GETTERS
 
     public Long getId() {
@@ -133,4 +136,11 @@ public class TareaCumplida {
         return cumplida;
     }
 
+    public String getComentario() {
+        return comentario;
+    }
+
+    public void setComentario(String comentario) {
+        this.comentario = comentario;
+    }
 }

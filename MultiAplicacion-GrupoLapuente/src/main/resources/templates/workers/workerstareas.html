@@ -1,58 +1,64 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title> Tareas y Ubicaciones</title>
-  <link rel="stylesheet" href="../../static/css/styles.css" th:href="@{/css/styles.css}">
-  <script>
-    function showSavingMessage() {
-      document.getElementById('saving-message').style.display = 'block';
-      setTimeout(function() {
-        document.getElementById('save-tasks-form').submit();
-      }, 1000);
-    }
-  </script>
-  <script th:src="@{/js/logo.js}"></script>
+    <meta charset="UTF-8">
+    <title>Tareas y Ubicaciones</title>
+    <link rel="stylesheet" href="../../static/css/styles.css" th:href="@{/css/styles.css}">
+    <script th:src="@{/js/logo.js}"></script>
 </head>
 <body onload="updateLogo('${session.sociedadSeleccionadaId}')">
 <header>
-  <h1>Tareas y Ubicaciones</h1>
-  <h4 style="text-align: center; font-size: 24px;">Ubicación: <span th:text="${ubicacion.name}"></span></h4>
-  <h3 style="text-align: center;">Fecha: <span th:text="${#temporals.format(fechaActual, 'dd-MM-yyyy')}"></span></h3>
-  <h3 style="text-align: center; font-size: 24px;">Turno: <span th:text="${turno}"></span></h3>
-  <img id="logo" class="logo" src="" alt="Logotipo">
+    <h1 th:text="${ubicacion.name}">Nombre de la ubicación</h1>
+    <h3 th:text="${#dates.format(#dates.createToday(), 'dd/MM/yyyy')}">Fecha actual</h3>
+    <h3 th:text="${turnoInformado}">Turno informado</h3>
+    <img id="logo" class="logo" src="" alt="Logotipo">
 </header>
 <main>
-  <form th:action="@{'/worker/' + ${session.sociedadId} + '/ubicaciones/' + ${ubicacionId} + '/tareas/informar'}" method="post" id="save-tasks-form">
-    <input type="hidden" name="ubicacionId" th:value="${ubicacionId}" />
-    <input type="hidden" name="turno" th:value="${turno}" />
+    <h2>Tareas Pendientes</h2>
+    <form th:action="@{'/worker/' + ${worker.sociedad.id} + '/ubicaciones/' + ${ubicacionId} + '/tareas'}" th:object="${tareaCumplidaListWrapper}" method="post">
+        <input type="hidden" name="turno" th:value="${turnoInformado}" />
+        <table>
+            <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Informar</th>
+                <th>Comentario</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="tareaCumplida : ${tareasCumplidasNo}">
+                <td th:text="${tareaCumplida.tarea.name}"></td>
+                <td th:text="${tareaCumplida.tarea.descripcion}"></td>
+                <td><input type="checkbox" th:field="*{tareasCumplidas[__${tareaCumplidaStat.index}__].cumplida}"></td>
+                <td><input type="text" th:field="*{tareasCumplidas[__${tareaCumplidaStat.index}__].comentario}"></td>
+                <input type="hidden" th:field="*{tareasCumplidas[__${tareaCumplidaStat.index}__].id}" />
+            </tr>
+            </tbody>
+        </table>
+        <button type="submit" class="button button-primary">Guardar cambios</button>
+    </form>
+
+    <h2>Tareas Cumplidas</h2>
     <table>
-      <thead>
-      <tr>
-        <th>Tarea</th>
-        <th>Realizada</th>
-        <th>Trabajador</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr th:each="tarea : ${tareaTareaCumplidaMap.keySet()}">
-        <td th:text="${tarea.name}"></td>
-        <td>
-          <input type="checkbox" name="tareaId" th:value="${tarea.id}" th:checked="${tareaTareaCumplidaMap[tarea] != null}" th:disabled="${tareaTareaCumplidaMap[tarea] != null}" />
-        </td>
-        <td th:text="${tareaTareaCumplidaMap[tarea]?.worker?.name ?: ''}"></td>
-      </tr>
-      </tbody>
+        <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Cumplida</th>
+            <th>Trabajador</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="tareaCumplida : ${tareasCumplidasSi}">
+            <td th:text="${tareaCumplida.tarea.name}"></td>
+            <td>Sí</td>
+            <td th:text="${tareaCumplida.worker.name}"></td>
+        </tr>
+        </tbody>
     </table>
-    <div class="container">
-      <label for="comentario">Comentario:</label>
-      <textarea id="comentario" name="comentario" rows="4" cols="50" th:text="${comentario != null ? comentario : ''}"></textarea>
-    </div>
-    <button type="button" class="button button-primary" onclick="showSavingMessage()">Guardar</button>
-    <p id="saving-message" style="display: none; text-align: center;">Guardando...</p>
     <a href="/worker/{sociedadId}/ubicaciones" th:href="@{/worker/{sociedadId}/ubicaciones(sociedadId=${session.sociedadId})}" class="button">Cancelar</a>
     <a href="/worker/{sociedadId}/workersmenu" th:href="@{/worker/{sociedadId}/workersmenu(sociedadId=${session.sociedadId})}" class="button">Volver al Menú</a>
-  </form>
 </main>
 </body>
 </html>
+

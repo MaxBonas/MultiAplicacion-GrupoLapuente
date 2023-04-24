@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Editar Trabajador</title>
+  <link rel="stylesheet" href="../../static/css/styles.css" th:href="@{/css/styles.css}">
+  <script th:src="@{/js/logo.js}"></script>
+  <style>
+    /* Puedes agregar estilos personalizados aquí o utilizar los mismos que en editar-tarea.html */
+  </style>
+</head>
+<body onload="updateLogo('${session.sociedadSeleccionadaId}')">
+<header>
+  <h1>Editar Trabajador</h1>
+  <img id="logo" class="logo" src="" alt="Logotipo">
+</header>
+<main>
+  <form th:action="@{/admin/{sociedadId}/workers/{id}/update(sociedadId=${session.sociedadId}, id=${workerDTO.id})}" th:object="${workerDTO}" method="post">
+    <div class="input-container">
+      <label for="name"><strong>Nombre:</strong></label>
+      <div>
+        <input type="text" th:field="*{name}" id="name" required>
+      </div>
+    </div>
+
+    <div class="input-container">
+      <label for="cargo"><strong>Cargo:</strong></label>
+      <div>
+        <input type="text" th:field="*{cargo}" id="cargo" required>
+      </div>
+    </div>
+
+    <button type="submit">Actualizar Trabajador</button>
+  </form>
+</main>
+<div class="button-group">
+  <a href="/admin/{sociedadId}/adminsmenu" th:href="@{/admin/{sociedadId}/adminsmenu(sociedadId=${session.sociedadId})}" class="button">Volver al Menú de Administrador</a>
+</div>
+</body>
+</html>

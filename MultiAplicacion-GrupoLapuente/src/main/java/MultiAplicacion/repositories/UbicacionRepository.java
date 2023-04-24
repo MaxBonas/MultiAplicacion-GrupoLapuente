@@ -13,4 +13,6 @@ public interface UbicacionRepository extends JpaRepository<Ubicacion, Long> {
     List<Ubicacion> findByName(String name);
     @EntityGraph(attributePaths = {"tareas"})
     List<Ubicacion> findBySociedad(Sociedad sociedad);
+    List<Ubicacion> findAllBySociedadOrderById(Sociedad sociedad);
+
 }

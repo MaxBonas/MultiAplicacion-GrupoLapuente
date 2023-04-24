@@ -29,7 +29,7 @@
         </tr>
         </tbody>
     </table>
-    <a th:href="@{/worker/{sociedadId}/workersmenu(sociedadId=${worker.sociedad.id})}" class="button">Volver al Menú de Trabajadores</a>
+    <a href="/worker/{sociedadId}/workersmenu" th:href="@{/worker/{sociedadId}/workersmenu(sociedadId=${session.sociedadId})}" class="button">Volver al Menú</a>
 </main>
 </body>
 </html>

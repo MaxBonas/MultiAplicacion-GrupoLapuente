@@ -12,21 +12,32 @@
   <img id="logo" class="logo" src="" alt="Logotipo">
 </header>
 <main>
-  <h2>Seleccione una Ubicación</h2>
-  <form action="/admin/ubicaciones/{ubicacionId}/tareas" method="post">
-    <select name="ubicacionId">
-      <option value="" disabled selected>Seleccione una ubicación</option>
-      <th:block th:each="ubicacion : ${ubicaciones}">
-        <option th:value="${ubicacion.id}" th:text="${ubicacion.nombre}"></option>
+  <h2>Nueva tarea</h2>
+  <form class="form-group asignartareas" th:action="@{/admin/{sociedadId}/ubicaciones/asignar(sociedadId=${session.sociedadId})}" method="post">
+    <label for="name">Nombre:</label>
+    <input type="text" id="name" name="name" required>
+    <br>
+    <label for="descripcion">Descripción:</label>
+    <textarea id="descripcion" name="descripcion" required></textarea>
+    <br>
+    <input type="hidden" name="ubicacionId" th:value="${ubicacionId}">
+    <input type="hidden" name="tareaId" value="0">
+  </form>
+  <button style="margin-bottom: 40px;" type="submit" class="button">Crear y asignar tarea</button>
+  <h2>Seleccione tarea existente</h2>
+  <form th:action="@{/admin/{sociedadId}/ubicaciones/asignar(sociedadId=${session.sociedadId})}" method="post">
+    <select name="tareaId" required>
+      <option value="" disabled selected>Seleccione una tarea</option>
+      <th:block th:each="tarea : ${tareas}">
+        <option th:value="${tarea.id}" th:text="${tarea.name}"></option>
       </th:block>
     </select>
-    <h2>Seleccione las Tareas a Asignar</h2>
-    <th:block th:each="tarea : ${tareas}">
-      <label><input type="checkbox" name="tareasId" th:value="${tarea.id}" th:text="${tarea.nombre}"> ${tarea.nombre}</label><br>
-    </th:block>
-    <button type="submit" class="button">Asignar Tareas</button>
+    <input type="hidden" name="ubicacionId" th:value="${ubicacionId}">
+    <button type="submit" class="button">Asignar tarea existente</button>
   </form>
-  <a href="/admin/{sociedadId}/adminsmenu" th:href="@{/admin/{sociedadId}/adminsmenu(sociedadId=${session.sociedadId})}" class="button">Volver al Menú de Administrador</a>
+  <div class="button-group">
+    <a href="/admin/{sociedadId}/adminsmenu" th:href="@{/admin/{sociedadId}/adminsmenu(sociedadId=${session.sociedadId})}" class="button">Volver al Menú de Administrador</a>
+  </div>
 </main>
 </body>
 </html>

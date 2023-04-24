@@ -20,6 +20,13 @@
     }
   </style>
   <script th:src="@{/js/logo.js}"></script>
+  <script>
+  function confirmDelete(url) {
+    if (confirm("¿Estás seguro de que deseas eliminar este elemento?")) {
+      window.location.href = url;
+    }
+  }
+</script>
 </head>
 <body onload="updateLogo('${session.sociedadSeleccionadaId}')">
 <header>
@@ -29,7 +36,11 @@
 <main>
   <th:block th:each="ubicacion : ${tareasAgrupadasPorUbicacion.entrySet()}">
     <div class="table-container">
-      <h2 th:text="${ubicacion.key}"></h2>
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h2 th:text="${ubicacion.key.name}"></h2>
+        <a th:href="@{/admin/{sociedadId}/ubicaciones/asignar(sociedadId=${session.sociedadId}, ubicacionId=${ubicacion.key.id})}" class="button">Asignar Tarea</a>
+        <!-- <button class="button" th:onclick="'confirmDelete(\'/admin/' + ${session.sociedadId} + '/ubicaciones/' + ${ubicacion.key.id} + '/delete\')'">Eliminar Ubicación</button> -->
+      </div>
       <table>
         <thead>
         <tr>
@@ -40,12 +51,12 @@
         </thead>
         <tbody>
         <tr th:each="tareaEntry : ${ubicacion.value}">
-          <td th:text="${tareaEntry.right.left}"></td>
+          <strong><td th:text="${tareaEntry.right.left}"></td></strong>
           <td th:text="${tareaEntry.right.right}"></td>
           <td>
             <div class="button-container">
-              <a th:href="@{'/admin/tareas/editar/' + ${tareaEntry.left}}" class="button">Editar</a>
-              <a th:href="@{'/admin/tareas/borrar/' + ${tareaEntry.left}}" class="button" onclick="return confirm('¿Estás seguro de que deseas eliminar esta tarea?');">Borrar</a>
+              <a th:href="@{/admin/{sociedadId}/tareas/editar/{tareaId}(sociedadId=${session.sociedadId}, tareaId=${tareaEntry.left})}" class="button">Editar</a>
+              <!-- <button class="button" th:onclick="'confirmDelete(\'/admin/' + ${session.sociedadId} + '/tareas/' + ${tareaEntry.left} + '/delete\')'">Borrar</button> -->
             </div>
           </td>
         </tr>
@@ -54,6 +65,8 @@
     </div>
   </th:block>
 </main>
-<a href="/admin/{sociedadId}/adminsmenu" th:href="@{/admin/{sociedadId}/adminsmenu(sociedadId=${session.sociedadId})}" class="button">Volver al Menú de Administrador</a>
+<div class="button-group">
+  <a href="/admin/{sociedadId}/adminsmenu" th:href="@{/admin/{sociedadId}/adminsmenu(sociedadId=${session.sociedadId})}" class="button">Volver al Menú de Administrador</a>
+</div>
 </body>
 </html>

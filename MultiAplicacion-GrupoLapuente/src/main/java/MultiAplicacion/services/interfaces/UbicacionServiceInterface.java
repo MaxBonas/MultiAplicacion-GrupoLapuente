@@ -21,5 +21,6 @@ public interface UbicacionServiceInterface {
     Ubicacion updateUbicacion(Long id, UbicacionDTO ubicacionDTO);
     List<Ubicacion> findAllAvailableForTarea(Long tareaId);
     List<Ubicacion> findAllBySociedad(Sociedad sociedad);
+    List<Ubicacion> findAllBySociedadOrderedById(Sociedad sociedad);
 }
 

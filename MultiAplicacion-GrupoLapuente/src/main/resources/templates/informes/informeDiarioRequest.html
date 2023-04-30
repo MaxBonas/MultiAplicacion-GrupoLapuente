@@ -4,13 +4,23 @@
   <meta charset="UTF-8">
   <title>Informe Diario</title>
   <link rel="stylesheet" href="../../static/css/styles.css" th:href="@{/css/styles.css}">
+  <script th:src="@{/js/logo.js}"></script>
 </head>
-<body>
-<h1>Informe Diario</h1>
-<form method="get" th:action="@{/admin/informes/diario}">
-  <label for="fecha">Fecha:</label>
-  <input type="date" id="fecha" name="fecha" required>
-  <button type="submit">Buscar</button>
-</form>
+<body onload="updateLogo('${session.sociedadSeleccionadaId}')">
+<header>
+  <h1>Informe Diario</h1>
+  <img id="logo" class="logo" src="" alt="Logotipo">
+</header>
+<main>
+  <h2>Selecciona la fecha del informe</h2>
+  <form th:action="@{/admin/{sociedadId}/informes/diario(sociedadId=${session.sociedadId})}" method="post">
+    <div class="input-container">
+      <label for="fecha">Fecha:</label>
+      <input type="date" id="fecha" name="fecha" th:value="${#dates.format(#dates.createToday(), 'yyyy-MM-dd')}" required>
+    </div>
+    <button type="submit" class="button button-primary">Generar informe</button>
+  </form>
+  <a href="/admin/{sociedadId}/adminsmenu" th:href="@{/admin/{sociedadId}/adminsmenu(sociedadId=${session.sociedadId})}" class="button">Volver al Menú de Administrador</a>
+</main>
 </body>
 </html>

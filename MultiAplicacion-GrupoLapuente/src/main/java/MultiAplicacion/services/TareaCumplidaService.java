@@ -5,6 +5,7 @@ import MultiAplicacion.ENUMs.Turno;
 import MultiAplicacion.entities.*;
 import MultiAplicacion.repositories.*;
 import MultiAplicacion.services.interfaces.TareaCumplidaServiceInterface;
+import org.slf4j.ILoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,8 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class TareaCumplidaService implements TareaCumplidaServiceInterface {
@@ -64,18 +67,11 @@ public class TareaCumplidaService implements TareaCumplidaServiceInterface {
                 new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "No existe la tarea cumplida con id: " + tareaCumplidaId + " en la base de datos"));
 
-        TareaCumplida updatedTareaCumplida = new TareaCumplida();
-        updatedTareaCumplida.setId(existingTareaCumplida.getId());
-        updatedTareaCumplida.setCumplida(tareaCumplida.isCumplida());
-        updatedTareaCumplida.setFechaCumplimiento(tareaCumplida.getFechaCumplimiento());
-        updatedTareaCumplida.setTurno(tareaCumplida.getTurno());
-        updatedTareaCumplida.setWorker(existingTareaCumplida.getWorker());
-        updatedTareaCumplida.setTarea(existingTareaCumplida.getTarea());
-        updatedTareaCumplida.setUbicacion(existingTareaCumplida.getUbicacion());
-        updatedTareaCumplida.setInforme(existingTareaCumplida.getInforme());
-        updatedTareaCumplida.setComentario(tareaCumplida.getComentario());
+        existingTareaCumplida.setCumplida(tareaCumplida.isCumplida());
+        existingTareaCumplida.setWorker(tareaCumplida.getWorker());
+        existingTareaCumplida.setComentario(tareaCumplida.getComentario());
 
-        return tareaCumplidaRepository.save(updatedTareaCumplida);
+        return tareaCumplidaRepository.save(existingTareaCumplida);
     }
 
     @Override
@@ -105,5 +101,16 @@ public class TareaCumplidaService implements TareaCumplidaServiceInterface {
         return tareasCumplidas;
     }
 
+    @Override
+    public List<TareaCumplida> findTareasCumplidasByUbicacionAndFechaAndTurno(Ubicacion ubicacion, LocalDateTime fecha, Turno turno) {
+        // Ajustar la hora de fecha a medianoche para comparar solo la parte de la fecha
+        LocalDateTime fechaInicio = fecha.toLocalDate().atStartOfDay();
+        LocalDateTime fechaFin = fecha.toLocalDate().atTime(23, 59, 59);
+
+        // Buscar todas las tareas cumplidas que coincidan con la ubicación, fecha y turno proporcionados
+        List<TareaCumplida> tareasCumplidas = tareaCumplidaRepository.findByUbicacionAndFechaCumplimientoBetweenAndTurno(ubicacion, fechaInicio, fechaFin, turno);
+
+        return tareasCumplidas;
+    }
 
 }

@@ -272,5 +272,32 @@ public class AdminController implements AdminControllerInterface {
         return "redirect:/admin/{sociedadId}/ubicaciones";
     }
 
+    @GetMapping("/informes/diario/request")
+    public String informeDiarioRequest(@PathVariable("sociedadId") Long sociedadId, Model model) {
+        return "informes/informeDiarioRequest";
+    }
+
+    @PostMapping("/informes/diario")
+    public String informeDiario(@RequestParam("fecha") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fecha, Model model) {
+        List<Ubicacion> ubicaciones = ubicacionService.findAll();
+        Map<Long, List<TareaCumplida>> tareasCumplidasMananaMap = new HashMap<>();
+        Map<Long, List<TareaCumplida>> tareasCumplidasTardeMap = new HashMap<>();
+
+        for (Ubicacion ubicacion : ubicaciones) {
+            List<TareaCumplida> tareasCumplidasManana = tareaCumplidaService.findTareasCumplidasByUbicacionAndFechaAndTurno(ubicacion, fecha.atStartOfDay(), Turno.MANANA);
+            List<TareaCumplida> tareasCumplidasTarde = tareaCumplidaService.findTareasCumplidasByUbicacionAndFechaAndTurno(ubicacion, fecha.atStartOfDay(), Turno.TARDE);
+
+            tareasCumplidasMananaMap.put(ubicacion.getId(), tareasCumplidasManana);
+            tareasCumplidasTardeMap.put(ubicacion.getId(), tareasCumplidasTarde);
+        }
+
+        model.addAttribute("ubicaciones", ubicaciones);
+        model.addAttribute("tareasCumplidasMananaMap", tareasCumplidasMananaMap);
+        model.addAttribute("tareasCumplidasTardeMap", tareasCumplidasTardeMap);
+        model.addAttribute("fecha", fecha);
+
+        return "informes/informeDiario";
+    }
+
 }
 

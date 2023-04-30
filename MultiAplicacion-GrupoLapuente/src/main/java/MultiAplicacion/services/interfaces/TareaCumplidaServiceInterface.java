@@ -20,6 +20,7 @@ public interface TareaCumplidaServiceInterface {
     TareaCumplida updateTareaCumplida(Long tareaCumplidaId, TareaCumplida tareaCumplida);
     TareaCumplida save(TareaCumplidaDTO tareaCumplidaDTO);
     List<TareaCumplida> findTareasCumplidasByUbicacionAndFechaAndTurnoAndCumplida(Ubicacion ubicacion, LocalDateTime fecha, Turno turno, boolean cumplida);
+    List<TareaCumplida> findTareasCumplidasByUbicacionAndFechaAndTurno(Ubicacion ubicacion, LocalDateTime fecha, Turno turno);
 }
 
 

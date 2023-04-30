@@ -74,9 +74,14 @@ public class WorkerController implements WorkerControllerInterface {
         Ubicacion ubicacion = ubicacionService.findById(ubicacionId);
         LocalDateTime fecha = LocalDateTime.now();
 
-        workerService.crearTareasCumplidasVacias(worker.getId(), ubicacionId, fecha, turno);
-        List<TareaCumplida> tareasCumplidasNo = tareaCumplidaService.findTareasCumplidasByUbicacionAndFechaAndTurnoAndCumplida(ubicacion, fecha, turno, false);
         List<TareaCumplida> tareasCumplidasSi = tareaCumplidaService.findTareasCumplidasByUbicacionAndFechaAndTurnoAndCumplida(ubicacion, fecha, turno, true);
+
+        // Verifica si hay tareas cumplidas antes de crear tareas cumplidas vacías
+        if (tareasCumplidasSi.isEmpty()) {
+            workerService.crearTareasCumplidasVacias(worker.getId(), ubicacionId, fecha, turno);
+        }
+
+        List<TareaCumplida> tareasCumplidasNo = tareaCumplidaService.findTareasCumplidasByUbicacionAndFechaAndTurnoAndCumplida(ubicacion, fecha, turno, false);
 
         model.addAttribute("worker", worker);
         model.addAttribute("ubicacion", ubicacion);
@@ -89,24 +94,30 @@ public class WorkerController implements WorkerControllerInterface {
         tareaCumplidaListWrapper.setTareasCumplidas(tareasCumplidasNo);
         model.addAttribute("tareaCumplidaListWrapper", tareaCumplidaListWrapper);
 
-
         return "workers/workerstareas";
     }
 
     @PostMapping("/ubicaciones/{ubicacionId}/tareas")
-    public String updateTareas(@PathVariable Long sociedadId, @PathVariable Long ubicacionId, @RequestParam Turno turno, @ModelAttribute("tareaCumplidaListWrapper") TareaCumplidaListWrapper tareaCumplidaListWrapper, RedirectAttributes redirectAttributes) {
+    public String updateTareas(@PathVariable Long sociedadId, @PathVariable Long ubicacionId, @RequestParam Turno turno,
+                               @ModelAttribute("tareaCumplidaListWrapper") TareaCumplidaListWrapper tareaCumplidaListWrapper,
+                               RedirectAttributes redirectAttributes, @AuthenticationPrincipal UserDetails userDetails) {
         List<TareaCumplida> tareasCumplidasNo = tareaCumplidaListWrapper.getTareasCumplidas();
 
         logger.info("TareasCumplidasNo: {}", tareasCumplidasNo);
 
+        Worker currentWorker = workerService.findByName(userDetails.getUsername());
+
         for (TareaCumplida tareaCumplida : tareasCumplidasNo) {
             logger.info("TareaCumplida ID: {}", tareaCumplida.getId());
+            tareaCumplida.setWorker(currentWorker);
+            logger.info("TareaCumplida Worker: {}", tareaCumplida.getWorker());
             tareaCumplidaService.updateTareaCumplida(tareaCumplida.getId(), tareaCumplida);
         }
 
         redirectAttributes.addAttribute("turno", turno);
         return "redirect:/worker/" + sociedadId + "/ubicaciones/" + ubicacionId + "/tareas";
     }
+
     @GetMapping("/password")
     public String showChangePasswordForm(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         model.addAttribute("worker", workerService.findByName(userDetails.getUsername()));

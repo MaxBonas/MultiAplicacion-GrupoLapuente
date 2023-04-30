@@ -22,7 +22,7 @@
             <tr>
                 <th>Nombre</th>
                 <th>Descripción</th>
-                <th>Informar</th>
+                <th>Hecho</th>
                 <th>Comentario</th>
             </tr>
             </thead>
@@ -31,12 +31,12 @@
                 <td th:text="${tareaCumplida.tarea.name}"></td>
                 <td th:text="${tareaCumplida.tarea.descripcion}"></td>
                 <td><input type="checkbox" th:field="*{tareasCumplidas[__${tareaCumplidaStat.index}__].cumplida}"></td>
-                <td><input type="text" th:field="*{tareasCumplidas[__${tareaCumplidaStat.index}__].comentario}"></td>
+                <td><input type="text" th:field="*{tareasCumplidas[__${tareaCumplidaStat.index}__].comentario}" style="width:100%;"></td>
                 <input type="hidden" th:field="*{tareasCumplidas[__${tareaCumplidaStat.index}__].id}" />
             </tr>
             </tbody>
         </table>
-        <button type="submit" class="button button-primary">Guardar cambios</button>
+        <button type="submit" class="button button-primary" th:disabled="${#lists.isEmpty(tareasCumplidasNo)}">Guardar cambios</button>
     </form>
 
     <h2>Tareas Cumplidas</h2>
@@ -52,12 +52,12 @@
         <tr th:each="tareaCumplida : ${tareasCumplidasSi}">
             <td th:text="${tareaCumplida.tarea.name}"></td>
             <td>Sí</td>
-            <td th:text="${tareaCumplida.worker.name}"></td>
+            <td th:text="${tareaCumplida.worker != null ? tareaCumplida.worker.name : ''}"></td>
         </tr>
         </tbody>
     </table>
-    <a href="/worker/{sociedadId}/ubicaciones" th:href="@{/worker/{sociedadId}/ubicaciones(sociedadId=${session.sociedadId})}" class="button">Cancelar</a>
-    <a href="/worker/{sociedadId}/workersmenu" th:href="@{/worker/{sociedadId}/workersmenu(sociedadId=${session.sociedadId})}" class="button">Volver al Menú</a>
+    <a href="/worker/{sociedadId}/ubicaciones" th:href="@{/worker/{sociedadId}/ubicaciones(sociedadId=${worker.sociedad.id})}" class="button">Cancelar</a>
+    <a href="/worker/{sociedadId}/workersmenu" th:href="@{/worker/{sociedadId}/workersmenu(sociedadId=${worker.sociedad.id})}" class="button">Volver al Menú de Trabajadores</a>
 </main>
 </body>
 </html>

@@ -4,35 +4,97 @@
   <meta charset="UTF-8">
   <title>Informe Diario</title>
   <link rel="stylesheet" href="../../static/css/styles.css" th:href="@{/css/styles.css}">
-</head>
-<body>
-<h1>Informe Diario</h1>
-<table>
-  <thead>
-  <tr>
-    <th>Ubicación</th>
-    <th>Hora</th>
-    <th>Turno</th>
-    <th>Trabajador</th>
-    <th>Tarea</th>
-    <th>Cumplida</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr th:each="ubicacion, mapEntry : ${reporteAgrupado}">
-    <td th:text="${ubicacion.name}" rowspan="${mapEntry.value.values().stream().mapToInt(List::size).sum()}"></td>
-    <td th:each="turno, turnoEntry : ${mapEntry.value}">
-    <td th:text="${turno}" rowspan="${turnoEntry.value.size()}"></td>
-  <tr th:each="reporte : ${turnoEntry.value}">
-    <td th:text="${reporte.fecha != null ? #dates.format(#conversions.convert(reporte.fecha, java.util.Date), 'HH:mm') : ''}"></td>
-    <td th:text="${reporte.trabajador != null ? reporte.trabajador.name : ''}"></td>
-    <td th:text="${reporte.tarea.name}"></td>
-    <td th:text="${reporte.cumplida != null ? (reporte.cumplida ? 'Sí' : 'No') : 'No'}"></td>
-  </tr>
-  </td>
-  </tr>
-  </tbody>
-</table>
+  <style>
+        .table-container {
+            margin-bottom: 1rem;
+        }
 
+        .button-container {
+            display: flex;
+            flex-direction: row;
+            gap: 3px;
+        }
+
+        .button {
+            font-size: calc(1rem - 1pt);
+            padding: calc(0.5rem - 1px) calc(1rem - 1px);
+            margin: 0 3px;
+        }
+    </style>
+  <script th:src="@{/js/logo.js}"></script>
+</head>
+<body onload="updateLogo('${session.sociedadSeleccionadaId}')">
+<header>
+  <h1>Informe Diario</h1>
+  <h2 th:text="'Fecha: ' + ${fecha}"></h2>
+  <img id="logo" class="logo" src="" alt="Logotipo">
+  <div class="button-container">
+    <a href="/admin/{sociedadId}/adminsmenu" th:href="@{/admin/{sociedadId}/adminsmenu(sociedadId=${session.sociedadId})}" class="button">Volver al Menú de Administrador</a>
+    <button class="button" onclick="exportarInformeExcel()">Exportar Informe en Excel</button>
+  </div>
+</header>
+<main>
+  <th:block th:each="ubicacion : ${ubicaciones}">
+    <div class="table-container">
+      <h2 th:text="${ubicacion.name}"></h2>
+      <h3>Turno Mañana</h3>
+      <table>
+        <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Descripción</th>
+          <th>Hecha</th>
+          <th>Trabajador</th>
+          <th>Comentario</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="tareaCumplida : ${tareasCumplidasMananaMap[ubicacion.id]}">
+          <td th:text="${tareaCumplida.tarea.name}"></td>
+          <td th:text="${tareaCumplida.tarea.descripcion}"></td>
+          <td th:text="${tareaCumplida.cumplida ? 'SI' : 'NO'}"></td>
+          <td th:text="${tareaCumplida.cumplida ? tareaCumplida.worker.name : ''}"></td>
+          <td th:text="${tareaCumplida.comentario}"></td>
+        </tr>
+        </tbody>
+      </table>
+      <h3>Turno Tarde</h3>
+      <table>
+        <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Descripción</th>
+          <th>Hecha</th>
+          <th>Trabajador</th>
+          <th>Comentario</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="tareaCumplida : ${tareasCumplidasTardeMap[ubicacion.id]}">
+          <td th:text="${tareaCumplida.tarea.name}"></td>
+          <td th:text="${tareaCumplida.tarea.descripcion}"></td>
+          <td th:text="${tareaCumplida.cumplida ? 'SI' : 'NO'}"></td>
+          <td th:text="${tareaCumplida.cumplida ? tareaCumplida.worker.name : ''}"></td>
+          <td th:text="${tareaCumplida.comentario}"></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </th:block>
+</main>
+<div class="button-container">
+  <a href="/admin/{sociedadId}/adminsmenu" th:href="@{/admin/{sociedadId}/adminsmenu(sociedadId=${session.sociedadId})}" class="button">Volver al Menú de Administrador</a>
+  <button class="button" onclick="exportarInformeExcel()">Exportar Informe en Excel</button>
+</div>
+<footer>
+  <p>Generado por Sistema de Informes Diarios</p>
+</footer>
+<script>
+    function exportarInformeExcel() {
+        // Lógica de exportación en Excel se implementará más adelante
+        alert("Función de exportación a Excel no implementada aún.");
+    }
+</script>
 </body>
 </html>
+

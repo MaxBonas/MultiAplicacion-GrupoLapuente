@@ -35,4 +35,6 @@ public interface AdminControllerInterface {
     String deleteUbicacion(@PathVariable Long sociedadId, @PathVariable Long id, RedirectAttributes redirectAttributes);
     String showAssignTareaForm(@RequestParam Long ubicacionId, Model model);
     String createAndAssignTarea(@RequestParam Long ubicacionId, @RequestParam Long tareaId, @RequestParam(required = false) String name, @RequestParam(required = false) String descripcion, RedirectAttributes redirectAttributes);
+    String informeDiarioRequest(@PathVariable("sociedadId") Long sociedadId, Model model);
+    String informeDiario(@RequestParam("fecha") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fecha, Model model);
 }

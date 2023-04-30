@@ -17,7 +17,9 @@ public interface WorkerControllerInterface {
     String selectTurno(@PathVariable Long ubicacionId, Model model, @AuthenticationPrincipal UserDetails userDetails);
     String workerMenu(Model model, @AuthenticationPrincipal UserDetails userDetails);
     String showChangePasswordForm(Model model, @AuthenticationPrincipal UserDetails userDetails);
-    String updateTareas(@PathVariable Long sociedadId, @PathVariable Long ubicacionId, @RequestParam Turno turno, @ModelAttribute("tareaCumplidaListWrapper") TareaCumplidaListWrapper tareaCumplidaListWrapper, RedirectAttributes redirectAttributes);
+    public String updateTareas(@PathVariable Long sociedadId, @PathVariable Long ubicacionId, @RequestParam Turno turno,
+                               @ModelAttribute("tareaCumplidaListWrapper") TareaCumplidaListWrapper tareaCumplidaListWrapper,
+                               RedirectAttributes redirectAttributes, @AuthenticationPrincipal UserDetails userDetails);
     String showTareas(@PathVariable Long sociedadId, @PathVariable Long ubicacionId, @RequestParam Turno turno, Model model, @AuthenticationPrincipal UserDetails userDetails);
 }
 

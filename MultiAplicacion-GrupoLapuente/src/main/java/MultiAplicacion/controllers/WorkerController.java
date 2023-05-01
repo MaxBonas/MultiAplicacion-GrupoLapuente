@@ -12,6 +12,7 @@ import MultiAplicacion.services.TareaCumplidaService;
 import MultiAplicacion.services.interfaces.UbicacionServiceInterface;
 import MultiAplicacion.services.interfaces.WorkerServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -51,9 +52,15 @@ public class WorkerController implements WorkerControllerInterface {
     private TareaCumplidaService tareaCumplidaService;
 
     @GetMapping("/ubicaciones")
-    public String getAllUbicaciones(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+    public String getAllUbicaciones(Model model, @AuthenticationPrincipal UserDetails userDetails, @PathVariable Long sociedadId) {
         Worker worker = workerService.findByName(userDetails.getUsername());
         Sociedad workerSociedad = worker.getSociedad();
+
+        // Añadir validación de sociedad
+        if (!workerSociedad.getId().equals(sociedadId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Acceso denegado");
+        }
+
         List<Ubicacion> ubicaciones = ubicacionService.findAllBySociedad(workerSociedad);
         model.addAttribute("worker", worker);
         model.addAttribute("ubicaciones", ubicaciones);
@@ -61,16 +68,25 @@ public class WorkerController implements WorkerControllerInterface {
     }
 
     @GetMapping("/ubicaciones/{ubicacionId}/selectturno")
-    public String selectTurno(@PathVariable Long ubicacionId, Model model, @AuthenticationPrincipal UserDetails userDetails) {
+    public String selectTurno(@PathVariable Long sociedadId, @PathVariable Long ubicacionId, Model model, @AuthenticationPrincipal UserDetails userDetails) {
         Worker worker = workerService.findByName(userDetails.getUsername());
+        // Añadir validación de sociedad
+        if (!worker.getSociedad().getId().equals(sociedadId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Acceso denegado");
+        }
         model.addAttribute("worker", worker);
         model.addAttribute("ubicacionId", ubicacionId);
 
         return "workers/workersturno";
     }
+
     @GetMapping("/ubicaciones/{ubicacionId}/tareas")
     public String showTareas(@PathVariable Long sociedadId, @PathVariable Long ubicacionId, @RequestParam Turno turno, Model model, @AuthenticationPrincipal UserDetails userDetails) {
         Worker worker = workerService.findByName(userDetails.getUsername());
+        // Añadir validación de sociedad
+        if (!worker.getSociedad().getId().equals(sociedadId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Acceso denegado");
+        }
         Ubicacion ubicacion = ubicacionService.findById(ubicacionId);
         LocalDateTime fecha = LocalDateTime.now();
 
@@ -106,7 +122,10 @@ public class WorkerController implements WorkerControllerInterface {
         logger.info("TareasCumplidasNo: {}", tareasCumplidasNo);
 
         Worker currentWorker = workerService.findByName(userDetails.getUsername());
-
+        // Añadir validación de sociedad
+        if (!currentWorker.getSociedad().getId().equals(sociedadId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Acceso denegado");
+        }
         for (TareaCumplida tareaCumplida : tareasCumplidasNo) {
             logger.info("TareaCumplida ID: {}", tareaCumplida.getId());
             tareaCumplida.setWorker(currentWorker);
@@ -119,10 +138,16 @@ public class WorkerController implements WorkerControllerInterface {
     }
 
     @GetMapping("/password")
-    public String showChangePasswordForm(Model model, @AuthenticationPrincipal UserDetails userDetails) {
-        model.addAttribute("worker", workerService.findByName(userDetails.getUsername()));
+    public String showChangePasswordForm(@PathVariable Long sociedadId, Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        Worker worker = workerService.findByName(userDetails.getUsername());
+        // Añadir validación de sociedad
+        if (!worker.getSociedad().getId().equals(sociedadId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Acceso denegado");
+        }
+        model.addAttribute("worker", worker);
         return "workers/cambiar-password";
     }
+
 
     @PostMapping("/password")
     public String cambiarPassword(@AuthenticationPrincipal UserDetails userDetails, @RequestParam String oldPassword, @RequestParam String newPassword, @RequestParam String confirmNewPassword, RedirectAttributes redirectAttributes) {
@@ -150,8 +175,14 @@ public class WorkerController implements WorkerControllerInterface {
 
 
     @GetMapping("/workersmenu")
-    public String workerMenu(Model model, @AuthenticationPrincipal UserDetails userDetails) {
-        model.addAttribute("worker", workerService.findByName(userDetails.getUsername()));
+    public String workerMenu(@PathVariable Long sociedadId, Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        Worker worker = workerService.findByName(userDetails.getUsername());
+        // Añadir validación de sociedad
+        if (!worker.getSociedad().getId().equals(sociedadId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Acceso denegado");
+        }
+        model.addAttribute("worker", worker);
         return "workers/workersmenu";
     }
+
 }

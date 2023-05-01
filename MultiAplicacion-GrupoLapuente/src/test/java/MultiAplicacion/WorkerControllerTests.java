@@ -6,6 +6,7 @@ import MultiAplicacion.entities.Sociedad;
 import MultiAplicacion.entities.TareaCumplida;
 import MultiAplicacion.entities.Ubicacion;
 import MultiAplicacion.entities.Worker;
+import MultiAplicacion.repositories.SociedadRepository;
 import MultiAplicacion.repositories.TareaCumplidaRepository;
 import MultiAplicacion.repositories.UbicacionRepository;
 import MultiAplicacion.repositories.WorkerRepository;
@@ -19,10 +20,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.web.server.ResponseStatusException;
 
 
 import java.util.ArrayList;
@@ -67,13 +70,19 @@ class WorkerControllerTests {
     @MockBean
     private TareaCumplidaService tareaCumplidaService;
 
+    @MockBean
+    private SociedadRepository sociedadRepository;
+
     @BeforeEach
     void setUp() {
         // Configurar los datos de prueba y las respuestas de los servicios aquí
         Worker worker = new Worker();
         worker.setName("worker1");
+        worker.setPassword("1234");
 
         Sociedad sociedad = new Sociedad();
+        sociedad.setId(1L);
+        sociedad.setName("Sociedad Test");
         worker.setSociedad(sociedad);
 
         when(workerService.findByName(any())).thenReturn(worker);
@@ -88,11 +97,13 @@ class WorkerControllerTests {
     }
 
 
+
     @Test
     void contextLoads() {
         // Verificar que el controlador se haya cargado correctamente
         assertNotNull(workerController);
     }
+
 
     @Test
     @WithMockUser(roles = "WORKER")
@@ -283,9 +294,138 @@ class WorkerControllerTests {
         verify(workerService).findByName(any());
         verify(ubicacionService).findAllBySociedad(any());
     }
-    void selectTurnoInvalidTest() throws Exception {
-        mockMvc.perform(get("/worker/1/ubicaciones/1/selectturno").param("turno", "INVALIDO"))
-                .andExpect(status().isBadRequest())
-                .andExpect(view().name("error/400"));
+    @Test
+    @WithMockUser(roles = "WORKER")
+    void selectTurnoUnauthorizedSociedadTest() throws Exception {
+        Worker worker = new Worker();
+        Sociedad sociedad = new Sociedad();
+        sociedad.setId(1L);
+        worker.setSociedad(sociedad);
+
+        when(workerService.findByName(any())).thenReturn(worker);
+
+        mockMvc.perform(get("/worker/2/ubicaciones/1/selectturno"))
+                .andExpect(status().isForbidden());
+
+        verify(workerService).findByName(any());
     }
+
+    @Test
+    @WithMockUser(roles = "WORKER")
+    void showTareasUnauthorizedSociedadTest() throws Exception {
+        Worker worker = new Worker();
+        Sociedad sociedad = new Sociedad();
+        sociedad.setId(1L);
+        worker.setSociedad(sociedad);
+
+        when(workerService.findByName(any())).thenReturn(worker);
+
+        mockMvc.perform(get("/worker/2/ubicaciones/1/tareas").param("turno", "MANANA"))
+                .andExpect(status().isForbidden());
+
+        verify(workerService).findByName(any());
+    }
+
+    @Test
+    @WithMockUser(roles = "WORKER")
+    void updateTareasUnauthorizedSociedadTest() throws Exception {
+        Worker worker = new Worker();
+        Sociedad sociedad = new Sociedad();
+        sociedad.setId(1L);
+        worker.setSociedad(sociedad);
+
+        when(workerService.findByName(any())).thenReturn(worker);
+
+        TareaCumplida tareaCumplida1 = new TareaCumplida();
+        tareaCumplida1.setId(1L);
+        List<TareaCumplida> tareasCumplidasNo = Collections.singletonList(tareaCumplida1);
+
+        TareaCumplidaListWrapper tareaCumplidaListWrapper = new TareaCumplidaListWrapper();
+        tareaCumplidaListWrapper.setTareasCumplidas(tareasCumplidasNo);
+
+        mockMvc.perform(post("/worker/2/ubicaciones/1/tareas")
+                        .param("turno", "MANANA")
+                        .flashAttr("tareaCumplidaListWrapper", tareaCumplidaListWrapper))
+                .andExpect(status().isForbidden());
+
+        verify(workerService).findByName(any());
+    }
+
+    @Test
+    @WithMockUser(roles = "WORKER")
+    void showChangePasswordFormUnauthorizedSociedadTest() throws Exception {
+        Worker worker = new Worker();
+        Sociedad sociedad = new Sociedad();
+        sociedad.setId(1L);
+        worker.setSociedad(sociedad);
+
+        when(workerService.findByName(any())).thenReturn(worker);
+
+        mockMvc.perform(get("/worker/2/password"))
+                .andExpect(status().isForbidden());
+
+        verify(workerService).findByName(any());
+    }
+
+    @Test
+    @WithMockUser(roles = "WORKER")
+    void workerMenuUnauthorizedSociedadTest() throws Exception {
+        Worker worker = new Worker();
+        Sociedad sociedad = new Sociedad();
+        sociedad.setId(1L);
+        worker.setSociedad(sociedad);
+
+        when(workerService.findByName(any())).thenReturn(worker);
+
+        mockMvc.perform(get("/worker/2/workersmenu"))
+                .andExpect(status().isForbidden());
+
+        verify(workerService).findByName(any());
+    }
+
+    @Test
+    @WithMockUser(roles = "WORKER")
+    void updateTareasEmptyListTest() throws Exception {
+        Worker worker = new Worker();
+        Sociedad sociedad = new Sociedad();
+        sociedad.setId(1L);
+        worker.setSociedad(sociedad);
+
+        when(workerService.findByName(any())).thenReturn(worker);
+
+        TareaCumplidaListWrapper tareaCumplidaListWrapper = new TareaCumplidaListWrapper();
+        tareaCumplidaListWrapper.setTareasCumplidas(new ArrayList<>());
+
+        mockMvc.perform(post("/worker/1/ubicaciones/1/tareas")
+                        .param("turno", "MANANA")
+                        .flashAttr("tareaCumplidaListWrapper", tareaCumplidaListWrapper))
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("/worker/1/ubicaciones/1/tareas?turno=MANANA"));
+
+        verify(workerService).findByName(any());
+        verify(tareaCumplidaService, never()).updateTareaCumplida(any(), any());
+    }
+
+    @Test
+    @WithMockUser(roles = "WORKER")
+    void cambiarPasswordInvalidOldPasswordTest() throws Exception {
+        Worker worker = new Worker();
+        Sociedad sociedad = new Sociedad();
+        sociedad.setId(1L);
+        worker.setSociedad(sociedad);
+
+        when(workerService.findByName(any())).thenReturn(worker);
+        doThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST, "La contraseña actual es incorrecta")).when(workerService).cambiarPassword(any(), any(), any());
+
+        mockMvc.perform(post("/worker/1/password")
+                        .param("oldPassword", "incorrectOldPassword")
+                        .param("newPassword", "newPassword")
+                        .param("confirmNewPassword", "newPassword"))
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("/worker/1/workersmenu"));
+
+        verify(workerService).findByName(any());
+        verify(workerService).cambiarPassword(any(), any(), any());
+    }
+
 }

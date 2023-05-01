@@ -128,6 +128,12 @@ public class WorkerController implements WorkerControllerInterface {
     public String cambiarPassword(@AuthenticationPrincipal UserDetails userDetails, @RequestParam String oldPassword, @RequestParam String newPassword, @RequestParam String confirmNewPassword, RedirectAttributes redirectAttributes) {
         Worker worker = workerService.findByName(userDetails.getUsername());
 
+        // Agrega la validación para entradas vacías
+        if (oldPassword.isEmpty() || newPassword.isEmpty() || confirmNewPassword.isEmpty()) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Los campos de contraseña no pueden estar vacíos");
+            return "redirect:/worker/" + worker.getSociedad().getId() + "/password";
+        }
+
         if (!newPassword.equals(confirmNewPassword)) {
             redirectAttributes.addFlashAttribute("errorMessage", "Las contraseñas nuevas no coinciden");
             return "redirect:/worker/" + worker.getSociedad().getId() + "/password";
@@ -148,5 +154,4 @@ public class WorkerController implements WorkerControllerInterface {
         model.addAttribute("worker", workerService.findByName(userDetails.getUsername()));
         return "workers/workersmenu";
     }
-
 }

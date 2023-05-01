@@ -14,16 +14,20 @@
 <main>
   <h2>Nueva tarea</h2>
   <form class="form-group asignartareas" th:action="@{/admin/{sociedadId}/ubicaciones/asignar(sociedadId=${session.sociedadId})}" method="post">
+    <div class="input-fields">
     <label for="name">Nombre:</label>
     <input type="text" id="name" name="name" required>
     <br>
     <label for="descripcion">Descripción:</label>
     <textarea id="descripcion" name="descripcion" required></textarea>
     <br>
-    <input type="hidden" name="ubicacionId" th:value="${ubicacionId}">
-    <input type="hidden" name="tareaId" value="0">
+    </div>
+    <div class="input-fields">
+      <input type="hidden" name="ubicacionId" th:value="${ubicacionId}">
+      <input type="hidden" name="tareaId" value="0">
+    </div>
+    <button type="submit" class="button create-task-button">Crear y asignar tarea</button> <!-- Añade la clase 'create-task-button' -->
   </form>
-  <button style="margin-bottom: 40px;" type="submit" class="button">Crear y asignar tarea</button>
   <h2>Seleccione tarea existente</h2>
   <form th:action="@{/admin/{sociedadId}/ubicaciones/asignar(sociedadId=${session.sociedadId})}" method="post">
     <select name="tareaId" required>

@@ -5,6 +5,7 @@
     <title>Menú de Administrador</title>
     <link rel="stylesheet" href="../../static/css/styles.css" th:href="@{/css/styles.css}">
     <script th:src="@{/js/logo.js}"></script>
+    <script th:src="@{/js/adminsmenu.js}"></script>
 </head>
 <body onload="updateLogo('${session.sociedadSeleccionadaId}')">
 <header>
@@ -19,9 +20,9 @@
             <li><a class="menu-button" th:href="@{/admin/{sociedadId}/workers(sociedadId=${session.sociedadId})}">Trabajadores</a></li>
             <li><a class="menu-button" th:href="@{/admin/{sociedadId}/ubicaciones(sociedadId=${session.sociedadId})}">Ubicaciones y Tareas</a></li>
             <li><a class="menu-button" th:href="@{/admin/{sociedadId}/informes/diario/request(sociedadId=${session.sociedadId})}">Informe Diario</a></li>
-            <li><a class="menu-button" th:href="@{/admin/{sociedadId}/informes/turno-ubicacion/request(sociedadId=${session.sociedadId})}">Informe Turno y Ubicación</a></li>
-            <li><a class="menu-button" th:href="@{/admin/{sociedadId}/informes/mensual/request(sociedadId=${session.sociedadId})}">Informe Mensual</a></li>
-            <li><a class="menu-button" th:href="@{/admin/{sociedadId}/cambio-sociedad(sociedadId=${session.sociedadId})}">Cambiar Sociedad</a></li>
+            <li><a class="menu-button" href="#" onclick="showUnderDevelopmentAlert();">Informe Mensual</a></li>
+            <li><a class="menu-button" href="#" onclick="showUnderDevelopmentAlert();">Informe Turno y Ubicación</a></li>
+            <li><a class="menu-button" href="#" onclick="showUnderDevelopmentAlert();">Cambiar Sociedad</a></li>
         </ul>
     </div>
     <!-- ... -->

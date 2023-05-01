@@ -2,6 +2,10 @@ package MultiAplicacion.controllers.interfaces;
 
 import MultiAplicacion.DTOs.*;
 import MultiAplicacion.ENUMs.Turno;
+import MultiAplicacion.entities.TareaCumplida;
+import MultiAplicacion.entities.Ubicacion;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
@@ -9,9 +13,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.util.List;
 
 public interface AdminControllerInterface {
     String adminMenu(@PathVariable Long sociedadId, Model model, HttpServletRequest request);

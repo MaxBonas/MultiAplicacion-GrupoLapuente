@@ -11,6 +11,7 @@
 
         .button-container {
             display: flex;
+            justify-content: center;
             flex-direction: row;
             gap: 3px;
         }
@@ -28,12 +29,14 @@
   <h1>Informe Diario</h1>
   <h2 th:text="'Fecha: ' + ${fecha}"></h2>
   <img id="logo" class="logo" src="" alt="Logotipo">
-  <div class="button-container">
-    <a href="/admin/{sociedadId}/adminsmenu" th:href="@{/admin/{sociedadId}/adminsmenu(sociedadId=${session.sociedadId})}" class="button">Volver al Menú de Administrador</a>
-    <button class="button" onclick="exportarInformeExcel()">Exportar Informe en Excel</button>
-  </div>
+
 </header>
 <main>
+  <br>
+  <div class="button-container">
+  <a href="/admin/{sociedadId}/adminsmenu" th:href="@{/admin/{sociedadId}/adminsmenu(sociedadId=${session.sociedadId})}" class="button">Volver al Menú de Administrador</a>
+  <button class="button" onclick="exportarInformeExcel()">Exportar Informe en Excel</button>
+</div>
   <th:block th:each="ubicacion : ${ubicaciones}">
     <div class="table-container">
       <h2 th:text="${ubicacion.name}"></h2>
@@ -90,10 +93,14 @@
   <p>Generado por Sistema de Informes Diarios</p>
 </footer>
 <script>
-    function exportarInformeExcel() {
-        // Lógica de exportación en Excel se implementará más adelante
-        alert("Función de exportación a Excel no implementada aún.");
-    }
+function exportarInformeExcel() {
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '/admin/{sociedadId}/informes/diario/export';
+    form.innerHTML = `<input type="hidden" name="fecha" value="${new Date().toISOString().substr(0, 10)}">`;
+    document.body.appendChild(form);
+    form.submit();
+}
 </script>
 </body>
 </html>

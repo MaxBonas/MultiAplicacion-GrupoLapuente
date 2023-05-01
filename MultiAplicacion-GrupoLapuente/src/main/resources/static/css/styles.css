@@ -181,17 +181,41 @@ h1, h2, h3, h4, h5, h6 {
                         margin-bottom: 20px;
 }
 
-.form-group asignartareas{
-                        display: flex;
-                        flex-direction: row;
-                        align-items: center;
-                        justify-content: space-between;
-                        margin-bottom: 20px;
+.form-group.asignartareas {
+  display: flex;
+  flex-direction: column; /* Cambiar a 'column' para mostrar los elementos en líneas separadas */
+  align-items: flex-start; /* Alinear los elementos a la izquierda */
+  margin-bottom: 20px;
 }
 
 .form-group.asignartareas textarea[name=descripcion] {
   width: 500px; /* ajusta la anchura deseada */
   font-size: 15px;
+}
+/* Agregar estilos para los nuevos contenedores */
+.form-group.asignartareas .input-fields {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.form-group.asignartareas .submit-button {
+  margin-top: 20px;
+  display: flex; /* Añadir 'display: flex' para habilitar la alineación del botón */
+  justify-content: center; /* Centrar el botón horizontalmente */
+}
+.form-group.asignartareas {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.create-task-button {
+  margin-bottom: 40px;
+  align-self: center;
 }
 
 label {

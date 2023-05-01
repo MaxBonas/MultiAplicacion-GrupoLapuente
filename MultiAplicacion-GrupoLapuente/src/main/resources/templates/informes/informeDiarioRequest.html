@@ -18,6 +18,7 @@
       <label for="fecha">Fecha:</label>
       <input type="date" id="fecha" name="fecha" th:value="${#dates.format(#dates.createToday(), 'yyyy-MM-dd')}" required>
     </div>
+    <br>
     <button type="submit" class="button button-primary">Generar informe</button>
   </form>
   <a href="/admin/{sociedadId}/adminsmenu" th:href="@{/admin/{sociedadId}/adminsmenu(sociedadId=${session.sociedadId})}" class="button">Volver al Menú de Administrador</a>

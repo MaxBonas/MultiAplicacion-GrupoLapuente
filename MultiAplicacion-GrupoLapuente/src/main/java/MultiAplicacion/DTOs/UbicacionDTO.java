@@ -10,6 +10,10 @@ public class UbicacionDTO {
     private Long sociedadId;
 
     // Constructor, getters y setters
+
+    public UbicacionDTO() {
+    }
+
     public UbicacionDTO(String name, Long sociedadId) {
         this.name = name;
         this.sociedadId = sociedadId;

@@ -4,6 +4,8 @@ package MultiAplicacion;
 import MultiAplicacion.DTOs.TareaCumplidaListWrapper;
 import MultiAplicacion.DTOs.TareaDTO;
 import MultiAplicacion.DTOs.WorkerDTO;
+import MultiAplicacion.DTOs.UbicacionDTO;
+import MultiAplicacion.ENUMs.Turno;
 import MultiAplicacion.controllers.AdminController;
 import MultiAplicacion.controllers.WorkerController;
 import MultiAplicacion.entities.*;
@@ -24,6 +26,8 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.web.server.ResponseStatusException;
 
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -68,8 +72,6 @@ class AdminControllerTests {
     @MockBean
     private SociedadRepository sociedadRepository;
 
-    private List<Sociedad> sociedadList;
-
     Admin admin;
 
     @BeforeEach
@@ -83,7 +85,7 @@ class AdminControllerTests {
         sociedad2.setId(1L);
         sociedad2.setName("Sociedad Test2");
 
-        sociedadList = new ArrayList<>();
+        List<Sociedad> sociedadList = new ArrayList<>();
         sociedadList.add(sociedad1);
         sociedadList.add(sociedad2);
 
@@ -220,7 +222,154 @@ class AdminControllerTests {
         verify(tareaService).saveTarea(any(TareaDTO.class));
         verify(ubicacionService).addTareaAUbicacion(eq(ubicacionId), any(TareaDTO.class));
     }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void showEditTareaFormTest() throws Exception {
+        Long tareaId = 1L;
+        Tarea tarea = new Tarea();
+        tarea.setId(tareaId);
+        tarea.setName("Tarea Test1");
+        tarea.setDescripcion("Descripcion Test1");
+
+        when(tareaService.getTareaById(tareaId)).thenReturn(tarea);
+
+        mockMvc.perform(get("/admin/1/tareas/editar/{id}", tareaId))
+                .andExpect(status().isOk())
+                .andExpect(view().name("admins/editar-tarea"))
+                .andExpect(model().attributeExists("tareaDTO"));
+
+        verify(tareaService).getTareaById(tareaId);
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void updateTareaTest() throws Exception {
+        Long sociedadId = 1L;
+        Long tareaId = 1L;
+        TareaDTO tareaDTO = new TareaDTO();
+        tareaDTO.setId(tareaId);
+        tareaDTO.setName("Tarea Test1");
+        tareaDTO.setDescripcion("Descripcion Test1");
+
+        mockMvc.perform(post("/admin/{sociedadId}/tareas/{id}/update", sociedadId, tareaId)
+                        .flashAttr("tareaDTO", tareaDTO))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/admin/" + sociedadId + "/ubicaciones"));
+
+        verify(tareaService).updateTarea(tareaId, tareaDTO);
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void deleteTareaTest() throws Exception {
+        Long sociedadId = 1L;
+        Long tareaId = 1L;
+
+        mockMvc.perform(get("/admin/{sociedadId}/tareas/{id}/delete", sociedadId, tareaId))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/admin/" + sociedadId + "/tareas"));
+
+        verify(tareaService).deleteTareaById(tareaId);
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void getAllUbicacionesTest() throws Exception {
+        Long sociedadId = 1L;
+        List<Ubicacion> ubicaciones = new ArrayList<>();
+        Ubicacion ubicacion1 = new Ubicacion();
+        ubicacion1.setId(1L);
+        ubicaciones.add(ubicacion1);
+
+        when(sociedadService.findById(sociedadId)).thenReturn(Optional.of(new Sociedad()));
+        when(ubicacionService.findAllBySociedadOrderedById(any(Sociedad.class))).thenReturn(ubicaciones);
+
+        mockMvc.perform(get("/admin/{sociedadId}/ubicaciones", sociedadId))
+                .andExpect(status().isOk())
+                .andExpect(view().name("admins/ubicaciones"))
+                .andExpect(model().attributeExists("ubicaciones"))
+                .andExpect(model().attributeExists("tareasAgrupadasPorUbicacion"));
+
+        verify(sociedadService).findById(sociedadId);
+        verify(ubicacionService).findAllBySociedadOrderedById(any(Sociedad.class));
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void addUbicacionTest() throws Exception {
+        Long sociedadId = 1L;
+        UbicacionDTO ubicacionDTO = new UbicacionDTO();
+        ubicacionDTO.setName("Ubicacion Test1");
+
+        mockMvc.perform(post("/admin/{sociedadId}/ubicaciones", sociedadId)
+                        .flashAttr("ubicacionDTO", ubicacionDTO))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/admin/" + sociedadId + "/ubicaciones"));
+
+        verify(ubicacionService).save(ubicacionDTO);
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void updateUbicacionTest() throws Exception {
+        Long sociedadId = 1L;
+        Long ubicacionId = 1L;
+        UbicacionDTO ubicacionDTO = new UbicacionDTO();
+        ubicacionDTO.setId(ubicacionId);
+        ubicacionDTO.setName("Ubicacion Test1 Updated");
+
+        mockMvc.perform(post("/admin/{sociedadId}/ubicaciones/{id}/update", sociedadId, ubicacionId)
+                        .flashAttr("ubicacionDTO", ubicacionDTO))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/admin/" + sociedadId + "/ubicaciones"));
+
+        verify(ubicacionService).updateUbicacion(ubicacionId, ubicacionDTO);
+    }
+
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void deleteUbicacionTest() throws Exception {
+        Long sociedadId = 1L;
+        Long ubicacionId = 1L;
+
+        mockMvc.perform(get("/admin/{sociedadId}/ubicaciones/{id}/delete", sociedadId, ubicacionId))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/admin/" + sociedadId + "/ubicaciones"));
+
+        verify(ubicacionService).deleteById(ubicacionId);
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void informeDiarioRequestTest() throws Exception {
+        Long sociedadId = 1L;
+
+        mockMvc.perform(get("/admin/{sociedadId}/informes/diario/request", sociedadId))
+                .andExpect(status().isOk())
+                .andExpect(view().name("informes/informeDiarioRequest"));
+
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void informeDiarioTest() throws Exception {
+        Long sociedadId = 1L;
+        LocalDate fecha = LocalDate.now();
+
+        mockMvc.perform(post("/admin/{sociedadId}/informes/diario", sociedadId)
+                        .param("fecha", fecha.toString()))
+                .andExpect(status().isOk())
+                .andExpect(view().name("informes/informeDiario"))
+                .andExpect(model().attributeExists("ubicaciones"))
+                .andExpect(model().attributeExists("tareasCumplidasMananaMap"))
+                .andExpect(model().attributeExists("tareasCumplidasTardeMap"))
+                .andExpect(model().attribute("fecha", fecha));
+
+        verify(ubicacionService).findAll();
+        verify(tareaCumplidaService, times(2)).findTareasCumplidasByUbicacionAndFechaAndTurno(any(Ubicacion.class), any(LocalDateTime.class), any(Turno.class));
+    }
 // Agrega casos de prueba para los demás métodos siguiendo el mismo patrón.
 
-    // A continuación, crea casos de prueba para los otros métodos del controlador siguiendo el ejemplo anterior.
 }

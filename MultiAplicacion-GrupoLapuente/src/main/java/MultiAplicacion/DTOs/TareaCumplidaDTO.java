@@ -2,12 +2,16 @@ package MultiAplicacion.DTOs;
 
 import MultiAplicacion.ENUMs.Turno;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 public class TareaCumplidaDTO {
 
     private Long id;
     private Long tareaId;
+    @NotNull(message = "El nombre no puede ser nulo")
+    @NotEmpty(message = "El nombre no puede estar vacío")
     private String tareaName;
     private Long workerId;
     private Long ubicacionId;

@@ -11,6 +11,10 @@ import MultiAplicacion.controllers.WorkerController;
 import MultiAplicacion.entities.*;
 import MultiAplicacion.repositories.*;
 import MultiAplicacion.services.*;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,6 +43,7 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -97,6 +102,21 @@ class AdminControllerTests {
         admin.setSociedad(sociedad1);
 
         when(adminRepository.findByName(any())).thenReturn(Optional.of(admin));
+
+        List<Ubicacion> ubicaciones = new ArrayList<>();
+        Ubicacion ubicacion1 = new Ubicacion();
+        ubicacion1.setId(1L);
+        ubicacion1.setName("Ubicacion Test1");
+
+        Ubicacion ubicacion2 = new Ubicacion();
+        ubicacion2.setId(2L);
+        ubicacion2.setName("Ubicacion Test2");
+
+        ubicaciones.add(ubicacion1);
+        ubicaciones.add(ubicacion2);
+
+        when(ubicacionService.findAll()).thenReturn(ubicaciones);
+
     }
 
     @Test
@@ -368,8 +388,169 @@ class AdminControllerTests {
                 .andExpect(model().attribute("fecha", fecha));
 
         verify(ubicacionService).findAll();
-        verify(tareaCumplidaService, times(2)).findTareasCumplidasByUbicacionAndFechaAndTurno(any(Ubicacion.class), any(LocalDateTime.class), any(Turno.class));
-    }
-// Agrega casos de prueba para los demás métodos siguiendo el mismo patrón.
+        verify(tareaCumplidaService, times(2)).findTareasCumplidasByUbicacionAndFechaAndTurno(any(Ubicacion.class), eq(fecha.atStartOfDay()), eq(Turno.MANANA));
+        verify(tareaCumplidaService, times(2)).findTareasCumplidasByUbicacionAndFechaAndTurno(any(Ubicacion.class), eq(fecha.atStartOfDay()), eq(Turno.TARDE));
 
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void exportarInformeDiarioExcelTest() throws Exception {
+        Long sociedadId = 1L;
+        LocalDate fecha = LocalDate.now();
+
+        when(tareaCumplidaService.findTareasCumplidasByUbicacionAndFechaAndTurno(any(Ubicacion.class), eq(fecha.atStartOfDay()), eq(Turno.MANANA)))
+                .thenReturn(Collections.emptyList());
+        when(tareaCumplidaService.findTareasCumplidasByUbicacionAndFechaAndTurno(any(Ubicacion.class), eq(fecha.atStartOfDay()), eq(Turno.TARDE)))
+                .thenReturn(Collections.emptyList());
+
+        mockMvc.perform(post("/admin/{sociedadId}/informes/diario/export", sociedadId)
+                        .param("fecha", fecha.toString()))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Content-Disposition", "attachment; filename=Informe_Diario_Tareas" + fecha + ".xlsx"))
+                .andExpect(content().contentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+
+        verify(ubicacionService).findAll();
+        verify(tareaCumplidaService, times(2)).findTareasCumplidasByUbicacionAndFechaAndTurno(any(Ubicacion.class), eq(fecha.atStartOfDay()), eq(Turno.MANANA));
+        verify(tareaCumplidaService, times(2)).findTareasCumplidasByUbicacionAndFechaAndTurno(any(Ubicacion.class), eq(fecha.atStartOfDay()), eq(Turno.TARDE));
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void informeDiarioNoTareasTest() throws Exception {
+        Long sociedadId = 1L;
+        LocalDate fecha = LocalDate.now().minusDays(1);
+
+        when(tareaCumplidaService.findTareasCumplidasByUbicacionAndFechaAndTurno(any(Ubicacion.class), eq(fecha.atStartOfDay()), eq(Turno.MANANA)))
+                .thenReturn(Collections.emptyList());
+        when(tareaCumplidaService.findTareasCumplidasByUbicacionAndFechaAndTurno(any(Ubicacion.class), eq(fecha.atStartOfDay()), eq(Turno.TARDE)))
+                .thenReturn(Collections.emptyList());
+
+        mockMvc.perform(post("/admin/{sociedadId}/informes/diario", sociedadId)
+                        .param("fecha", fecha.toString()))
+                .andExpect(status().isOk())
+                .andExpect(view().name("informes/informeDiario"))
+                .andExpect(model().attributeExists("ubicaciones"))
+                .andExpect(model().attributeExists("tareasCumplidasMananaMap"))
+                .andExpect(model().attributeExists("tareasCumplidasTardeMap"))
+                .andExpect(model().attribute("fecha", fecha))
+                .andExpect(model().attribute("message", "No se encontraron tareas cumplidas para la fecha proporcionada."));
+
+        verify(ubicacionService).findAll();
+        verify(tareaCumplidaService, times(2)).findTareasCumplidasByUbicacionAndFechaAndTurno(any(Ubicacion.class), eq(fecha.atStartOfDay()), eq(Turno.MANANA));
+        verify(tareaCumplidaService, times(2)).findTareasCumplidasByUbicacionAndFechaAndTurno(any(Ubicacion.class), eq(fecha.atStartOfDay()), eq(Turno.TARDE));
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void informeDiarioInvalidDateTest() throws Exception {
+        Long sociedadId = 1L;
+        String invalidDate = "invalid-date";
+
+        mockMvc.perform(post("/admin/{sociedadId}/informes/diario", sociedadId)
+                        .param("fecha", invalidDate))
+                .andExpect(status().isOk())
+                .andExpect(view().name("/error"))
+                .andExpect(model().attribute("message", "La fecha proporcionada no es válida."));
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void informeDiarioFutureDateTest() throws Exception {
+        Long sociedadId = 1L;
+        LocalDate futureDate = LocalDate.now().plusDays(1);
+
+        mockMvc.perform(post("/admin/{sociedadId}/informes/diario", sociedadId)
+                        .param("fecha", futureDate.toString()))
+                .andExpect(status().isOk())
+                .andExpect(view().name("/error"))
+                .andExpect(model().attribute("message", "La fecha proporcionada no puede ser una fecha futura."));
+    }
+
+    /*
+    @Test
+@WithMockUser(roles = "USER")
+void adminMenuUnauthorizedTest() throws Exception {
+...
+}
+
+@Test
+@WithMockUser(roles = "USER")
+void getAllWorkersUnauthorizedTest() throws Exception {
+...
+}
+
+// Realizar pruebas de acceso no autorizado para todos los demás métodos
+
+@Test
+@WithMockUser(roles = "ADMIN")
+void addWorkerInvalidInputTest() throws Exception {
+...
+}
+
+@Test
+@WithMockUser(roles = "ADMIN")
+void updateWorkerInvalidInputTest() throws Exception {
+...
+}
+
+// Realizar pruebas de entradas no válidas para todos los demás métodos que aceptan entradas del usuario
+
+@Test
+@WithMockUser(roles = "ADMIN")
+void getNonExistingWorkerTest() throws Exception {
+...
+}
+
+@Test
+@WithMockUser(roles = "ADMIN")
+void updateNonExistingWorkerTest() throws Exception {
+...
+}
+
+@Test
+@WithMockUser(roles = "ADMIN")
+void deleteNonExistingWorkerTest() throws Exception {
+...
+}
+
+// Realizar pruebas para casos en los que no se encuentren registros para todos los demás métodos que interactúan con registros
+
+@Test
+@WithMockUser(roles = "USER")
+void informeDiarioUnauthorizedTest() throws Exception {
+...
+}
+
+@Test
+@WithMockUser(roles = "ADMIN")
+void informeDiarioInvalidDateTest() throws Exception {
+...
+}
+
+@Test
+@WithMockUser(roles = "ADMIN")
+void informeDiarioNoTareasCumplidasTest() throws Exception {
+...
+}
+
+@Test
+@WithMockUser(roles = "USER")
+void exportarInformeDiarioExcelUnauthorizedTest() throws Exception {
+...
+}
+
+@Test
+@WithMockUser(roles = "ADMIN")
+void exportarInformeDiarioExcelInvalidDateTest() throws Exception {
+...
+}
+
+@Test
+@WithMockUser(roles = "ADMIN")
+void exportarInformeDiarioExcelNoTareasCumplidasTest() throws Exception {
+...
+}
+
+     */
 }

@@ -2,11 +2,15 @@ package MultiAplicacion.DTOs;
 
 import MultiAplicacion.ENUMs.Turno;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 
 public class InformeDTO {
     private Long id;
+    @NotNull(message = "El nombre no puede ser nulo")
+    @NotEmpty(message = "El nombre no puede estar vacío")
     private LocalDateTime fecha;
     private Long ubicacionId;
     private Turno turno;

@@ -2,10 +2,14 @@ package MultiAplicacion.DTOs;
 
 import MultiAplicacion.entities.Role;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 public class WorkerDTO {
     private Long id;
+    @NotNull(message = "El nombre no puede ser nulo")
+    @NotEmpty(message = "El nombre no puede estar vacío")
     private String name;
     private String password;
     private String cargo;

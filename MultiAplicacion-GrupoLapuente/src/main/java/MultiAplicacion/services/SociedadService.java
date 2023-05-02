@@ -58,4 +58,9 @@ public class SociedadService implements SociedadServiceInterface {
         }
         return sociedad.getId();
     }
+
+    @Override
+    public boolean existsById(Long id) {
+        return sociedadRepository.existsById(id);
+    }
 }

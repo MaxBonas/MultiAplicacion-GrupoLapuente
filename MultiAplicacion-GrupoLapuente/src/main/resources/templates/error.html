@@ -11,20 +11,12 @@
     <h1>Se produjo un error</h1>
     <p>Lo sentimos, se produjo un error al procesar su solicitud. Por favor, inténtelo de nuevo.</p>
     <div class="error-message">
-      <p>Error: <span th:text="${status}"></span></p>
-      <p>Mensaje: <span th:text="${error}"></span></p>
-      <p>Causa: <span th:text="${message}"></span></p>
+      <p>Error: <span th:text="${status} ?: '-'">-</span></p>
+      <p>Mensaje: <span th:text="${error} ?: '-'">-</span></p>
+      <p>Causa: <span th:text="${message} ?: '-'">-</span></p>
     </div>
     <button class="button" onclick="window.history.back()">Volver Atrás</button>
   </div>
 </main>
-<script>
-        const isAdminMenu = window.location.pathname.includes('/admin/');
-        const redirectTo = isAdminMenu ? '/admin/menu' : '/worker/menu';
-        const redirectButton = document.getElementById('redirect-button');
-        redirectButton.addEventListener('click', function() {
-            window.location.href = redirectTo;
-        });
-    </script>
 </body>
 </html>

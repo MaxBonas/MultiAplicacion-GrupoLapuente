@@ -1,9 +1,13 @@
 package MultiAplicacion.DTOs;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 public class UbicacionDTO {
     private Long id;
+    @NotNull(message = "El nombre no puede ser nulo")
+    @NotEmpty(message = "El nombre no puede estar vacío")
     private String name;
     private Set<Long> tareasIds;
 

@@ -17,4 +17,5 @@ public interface SociedadServiceInterface {
 
     Sociedad sociedadSeleccionada(Long id);
     Long getSociedadIdByUserName(String name);
+    boolean existsById(Long id);
 }

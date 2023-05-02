@@ -39,6 +39,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.YearMonth;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpSession;
@@ -284,14 +285,33 @@ public class AdminController implements AdminControllerInterface {
     }
 
     @PostMapping("/informes/diario")
-    public String informeDiario(@RequestParam("fecha") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fecha, Model model) {
+    public String informeDiario(@PathVariable("sociedadId") Long sociedadId, @RequestParam("fecha") String fechaStr, Model model) {
+        LocalDate fecha;
+
+        try {
+            fecha = LocalDate.parse(fechaStr);
+        } catch (DateTimeParseException e) {
+            model.addAttribute("message", "La fecha proporcionada no es válida.");
+            return "/error";
+        }
+
+        if (fecha.isAfter(LocalDate.now())) {
+            model.addAttribute("message", "La fecha proporcionada no puede ser una fecha futura.");
+            return "/error";
+        }
+
         List<Ubicacion> ubicaciones = ubicacionService.findAll();
         Map<Long, List<TareaCumplida>> tareasCumplidasMananaMap = new HashMap<>();
         Map<Long, List<TareaCumplida>> tareasCumplidasTardeMap = new HashMap<>();
+        boolean hayTareas = false;
 
         for (Ubicacion ubicacion : ubicaciones) {
             List<TareaCumplida> tareasCumplidasManana = tareaCumplidaService.findTareasCumplidasByUbicacionAndFechaAndTurno(ubicacion, fecha.atStartOfDay(), Turno.MANANA);
             List<TareaCumplida> tareasCumplidasTarde = tareaCumplidaService.findTareasCumplidasByUbicacionAndFechaAndTurno(ubicacion, fecha.atStartOfDay(), Turno.TARDE);
+
+            if (!tareasCumplidasManana.isEmpty() || !tareasCumplidasTarde.isEmpty()) {
+                hayTareas = true;
+            }
 
             tareasCumplidasMananaMap.put(ubicacion.getId(), tareasCumplidasManana);
             tareasCumplidasTardeMap.put(ubicacion.getId(), tareasCumplidasTarde);
@@ -302,8 +322,14 @@ public class AdminController implements AdminControllerInterface {
         model.addAttribute("tareasCumplidasTardeMap", tareasCumplidasTardeMap);
         model.addAttribute("fecha", fecha);
 
+        if (!hayTareas) {
+            model.addAttribute("message", "No se encontraron tareas cumplidas para la fecha proporcionada.");
+        }
+
         return "informes/informeDiario";
     }
+
+
     @PostMapping("/informes/diario/export")
     public void exportarInformeDiarioExcel(@RequestParam("fecha") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fecha, HttpServletResponse response, HttpSession session) throws IOException {
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
@@ -464,13 +490,15 @@ public class AdminController implements AdminControllerInterface {
         cell.setCellValue(tareaCumplida.getComentario());
     }
 
-
-
-
     private String cleanSheetName(String name) {
         return name.replaceAll("[:\\\\/?*\\[\\]]", "_");
     }
 
+    private void validateSociedadId(Long sociedadId) {
+        if (!sociedadService.existsById(sociedadId)) {
+            throw new NotFoundException("Sociedad no encontrada con el ID: " + sociedadId);
+        }
+    }
 
 
     /*

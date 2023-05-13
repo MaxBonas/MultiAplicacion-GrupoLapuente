@@ -1,15 +1,22 @@
 package MultiAplicacion.entities;
 
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+
 import javax.persistence.*;
 
 @Entity
+@SQLDelete(sql = "UPDATE role SET deleted = true WHERE id = ?")
+@Where(clause = "deleted = false")
 public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String role;
+    @Column(name = "deleted", nullable = false, columnDefinition = "boolean default false")
+    private boolean deleted = false;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -45,5 +52,12 @@ public class Role {
 
     public void setUser(User user) {
         this.user = user;
+    }
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

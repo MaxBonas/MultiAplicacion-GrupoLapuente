@@ -1,5 +1,6 @@
 package MultiAplicacion.DTOs;
 
+import MultiAplicacion.ENUMs.Cargo;
 import MultiAplicacion.entities.Role;
 
 import javax.validation.constraints.NotEmpty;
@@ -12,14 +13,15 @@ public class WorkerDTO {
     @NotEmpty(message = "El nombre no puede estar vacío")
     private String name;
     private String password;
-    private String cargo;
+
+    private Cargo cargo;
 
     private Long sociedadId;
 
 
     // Constructor, getters y setters
 
-    public WorkerDTO(Long id, String name, String password, String cargo, Set<Role> roles, Long sociedadId) {
+    public WorkerDTO(Long id, String name, String password, Cargo cargo, Set<Role> roles, Long sociedadId) {
         this.id = id;
         this.name = name;
         this.password = password;
@@ -54,11 +56,11 @@ public class WorkerDTO {
         this.password = password;
     }
 
-    public String getCargo() {
+    public Cargo getCargo() {
         return cargo;
     }
 
-    public void setCargo(String cargo) {
+    public void setCargo(Cargo cargo) {
         this.cargo = cargo;
     }
 

@@ -41,9 +41,12 @@ public class InformeService implements InformeServiceInterface {
 
     @Override
     public void deleteById(Long id) {
-        informeRepository.deleteById(id);
+        Informe informe = informeRepository.findById(id).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "No existe el informe con id: " + id + " en la base de datos"));
+        informe.setDeleted(true);
+        informeRepository.save(informe);
     }
-
     @Override
     public List<Informe> findByFechaBetween(LocalDateTime start, LocalDateTime end) {
         return informeRepository.findByFechaBetween(start, end);

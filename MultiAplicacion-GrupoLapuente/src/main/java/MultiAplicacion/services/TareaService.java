@@ -2,16 +2,21 @@ package MultiAplicacion.services;
 
 import MultiAplicacion.DTOs.TareaDTO;
 import MultiAplicacion.entities.Tarea;
+import MultiAplicacion.entities.TareaCumplida;
 import MultiAplicacion.entities.Ubicacion;
+import MultiAplicacion.repositories.TareaCumplidaRepository;
 import MultiAplicacion.repositories.TareaRepository;
 import MultiAplicacion.repositories.UbicacionRepository;
 import MultiAplicacion.services.interfaces.TareaServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class TareaService implements TareaServiceInterface {
@@ -20,6 +25,8 @@ public class TareaService implements TareaServiceInterface {
     private TareaRepository tareaRepository;
     @Autowired
     private UbicacionRepository ubicacionRepository;
+    @Autowired
+    private TareaCumplidaRepository tareaCumplidaRepository;
     @Override
     public List<Tarea> getAllTareas() {
         return tareaRepository.findAll();
@@ -47,10 +54,23 @@ public class TareaService implements TareaServiceInterface {
     }
 
     @Override
+    @Transactional
     public void deleteTareaById(Long id) {
-        tareaRepository.deleteById(id);
+        Tarea tarea = tareaRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NO_CONTENT, "Tarea not found"));
+        // Marca como borradas las tareas cumplidas relacionadas
+        tarea.getUbicaciones().forEach(ubicacion -> {
+            Set<TareaCumplida> tareasCumplidas = new HashSet<>(ubicacion.getTareasCumplidas());
+            tareasCumplidas.stream()
+                    .filter(tareaCumplida -> tareaCumplida.getTarea().getId().equals(tarea.getId()))
+                    .forEach(tareaCumplida -> {
+                        tareaCumplida.setDeleted(true);
+                        tareaCumplidaRepository.save(tareaCumplida);
+                    });
+        });
+        // Marca la tarea como borrada
+        tarea.setDeleted(true);
+        tareaRepository.save(tarea);
     }
-
     @Override
     public List<Tarea> getTareasByUbicacion(Long id) {
         Ubicacion ubicacion = ubicacionRepository.findById(id)

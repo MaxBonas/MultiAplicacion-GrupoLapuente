@@ -22,4 +22,5 @@ public interface WorkerServiceInterface {
     Worker updateWorker(Long id, WorkerDTO workerDTO);
     List<Worker> getWorkersBySociedad(Long sociedadId);
     void crearTareasCumplidasVacias(Long workerId, Long ubicacionId, LocalDateTime fecha, Turno turno);
+    void deleteRoleByUserId(Long userId);
 }

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
@@ -48,6 +49,8 @@ public class WorkerService implements WorkerServiceInterface {
     private InformeService informeService;
     @Autowired
     private TareaCumplidaService tareaCumplidaService;
+    @Autowired
+    private UserService userService;
 
     @Override
     public List<Worker> getAllWorkers() {
@@ -78,8 +81,9 @@ public class WorkerService implements WorkerServiceInterface {
 
     @Override
     public void deleteWorkerById(Long id) {
-        workerRepository.deleteById(id);
+        userService.deleteUserById(id);
     }
+
 
     @Override
     public Worker findByName(String name) {
@@ -124,5 +128,10 @@ public class WorkerService implements WorkerServiceInterface {
     @Override
     public List<Worker> getWorkersBySociedad(Long sociedadId) {
         return workerRepository.findBySociedadId(sociedadId);
+    }
+    @Override
+    @Transactional
+    public void deleteRoleByUserId(Long userId) {
+        roleRepository.deleteByUserId(userId);
     }
 }

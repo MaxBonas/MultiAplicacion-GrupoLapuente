@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Mensajes</title>
+  <link rel="stylesheet" href="../../static/css/styles.css" th:href="@{/css/styles.css}">
+  <script th:src="@{/js/logo.js}"></script>
+  <script th:src="@{/js/adminsmensajes.js}"></script>
+</head>
+<body onload="updateLogo('${session.sociedadSeleccionadaId}')">
+<header>
+  <h1>Tareas y Ubicaciones</h1>
+  <h3>Mensajes</h3>
+  <img id="logo" class="logo" src="" alt="Logotipo">
+</header>
+<main>
+  <h2>Tablón de Anuncios</h2>
+  <div class="tablon-anuncios">
+    <ul>
+      <li th:each="mensaje : ${mensajes}">
+        <h3 th:text="${mensaje.asunto}">Asunto</h3>
+        <p th:text="${mensaje.contenido}">Contenido</p>
+      </li>
+    </ul>
+  </div>
+  <div class="button-container">
+    <a class="button" th:href="@{/admin/{sociedadId}/crearmensaje(sociedadId=${session.sociedadId})}">Crear Mensaje</a>
+  </div>
+
+  <h2>Mensajes Privados</h2>
+  <!-- Aquí puedes agregar el formulario para enviar mensajes privados a trabajadores específicos -->
+  <form th:action="@{/admin/{sociedadId}/enviarmensaje(sociedadId=${session.sociedadId})}" method="post">
+    <label>Seleccionar trabajadores:</label>
+    <br>
+    <div th:each="worker : ${workers}">
+      <input type="checkbox" name="receptorIds" th:if="${worker.id != null}" th:value="${worker.id}" />
+      <label th:for="'worker' + ${worker.id}" th:if="${worker.id != null}" th:text="${worker.name}"></label>
+      <br>
+    </div>
+    <br>
+    <label for="asunto">Asunto:</label>
+    <input type="text" id="asunto" name="asunto" required>
+    <br>
+    <label for="contenido">Contenido:</label>
+    <textarea id="contenido" name="contenido" rows="4" cols="50" required></textarea>
+    <br>
+    <input type="hidden" name="emisorId" th:value="${session.userId}">
+    <input type="submit" value="Enviar">
+  </form>
+
+
+  <div class="button-container">
+    <a class="button" th:href="@{/admin/{sociedadId}/(sociedadId=${session.sociedadId})}">Volver al Menú</a>
+  </div>
+</main>
+</body>
+</html>

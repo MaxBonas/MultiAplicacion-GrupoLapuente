@@ -6,9 +6,13 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.HashSet;
 import java.util.Set;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Entity
 @Table(name = "users")
+@SQLDelete(sql = "UPDATE users SET deleted = true WHERE id = ?")
+@Where(clause = "deleted = false")
 public abstract class User {
 
     @Id
@@ -32,6 +36,16 @@ public abstract class User {
     @JoinColumn(name = "sociedad_id", nullable = false)
     private Sociedad sociedad;
 
+    @OneToMany(mappedBy = "emisor", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private Set<Mensaje> mensajesEnviados = new HashSet<>();
+
+    @OneToMany(mappedBy = "receptor", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private Set<Mensaje> mensajesRecibidos = new HashSet<>();
+    @Column(name = "deleted", nullable = false, columnDefinition = "boolean default false")
+    private boolean deleted = false;
+
     public User(Long id, String name, String password, Sociedad sociedad) {
         this.id = id;
         this.name = name;
@@ -43,6 +57,15 @@ public abstract class User {
         this.name = name;
         this.password = password;
         this.sociedad = sociedad;
+    }
+
+    public User(String name, String password, Set<Role> roles, Sociedad sociedad, Set<Mensaje> mensajesEnviados, Set<Mensaje> mensajesRecibidos) {
+        this.name = name;
+        this.password = password;
+        this.roles = roles;
+        this.sociedad = sociedad;
+        this.mensajesEnviados = mensajesEnviados;
+        this.mensajesRecibidos = mensajesRecibidos;
     }
 
     public User() {
@@ -86,5 +109,28 @@ public abstract class User {
 
     public void setSociedad(Sociedad sociedad) {
         this.sociedad = sociedad;
+    }
+
+    public Set<Mensaje> getMensajesEnviados() {
+        return mensajesEnviados;
+    }
+
+    public void setMensajesEnviados(Set<Mensaje> mensajesEnviados) {
+        this.mensajesEnviados = mensajesEnviados;
+    }
+
+    public Set<Mensaje> getMensajesRecibidos() {
+        return mensajesRecibidos;
+    }
+
+    public void setMensajesRecibidos(Set<Mensaje> mensajesRecibidos) {
+        this.mensajesRecibidos = mensajesRecibidos;
+    }
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

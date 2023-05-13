@@ -39,9 +39,12 @@ public class SociedadService implements SociedadServiceInterface {
 
     @Override
     public void deleteById(Long id) {
-        sociedadRepository.deleteById(id);
+        Sociedad sociedad = sociedadRepository.findById(id).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "No existe la sociedad con id: " + id + " en la base de datos"));
+        sociedad.setDeleted(true);
+        sociedadRepository.save(sociedad);
     }
-
     @Override
     public Sociedad sociedadSeleccionada(Long id) {
         return sociedadRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Sociedad no encontrada con ID: " + id));

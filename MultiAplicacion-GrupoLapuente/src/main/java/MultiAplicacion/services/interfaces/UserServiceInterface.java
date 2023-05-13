@@ -6,7 +6,9 @@ import java.util.List;
 
 public interface UserServiceInterface {
     User getUserById(Long id);
-    String deleteUserById(Long id);
+    void deleteUserById(Long id);
     List<User> getAllUsers();
+    List<User> findAllBySociedadId(Long sociedadId);
+
 }
 

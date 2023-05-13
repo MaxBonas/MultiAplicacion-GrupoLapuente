@@ -5,6 +5,7 @@ import MultiAplicacion.DTOs.TareaCumplidaListWrapper;
 import MultiAplicacion.DTOs.TareaDTO;
 import MultiAplicacion.DTOs.WorkerDTO;
 import MultiAplicacion.DTOs.UbicacionDTO;
+import MultiAplicacion.ENUMs.Cargo;
 import MultiAplicacion.ENUMs.Turno;
 import MultiAplicacion.controllers.AdminController;
 import MultiAplicacion.controllers.WorkerController;
@@ -161,7 +162,7 @@ class AdminControllerTests {
     void addWorkerTest() throws Exception {
         WorkerDTO workerDTO = new WorkerDTO();
         workerDTO.setName("Worker Test3");
-        workerDTO.setCargo("Cargo Test3");
+        workerDTO.setCargo(Cargo.OPERARIO);
 
         mockMvc.perform(post("/admin/1/crear-trabajador")
                         .flashAttr("workerDTO", workerDTO))
@@ -177,7 +178,7 @@ class AdminControllerTests {
         WorkerDTO workerDTO = new WorkerDTO();
         workerDTO.setId(1L);
         workerDTO.setName("Worker Test Updated");
-        workerDTO.setCargo("Cargo Test Updated");
+        workerDTO.setCargo(Cargo.JEFE_DE_TURNO);
 
         mockMvc.perform(post("/admin/1/workers/1/update")
                         .flashAttr("workerDTO", workerDTO))

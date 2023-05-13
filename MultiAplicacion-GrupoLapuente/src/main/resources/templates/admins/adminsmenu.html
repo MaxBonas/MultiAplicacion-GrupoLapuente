@@ -14,6 +14,15 @@
     <img id="logo" class="logo" src="" alt="Logotipo">
 </header>
 <main>
+    <div class="tablon-anuncios">
+        <h3>Mensajes Circulares Activos</h3>
+        <ul>
+            <li th:each="mensaje : ${mensajes}">
+                <h3 th:text="${mensaje.asunto}">Asunto</h3>
+                <p th:text="${mensaje.contenido}">Contenido</p>
+            </li>
+        </ul>
+    </div>
     <h2>Opciones de Administrador</h2>
     <div class="button-container">
         <ul>
@@ -23,6 +32,7 @@
             <li><a class="menu-button" href="#" onclick="showUnderDevelopmentAlert();">Informe Mensual</a></li>
             <li><a class="menu-button" href="#" onclick="showUnderDevelopmentAlert();">Informe Turno y Ubicación</a></li>
             <li><a class="menu-button" href="#" onclick="showUnderDevelopmentAlert();">Cambiar Sociedad</a></li>
+            <li><a class="menu-button" th:href="@{/admin/{sociedadId}/tablonanuncios(sociedadId=${session.sociedadId})}">Mensajes</a></li>
         </ul>
     </div>
     <!-- ... -->

@@ -56,6 +56,7 @@
           <td>
             <div class="button-container">
               <a th:href="@{/admin/{sociedadId}/tareas/editar/{tareaId}(sociedadId=${session.sociedadId}, tareaId=${tareaEntry.left})}" class="button">Editar</a>
+              <button class="button" th:onclick="'confirmDelete(\'/admin/' + ${session.sociedadId} + '/tareas/' + ${tareaEntry.left} + '/delete\')'">Borrar</button>
               <!-- <button class="button" th:onclick="'confirmDelete(\'/admin/' + ${session.sociedadId} + '/tareas/' + ${tareaEntry.left} + '/delete\')'">Borrar</button> -->
             </div>
           </td>

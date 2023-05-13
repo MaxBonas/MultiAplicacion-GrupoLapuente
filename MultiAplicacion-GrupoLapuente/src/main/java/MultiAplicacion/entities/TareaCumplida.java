@@ -1,11 +1,15 @@
 package MultiAplicacion.entities;
 
 import MultiAplicacion.ENUMs.Turno;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@SQLDelete(sql = "UPDATE tareacumplida SET deleted = true WHERE id = ?")
+@Where(clause = "deleted = false")
 public class TareaCumplida {
 
     @Id
@@ -33,6 +37,8 @@ public class TareaCumplida {
     private Turno turno;
 
     private String comentario;
+    @Column(name = "deleted", nullable = false, columnDefinition = "boolean default false")
+    private boolean deleted = false;
 
     @ManyToOne
     @JoinColumn(name = "informe_id", nullable = true)
@@ -142,5 +148,12 @@ public class TareaCumplida {
 
     public void setComentario(String comentario) {
         this.comentario = comentario;
+    }
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

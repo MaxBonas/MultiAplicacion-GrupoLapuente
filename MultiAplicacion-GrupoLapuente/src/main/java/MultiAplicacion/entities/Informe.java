@@ -7,8 +7,12 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Entity
+@SQLDelete(sql = "UPDATE informe SET deleted = true WHERE id = ?")
+@Where(clause = "deleted = false")
 public class Informe {
 
     @Id
@@ -27,7 +31,8 @@ public class Informe {
     @OneToMany(mappedBy = "informe", cascade = CascadeType.ALL)
     private List<TareaCumplida> tareasCumplidas;
 
-
+    @Column(name = "deleted", nullable = false, columnDefinition = "boolean default false")
+    private boolean deleted = false;
 
 
     // Constructor vacío
@@ -94,5 +99,12 @@ public class Informe {
 
     public void setTareasCumplidas(List<TareaCumplida> tareasCumplidas) {
         this.tareasCumplidas = tareasCumplidas;
+    }
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

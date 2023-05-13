@@ -26,7 +26,9 @@
     <div class="input-container">
       <label for="cargo"><strong>Cargo:</strong></label>
       <div>
-        <input type="text" th:field="*{cargo}" id="cargo" required>
+        <select th:field="*{cargo}" id="cargo" required>
+          <option th:each="cargo : ${T(MultiAplicacion.ENUMs.Cargo).values()}" th:value="${cargo}" th:text="${cargo}"></option>
+        </select>
       </div>
     </div>
 

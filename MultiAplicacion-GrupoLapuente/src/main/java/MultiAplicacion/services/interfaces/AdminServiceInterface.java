@@ -9,4 +9,5 @@ public interface AdminServiceInterface {
     Admin createAdmin(String name, String email, String password, Long sociedadId);
     Optional<Admin> findAdminByName(String name);
     Optional<Admin> findAdminByEmail(String email);
+    void adminDeleteById(Long id);
 }

@@ -64,9 +64,12 @@ public class UbicacionService implements UbicacionServiceInterface {
     }
     @Override
     public void deleteById(Long id) {
-        ubicacionRepository.deleteById(id);
+        Ubicacion ubicacion = ubicacionRepository.findById(id).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "No existe la ubicacion con id: " + id + " en la base de datos"));
+        ubicacion.setDeleted(true);
+        ubicacionRepository.save(ubicacion);
     }
-
     @Override
     public List<Tarea> getTareasByUbicacionId(Long id) {
         Ubicacion ubicacion = ubicacionRepository.findById(id)

@@ -7,6 +7,7 @@ import MultiAplicacion.controllers.interfaces.AdminControllerInterface;
 import MultiAplicacion.entities.*;
 import MultiAplicacion.repositories.*;
 import MultiAplicacion.services.InformeService;
+import MultiAplicacion.services.MensajeService;
 import MultiAplicacion.services.SociedadService;
 import MultiAplicacion.services.interfaces.TareaCumplidaServiceInterface;
 import MultiAplicacion.services.interfaces.TareaServiceInterface;
@@ -22,6 +23,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -79,6 +82,10 @@ public class AdminController implements AdminControllerInterface {
     private SociedadService sociedadService;
     @Autowired
     private ServletContext servletContext;
+    @Autowired
+    private MensajeService mensajeService;
+    @Autowired
+    private UserRepository userRepository;
 
 
     @GetMapping("/adminsmenu")
@@ -152,8 +159,10 @@ public class AdminController implements AdminControllerInterface {
         return "admins/workerDetails";
     }
 
+    // AdminController.java
     @GetMapping("/workers/{id}/delete")
     public String deleteWorker(@PathVariable Long sociedadId, @PathVariable Long id, RedirectAttributes redirectAttributes) {
+        workerService.deleteRoleByUserId(id);
         workerService.deleteWorkerById(id);
         redirectAttributes.addFlashAttribute("message", "Trabajador eliminado exitosamente");
         return "redirect:/admin/{sociedadId}/workers";
@@ -213,7 +222,7 @@ public class AdminController implements AdminControllerInterface {
     public String deleteTarea(@PathVariable Long sociedadId, @PathVariable Long id, RedirectAttributes redirectAttributes) {
         tareaService.deleteTareaById(id);
         redirectAttributes.addFlashAttribute("message", "Tarea eliminada exitosamente");
-        return "redirect:/admin/{sociedadId}/tareas";
+        return "redirect:/admin/{sociedadId}/ubicaciones";
     }
 
     // Para ver los detalles de una tarea
@@ -548,5 +557,98 @@ public class AdminController implements AdminControllerInterface {
         }
     }
      */
+
+    // Métodos de mensajes
+    @GetMapping("/tablonanuncios")
+    public String showTablonAnuncios(@PathVariable Long sociedadId, Model model, HttpServletRequest request) {
+        List<Mensaje> mensajes = mensajeService.findMensajesCirculares().stream().filter(Mensaje::isActivo).collect(Collectors.toList());
+        List<Worker> workers = workerRepository.findBySociedadId(sociedadId);
+        model.addAttribute("mensajes", mensajes);
+        model.addAttribute("workers", workers);
+        return "admins/tablonanuncios";
+    }
+
+    @GetMapping("/crearmensaje")
+    public String showCrearMensaje(@PathVariable Long sociedadId, Model model, HttpServletRequest request) {
+        MensajeDTO mensajeDTO = new MensajeDTO();
+        model.addAttribute("mensajeDTO", mensajeDTO);
+        return "admins/crearmensaje";
+    }
+
+    @PostMapping("/enviarmensaje")
+    public String sendMensaje(@PathVariable Long sociedadId, @ModelAttribute MensajeDTO mensajeDTO, RedirectAttributes redirectAttributes, Authentication authentication) {
+        System.out.println("Método sendMensaje ejecutado");
+
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        User emisor = userRepository.findByName(userDetails.getUsername()).orElseThrow(() -> new NotFoundException("Usuario no encontrado con el nombre: " + userDetails.getUsername()));
+
+        if (mensajeDTO.isCircular()) {
+            Mensaje mensaje = new Mensaje();
+            mensaje.setEmisor(emisor);
+            mensaje.setCircular(true);
+            mensaje.setReceptor(null);
+            mensaje.setActivo(mensajeDTO.isActivo());
+            mensaje.setAsunto(mensajeDTO.getAsunto());
+            mensaje.setContenido(mensajeDTO.getContenido());
+            mensajeService.createMensaje(mensaje);
+        } else {
+            List<Long> receptorIds = mensajeDTO.getReceptorIds();
+            for (Long receptorId : receptorIds) {
+                Worker receptor = workerRepository.findById(receptorId).orElseThrow(() -> new NotFoundException("Usuario no encontrado con el ID: " + receptorId));
+                Mensaje mensaje = new Mensaje();
+                mensaje.setEmisor(emisor);
+                mensaje.setReceptor(receptor);
+                mensaje.setCircular(false);
+                mensaje.setAsunto(mensajeDTO.getAsunto());
+                mensaje.setContenido(mensajeDTO.getContenido());
+                System.out.println("Receptor IDs: " + mensajeDTO.getReceptorIds());
+                mensajeService.createMensaje(mensaje);
+                System.out.println("Mensaje guardado: " + mensaje);
+            }
+        }
+
+        redirectAttributes.addFlashAttribute("success", "Mensaje enviado con éxito");
+        return "redirect:/admin/{sociedadId}/tablonanuncios";
+    }
+
+
+    @GetMapping("/mensajes/{id}")
+    public String showMensaje(@PathVariable Long sociedadId, @PathVariable Long id, Model model, HttpServletRequest request) {
+        Optional<Mensaje> optionalMensaje = mensajeService.findMensajeById(id);
+        if (optionalMensaje.isPresent()) {
+            Mensaje mensaje = optionalMensaje.get();
+            model.addAttribute("mensaje", mensaje);
+            return "admins/mensaje";
+        } else {
+            // Lógica cuando no se encuentra el mensaje
+            return "redirect:/admin/{sociedadId}/tablonanuncios?error=El mensaje no se encontró";
+        }
+    }
+
+    @DeleteMapping("/mensajes/{id}")
+    public String deleteMensaje(@PathVariable Long sociedadId, @PathVariable Long id, RedirectAttributes redirectAttributes) {
+        mensajeService.deleteMensaje(id);
+        redirectAttributes.addFlashAttribute("success", "Mensaje eliminado con éxito");
+        return "redirect:/admin/{sociedadId}/tablonanuncios";
+    }
+
+    @PostMapping("/mensajes/{id}/toggleactivo")
+    public String toggleMensajeActivo(@PathVariable Long sociedadId, @PathVariable Long id, RedirectAttributes redirectAttributes) {
+        Optional<Mensaje> optionalMensaje = mensajeService.findMensajeById(id);
+        if (optionalMensaje.isPresent()) {
+            Mensaje mensaje = optionalMensaje.get();
+            if (mensaje.isCircular()) {
+                mensaje.setActivo(!mensaje.isActivo());
+                mensajeService.createMensaje(mensaje);
+                redirectAttributes.addFlashAttribute("success", "Estado del mensaje actualizado con éxito");
+            } else {
+                redirectAttributes.addFlashAttribute("error", "No se puede cambiar el estado de un mensaje no circular");
+            }
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Mensaje no encontrado");
+        }
+        return "redirect:/admin/{sociedadId}/tablonanuncios";
+    }
+
 }
 

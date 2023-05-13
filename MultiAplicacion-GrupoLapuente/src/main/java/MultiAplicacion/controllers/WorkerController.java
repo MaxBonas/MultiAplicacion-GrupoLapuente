@@ -1,5 +1,6 @@
 package MultiAplicacion.controllers;
 
+import MultiAplicacion.DTOs.MensajeDTO;
 import MultiAplicacion.DTOs.TareaCumplidaDTO;
 import MultiAplicacion.DTOs.TareaCumplidaListWrapper;
 import MultiAplicacion.ENUMs.Turno;
@@ -7,7 +8,9 @@ import MultiAplicacion.controllers.interfaces.WorkerControllerInterface;
 import MultiAplicacion.entities.*;
 import MultiAplicacion.repositories.TareaCumplidaRepository;
 import MultiAplicacion.repositories.UbicacionRepository;
+import MultiAplicacion.repositories.UserRepository;
 import MultiAplicacion.repositories.WorkerRepository;
+import MultiAplicacion.services.MensajeService;
 import MultiAplicacion.services.TareaCumplidaService;
 import MultiAplicacion.services.interfaces.UbicacionServiceInterface;
 import MultiAplicacion.services.interfaces.WorkerServiceInterface;
@@ -15,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +29,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,6 +56,10 @@ public class WorkerController implements WorkerControllerInterface {
 
     @Autowired
     private TareaCumplidaService tareaCumplidaService;
+    @Autowired
+    private MensajeService mensajeService;
+    @Autowired
+    private UserRepository userRepository;
 
     @GetMapping("/ubicaciones")
     public String getAllUbicaciones(Model model, @AuthenticationPrincipal UserDetails userDetails, @PathVariable Long sociedadId) {
@@ -136,7 +146,7 @@ public class WorkerController implements WorkerControllerInterface {
         redirectAttributes.addAttribute("turno", turno);
         return "redirect:/worker/" + sociedadId + "/ubicaciones/" + ubicacionId + "/tareas";
     }
-
+/*
     @GetMapping("/password")
     public String showChangePasswordForm(@PathVariable Long sociedadId, Model model, @AuthenticationPrincipal UserDetails userDetails) {
         Worker worker = workerService.findByName(userDetails.getUsername());
@@ -173,7 +183,7 @@ public class WorkerController implements WorkerControllerInterface {
         return "redirect:/worker/" + worker.getSociedad().getId() + "/workersmenu";
     }
 
-
+*/
     @GetMapping("/workersmenu")
     public String workerMenu(@PathVariable Long sociedadId, Model model, @AuthenticationPrincipal UserDetails userDetails) {
         Worker worker = workerService.findByName(userDetails.getUsername());
@@ -183,6 +193,47 @@ public class WorkerController implements WorkerControllerInterface {
         }
         model.addAttribute("worker", worker);
         return "workers/workersmenu";
+    }
+
+    // Métodos de mensajes
+    @GetMapping("/tablonanuncios")
+    public String showTablonAnuncios(@PathVariable Long sociedadId, Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        List<Mensaje> mensajesCirculares = mensajeService.findMensajesCirculares();
+        User worker = userRepository.findByName(userDetails.getUsername()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        List<Mensaje> mensajesRecibidos = mensajeService.findMensajesByReceptor(worker);
+        List<Mensaje> mensajes = Stream.concat(mensajesCirculares.stream(), mensajesRecibidos.stream()).collect(Collectors.toList());
+        model.addAttribute("mensajes", mensajes);
+        return "workers/tablonanuncios";
+    }
+
+    @GetMapping("/mensajes/{id}")
+    public String showMensaje(@PathVariable Long sociedadId, @PathVariable Long id, Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        Optional<Mensaje> optionalMensaje = mensajeService.findMensajeById(id);
+        if (optionalMensaje.isPresent()) {
+            Mensaje mensaje = optionalMensaje.get();
+            model.addAttribute("mensaje", mensaje);
+            return "workers/mensaje";
+        } else {
+            return "redirect:/worker/{sociedadId}/tablonanuncios?error=El mensaje no se encontró";
+        }
+    }
+
+    @DeleteMapping("/mensajes/{id}")
+    public String deleteMensaje(@PathVariable Long sociedadId, @PathVariable Long id, RedirectAttributes redirectAttributes, @AuthenticationPrincipal UserDetails userDetails) {
+        Optional<Mensaje> optionalMensaje = mensajeService.findMensajeById(id);
+        if (optionalMensaje.isPresent()) {
+            Mensaje mensaje = optionalMensaje.get();
+            User worker = userRepository.findByName(userDetails.getUsername()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+            if (mensaje.getReceptor() != null && mensaje.getReceptor().equals(worker)) {
+                mensajeService.deleteMensaje(id);
+                redirectAttributes.addFlashAttribute("success", "Mensaje eliminado con éxito");
+            } else {
+                redirectAttributes.addFlashAttribute("error", "No tiene permiso para eliminar este mensaje");
+            }
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Mensaje no encontrado");
+        }
+        return "redirect:/worker/{sociedadId}/tablonanuncios";
     }
 
 }

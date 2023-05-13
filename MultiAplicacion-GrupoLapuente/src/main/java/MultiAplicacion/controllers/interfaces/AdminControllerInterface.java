@@ -8,6 +8,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -43,4 +44,11 @@ public interface AdminControllerInterface {
     String createAndAssignTarea(@RequestParam Long ubicacionId, @RequestParam Long tareaId, @RequestParam(required = false) String name, @RequestParam(required = false) String descripcion, RedirectAttributes redirectAttributes);
     String informeDiarioRequest(@PathVariable("sociedadId") Long sociedadId, Model model);
     String informeDiario(@PathVariable("sociedadId") Long sociedadId, @RequestParam("fecha") String fechaStr, Model model);
+//Missatges:
+    String showTablonAnuncios(@PathVariable Long sociedadId, Model model, HttpServletRequest request);
+    String showCrearMensaje(@PathVariable Long sociedadId, Model model, HttpServletRequest request);
+    String sendMensaje(@PathVariable Long sociedadId, @ModelAttribute MensajeDTO mensajeDTO, RedirectAttributes redirectAttributes, Authentication authentication);
+    String showMensaje(@PathVariable Long sociedadId, @PathVariable Long id, Model model, HttpServletRequest request);
+    String deleteMensaje(@PathVariable Long sociedadId, @PathVariable Long id, RedirectAttributes redirectAttributes);
+    String toggleMensajeActivo(@PathVariable Long sociedadId, @PathVariable Long id, RedirectAttributes redirectAttributes);
 }

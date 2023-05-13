@@ -97,7 +97,6 @@ class WorkerControllerTests {
     }
 
 
-
     @Test
     void contextLoads() {
         // Verificar que el controlador se haya cargado correctamente

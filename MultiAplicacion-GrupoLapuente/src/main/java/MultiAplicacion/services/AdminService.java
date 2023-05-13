@@ -9,8 +9,10 @@ import MultiAplicacion.repositories.RoleRepository;
 import MultiAplicacion.repositories.SociedadRepository;
 import MultiAplicacion.services.interfaces.AdminServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
@@ -25,6 +27,8 @@ public class AdminService implements AdminServiceInterface {
     private SociedadRepository sociedadRepository;
     @Autowired
     private RoleRepository roleRepository;
+    @Autowired
+    private UserService userService;
 
     @Override
     public Admin createAdmin(String name, String email, String password, Long sociedadId) {
@@ -44,5 +48,10 @@ public class AdminService implements AdminServiceInterface {
     @Override
     public Optional<Admin> findAdminByEmail(String email) {
         return adminRepository.findByEmail(email);
+    }
+
+    @Override
+    public void adminDeleteById(Long id) {
+        userService.deleteUserById(id);
     }
 }

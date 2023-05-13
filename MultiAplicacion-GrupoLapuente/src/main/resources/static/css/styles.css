@@ -269,3 +269,10 @@ input#descripcion {
 table td {
     font-size: 14px;
 }
+
+select {
+    width: 60%;  /* Ajusta a la mitad de la longitud original */
+    height: 1.5em;  /* Aumenta la altura */
+    font-size: 1em;  /* Aumenta el tamaño de la fuente */
+    box-sizing: border-box;
+}

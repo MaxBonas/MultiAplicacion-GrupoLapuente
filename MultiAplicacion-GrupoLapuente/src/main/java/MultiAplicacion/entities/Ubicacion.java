@@ -7,9 +7,13 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Entity
 @Table(name = "ubicaciones")
+@SQLDelete(sql = "UPDATE ubicaciones SET deleted = true WHERE id = ?")
+@Where(clause = "deleted = false")
 public class Ubicacion {
 
     @Id
@@ -34,6 +38,8 @@ public class Ubicacion {
     @ManyToOne
     @JoinColumn(name = "sociedad_id", nullable = false)
     private Sociedad sociedad;
+    @Column(name = "deleted", nullable = false, columnDefinition = "boolean default false")
+    private boolean deleted = false;
 
     public Ubicacion() {
     }
@@ -97,5 +103,12 @@ public class Ubicacion {
 
     public void setSociedad(Sociedad sociedad) {
         this.sociedad = sociedad;
+    }
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

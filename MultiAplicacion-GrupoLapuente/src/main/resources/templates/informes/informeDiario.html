@@ -34,9 +34,9 @@
 <main>
   <br>
   <div class="button-container">
-  <a href="/admin/{sociedadId}/adminsmenu" th:href="@{/admin/{sociedadId}/adminsmenu(sociedadId=${session.sociedadId})}" class="button">Volver al Menú de Administrador</a>
-  <button class="button" onclick="exportarInformeExcel()">Exportar Informe en Excel</button>
-</div>
+    <a href="/admin/{sociedadId}/adminsmenu" th:href="@{/admin/{sociedadId}/adminsmenu(sociedadId=${session.sociedadId})}" class="button">Volver al Menú de Administrador</a>
+    <button class="button" th:data-fecha="${fechaString}" onclick="exportarInformeExcel(this)">Exportar Informe en Excel</button>
+  </div>
   <th:block th:each="ubicacion : ${ubicaciones}">
     <div class="table-container">
       <h2 th:text="${ubicacion.name}"></h2>
@@ -87,21 +87,22 @@
 </main>
 <div class="button-container">
   <a href="/admin/{sociedadId}/adminsmenu" th:href="@{/admin/{sociedadId}/adminsmenu(sociedadId=${session.sociedadId})}" class="button">Volver al Menú de Administrador</a>
-  <button class="button" onclick="exportarInformeExcel()">Exportar Informe en Excel</button>
+  <button class="button" th:data-fecha="${fechaString}" onclick="exportarInformeExcel(this)">Exportar Informe en Excel</button>
 </div>
 <footer>
   <p>Generado por Sistema de Informes Diarios</p>
 </footer>
 <script>
-function exportarInformeExcel() {
+function exportarInformeExcel(button) {
+    const fecha = button.getAttribute('data-fecha');
+
     const form = document.createElement('form');
     form.method = 'POST';
     form.action = '/admin/{sociedadId}/informes/diario/export';
-    form.innerHTML = `<input type="hidden" name="fecha" value="${new Date().toISOString().substr(0, 10)}">`;
+    form.innerHTML = `<input type="hidden" name="fecha" value="${fecha}">`;
     document.body.appendChild(form);
     form.submit();
 }
 </script>
 </body>
 </html>
-

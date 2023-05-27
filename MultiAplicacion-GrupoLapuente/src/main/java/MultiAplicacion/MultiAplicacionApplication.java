@@ -70,6 +70,7 @@ public class MultiAplicacionApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) {
+		//Introducció de dades de mostra de manera forçada
 /*
 		Sociedad goodPolish = new Sociedad("GoodPolish S.L:");
 		Sociedad lapuente = new Sociedad("Lapuente S.L:");

@@ -7,6 +7,7 @@ import MultiAplicacion.entities.Ubicacion;
 import MultiAplicacion.repositories.TareaCumplidaRepository;
 import MultiAplicacion.repositories.TareaRepository;
 import MultiAplicacion.repositories.UbicacionRepository;
+import MultiAplicacion.repositories.UbicacionTareaRepository;
 import MultiAplicacion.services.interfaces.TareaServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,10 @@ public class TareaService implements TareaServiceInterface {
     private UbicacionRepository ubicacionRepository;
     @Autowired
     private TareaCumplidaRepository tareaCumplidaRepository;
+    @Autowired
+    private UbicacionTareaRepository ubicacionTareaRepository;
+    @Autowired
+    private UbicacionTareaService ubicacionTareaService;
     @Override
     public List<Tarea> getAllTareas() {
         return tareaRepository.findAll();
@@ -57,15 +62,9 @@ public class TareaService implements TareaServiceInterface {
     @Transactional
     public void deleteTareaById(Long id) {
         Tarea tarea = tareaRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NO_CONTENT, "Tarea not found"));
-        // Marca como borradas las tareas cumplidas relacionadas
-        tarea.getUbicaciones().forEach(ubicacion -> {
-            Set<TareaCumplida> tareasCumplidas = new HashSet<>(ubicacion.getTareasCumplidas());
-            tareasCumplidas.stream()
-                    .filter(tareaCumplida -> tareaCumplida.getTarea().getId().equals(tarea.getId()))
-                    .forEach(tareaCumplida -> {
-                        tareaCumplida.setDeleted(true);
-                        tareaCumplidaRepository.save(tareaCumplida);
-                    });
+        // Marca como borradas las relaciones con las ubicaciones
+        tarea.getUbicaciones().forEach(ubicacionTarea -> {
+            ubicacionTareaService.deleteByUbicacionIdAndTareaId(ubicacionTarea.getUbicacion().getId(), id);
         });
         // Marca la tarea como borrada
         tarea.setDeleted(true);

@@ -162,58 +162,6 @@ class WorkerControllerTests {
     }
 
 
-    @Test
-    @WithMockUser(roles = "WORKER")
-    void showChangePasswordFormTest() throws Exception {
-        mockMvc.perform(get("/worker/1/password"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("workers/cambiar-password"))
-                .andExpect(model().attributeExists("worker"));
-
-        verify(workerService).findByName(any());
-    }
-
-    @Test
-    @WithMockUser(roles = "WORKER")
-    void cambiarPasswordTest() throws Exception {
-        Worker worker = new Worker();
-        Sociedad sociedad = new Sociedad();
-        sociedad.setId(1L);
-        worker.setSociedad(sociedad);
-
-        when(workerService.findByName(any())).thenReturn(worker);
-
-        mockMvc.perform(post("/worker/1/password")
-                        .param("oldPassword", "oldPassword")
-                        .param("newPassword", "newPassword")
-                        .param("confirmNewPassword", "newPassword"))
-                .andExpect(status().isFound())
-                .andExpect(redirectedUrl("/worker/1/workersmenu"));
-
-        verify(workerService).findByName(any());
-        verify(workerService).cambiarPassword(any(), any(), any());
-    }
-
-    @Test
-    @WithMockUser(roles = "WORKER")
-    void cambiarPasswordMismatchTest() throws Exception {
-        Worker worker = new Worker();
-        Sociedad sociedad = new Sociedad();
-        sociedad.setId(1L);
-        worker.setSociedad(sociedad);
-
-        when(workerService.findByName(any())).thenReturn(worker);
-
-        mockMvc.perform(post("/worker/1/password")
-                        .param("oldPassword", "oldPassword")
-                        .param("newPassword", "newPassword")
-                        .param("confirmNewPassword", "differentNewPassword"))
-                .andExpect(status().isFound())
-                .andExpect(redirectedUrl("/worker/1/password"));
-
-        verify(workerService).findByName(any());
-        verify(workerService, never()).cambiarPassword(any(), any(), any());
-    }
 
     @Test
     @WithMockUser(roles = "WORKER")
@@ -225,26 +173,7 @@ class WorkerControllerTests {
 
         verify(workerService).findByName(any());
     }
-    @Test
-    @WithMockUser(roles = "WORKER")
-    void cambiarPasswordEmptyInputTest() throws Exception {
-        Worker worker = new Worker();
-        Sociedad sociedad = new Sociedad();
-        sociedad.setId(1L);
-        worker.setSociedad(sociedad);
 
-        when(workerService.findByName(any())).thenReturn(worker);
-
-        mockMvc.perform(post("/worker/1/password")
-                        .param("oldPassword", "")
-                        .param("newPassword", "")
-                        .param("confirmNewPassword", ""))
-                .andExpect(status().isFound())
-                .andExpect(redirectedUrl("/worker/1/password"));
-
-        verify(workerService).findByName(any());
-        verify(workerService, never()).cambiarPassword(any(), any(), any());
-    }
 
 
     @Test
@@ -350,21 +279,7 @@ class WorkerControllerTests {
         verify(workerService).findByName(any());
     }
 
-    @Test
-    @WithMockUser(roles = "WORKER")
-    void showChangePasswordFormUnauthorizedSociedadTest() throws Exception {
-        Worker worker = new Worker();
-        Sociedad sociedad = new Sociedad();
-        sociedad.setId(1L);
-        worker.setSociedad(sociedad);
 
-        when(workerService.findByName(any())).thenReturn(worker);
-
-        mockMvc.perform(get("/worker/2/password"))
-                .andExpect(status().isForbidden());
-
-        verify(workerService).findByName(any());
-    }
 
     @Test
     @WithMockUser(roles = "WORKER")
@@ -405,6 +320,10 @@ class WorkerControllerTests {
         verify(tareaCumplidaService, never()).updateTareaCumplida(any(), any());
     }
 
+
+    //Estos son los tests de cambiar password para el worker que ahora mismo no usamos
+
+    /*
     @Test
     @WithMockUser(roles = "WORKER")
     void cambiarPasswordInvalidOldPasswordTest() throws Exception {
@@ -427,4 +346,91 @@ class WorkerControllerTests {
         verify(workerService).cambiarPassword(any(), any(), any());
     }
 
+
+    @Test
+    @WithMockUser(roles = "WORKER")
+    void showChangePasswordFormTest() throws Exception {
+        mockMvc.perform(get("/worker/1/password"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("workers/cambiar-password"))
+                .andExpect(model().attributeExists("worker"));
+
+        verify(workerService).findByName(any());
+    }
+    @Test
+    @WithMockUser(roles = "WORKER")
+    void cambiarPasswordEmptyInputTest() throws Exception {
+        Worker worker = new Worker();
+        Sociedad sociedad = new Sociedad();
+        sociedad.setId(1L);
+        worker.setSociedad(sociedad);
+
+        when(workerService.findByName(any())).thenReturn(worker);
+
+        mockMvc.perform(post("/worker/1/password")
+                        .param("oldPassword", "")
+                        .param("newPassword", "")
+                        .param("confirmNewPassword", ""))
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("/worker/1/password"));
+
+        verify(workerService).findByName(any());
+        verify(workerService, never()).cambiarPassword(any(), any(), any());
+    }
+    @Test
+    @WithMockUser(roles = "WORKER")
+    void cambiarPasswordTest() throws Exception {
+        Worker worker = new Worker();
+        Sociedad sociedad = new Sociedad();
+        sociedad.setId(1L);
+        worker.setSociedad(sociedad);
+
+        when(workerService.findByName(any())).thenReturn(worker);
+
+        mockMvc.perform(post("/worker/1/password")
+                        .param("oldPassword", "oldPassword")
+                        .param("newPassword", "newPassword")
+                        .param("confirmNewPassword", "newPassword"))
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("/worker/1/workersmenu"));
+
+        verify(workerService).findByName(any());
+        verify(workerService).cambiarPassword(any(), any(), any());
+    }
+    @Test
+    @WithMockUser(roles = "WORKER")
+    void showChangePasswordFormUnauthorizedSociedadTest() throws Exception {
+        Worker worker = new Worker();
+        Sociedad sociedad = new Sociedad();
+        sociedad.setId(1L);
+        worker.setSociedad(sociedad);
+
+        when(workerService.findByName(any())).thenReturn(worker);
+
+        mockMvc.perform(get("/worker/2/password"))
+                .andExpect(status().isForbidden());
+
+        verify(workerService).findByName(any());
+    }
+    @Test
+    @WithMockUser(roles = "WORKER")
+    void cambiarPasswordMismatchTest() throws Exception {
+        Worker worker = new Worker();
+        Sociedad sociedad = new Sociedad();
+        sociedad.setId(1L);
+        worker.setSociedad(sociedad);
+
+        when(workerService.findByName(any())).thenReturn(worker);
+
+        mockMvc.perform(post("/worker/1/password")
+                        .param("oldPassword", "oldPassword")
+                        .param("newPassword", "newPassword")
+                        .param("confirmNewPassword", "differentNewPassword"))
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("/worker/1/password"));
+
+        verify(workerService).findByName(any());
+        verify(workerService, never()).cambiarPassword(any(), any(), any());
+    }
+    */
 }

@@ -51,6 +51,9 @@ public class WorkerService implements WorkerServiceInterface {
     private TareaCumplidaService tareaCumplidaService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private UbicacionTareaRepository ubicacionTareaRepository;
+
 
     @Override
     public List<Worker> getAllWorkers() {
@@ -98,8 +101,9 @@ public class WorkerService implements WorkerServiceInterface {
         List<TareaCumplida> tareasCumplidasExistentes = tareaCumplidaService.findTareasCumplidasByUbicacionAndFechaAndTurnoAndCumplida(ubicacion, fecha, turno, false);
 
         if (tareasCumplidasExistentes.isEmpty()) {
-            List<Tarea> tareas = tareaRepository.findByUbicaciones(ubicacion);
-            for (Tarea tarea : tareas) {
+            List<UbicacionTarea> ubicacionTareas = ubicacionTareaRepository.findAllByUbicacionId(ubicacionId);
+            for (UbicacionTarea ubicacionTarea : ubicacionTareas) {
+                Tarea tarea = ubicacionTarea.getTarea();
                 TareaCumplidaDTO tareaCumplidaDTO = new TareaCumplidaDTO(tarea.getId(), tarea.getName(), workerId, ubicacionId, false, worker.getName(), fecha, turno, null);
                 tareaCumplidaService.save(tareaCumplidaDTO);
             }

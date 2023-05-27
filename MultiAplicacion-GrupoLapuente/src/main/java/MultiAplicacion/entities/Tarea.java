@@ -22,8 +22,8 @@ public class Tarea {
     @NotNull(message = "This field can't be null")
     private String name;
 
-    @ManyToMany(mappedBy = "tareas")
-    private Set<Ubicacion> ubicaciones = new HashSet<>();
+    @OneToMany(mappedBy = "tarea")
+    private Set<UbicacionTarea> ubicaciones = new HashSet<>();
 
     @NotBlank(message = "This field can't be blank")
     @NotNull(message = "This field can't be null")
@@ -38,13 +38,13 @@ public class Tarea {
         this.descripcion = descripcion;
     }
 
-    public Tarea(String name, String descripcion, Set<Ubicacion> ubicaciones) {
+    public Tarea(String name, String descripcion, Set<UbicacionTarea> ubicaciones) {
         this.name = name;
         this.ubicaciones = ubicaciones;
         this.descripcion = descripcion;
     }
 
-    public Tarea(Long id, String name, Set<Ubicacion> ubicaciones, String descripcion) {
+    public Tarea(Long id, String name, Set<UbicacionTarea> ubicaciones, String descripcion) {
         this.id = id;
         this.name = name;
         this.ubicaciones = ubicaciones;
@@ -75,11 +75,11 @@ public class Tarea {
         this.descripcion = descripcion;
     }
 
-    public Set<Ubicacion> getUbicaciones() {
+    public Set<UbicacionTarea> getUbicaciones() {
         return ubicaciones;
     }
 
-    public void setUbicaciones(Set<Ubicacion> ubicaciones) {
+    public void setUbicaciones(Set<UbicacionTarea> ubicaciones) {
         this.ubicaciones = ubicaciones;
     }
     public boolean isDeleted() {

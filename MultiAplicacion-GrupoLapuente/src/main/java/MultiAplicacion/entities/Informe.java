@@ -6,7 +6,10 @@ import MultiAplicacion.ENUMs.Turno;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -30,6 +33,14 @@ public class Informe {
 
     @OneToMany(mappedBy = "informe", cascade = CascadeType.ALL)
     private List<TareaCumplida> tareasCumplidas;
+
+    @ManyToMany
+    @JoinTable(
+            name = "informe_worker",
+            joinColumns = @JoinColumn(name = "informe_id"),
+            inverseJoinColumns = @JoinColumn(name = "worker_id")
+    )
+    private Set<Worker> workers = new HashSet<>();
 
     @Column(name = "deleted", nullable = false, columnDefinition = "boolean default false")
     private boolean deleted = false;
@@ -107,4 +118,5 @@ public class Informe {
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
     }
+
 }

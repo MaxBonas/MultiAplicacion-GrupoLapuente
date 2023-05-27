@@ -14,6 +14,4 @@ public interface TareaRepository extends JpaRepository<Tarea, Long> {
         @Query("SELECT DISTINCT t FROM Tarea t GROUP BY t.name")
         List<Tarea> findAllDistinctByName();
         List<Tarea> findAllByOrderById();
-
-
 }

@@ -5,9 +5,11 @@ import MultiAplicacion.DTOs.UbicacionDTO;
 import MultiAplicacion.entities.Sociedad;
 import MultiAplicacion.entities.Tarea;
 import MultiAplicacion.entities.Ubicacion;
+import MultiAplicacion.entities.UbicacionTarea;
 import MultiAplicacion.repositories.SociedadRepository;
 import MultiAplicacion.repositories.TareaRepository;
 import MultiAplicacion.repositories.UbicacionRepository;
+import MultiAplicacion.repositories.UbicacionTareaRepository;
 import MultiAplicacion.services.interfaces.UbicacionServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,6 +31,10 @@ public class UbicacionService implements UbicacionServiceInterface {
     private TareaRepository tareaRepository; // Inyectar el repositorio de Tarea
     @Autowired
     private SociedadRepository sociedadRepository;
+    @Autowired
+    private UbicacionTareaRepository ubicacionTareaRepository;
+    @Autowired
+    private UbicacionTareaService ubicacionTareaService;
 
     @Override
     public List<Ubicacion> findAll() {
@@ -81,24 +87,29 @@ public class UbicacionService implements UbicacionServiceInterface {
         Ubicacion ubicacion = findById(ubicacionId);
         Tarea tarea = new Tarea(tareaDTO.getName(), tareaDTO.getDescripcion());
         tareaRepository.save(tarea);
-        ubicacion.getTareas().add(tarea);
-        tarea.getUbicaciones().add(ubicacion); // Agregar la ubicación a la tarea
-        return ubicacionRepository.save(ubicacion);
+        UbicacionTarea ubicacionTarea = new UbicacionTarea(ubicacion, tarea);
+        ubicacionTareaRepository.save(ubicacionTarea);
+        return ubicacion;
     }
+
     @Override
     public Ubicacion updateTareasDeUbicacion(Long ubicacionId, Set<TareaDTO> tareasDTO) {
         Ubicacion ubicacion = findById(ubicacionId);
+        // Borra las relaciones de ubicación y tarea existentes
+        ubicacionTareaService.deleteByUbicacion(ubicacion);
+        // Crea nuevas relaciones de ubicación y tarea
         Set<Tarea> tareas = tareasDTO.stream()
                 .map(tareaDTO -> {
                     Tarea tarea = new Tarea(tareaDTO.getName(), tareaDTO.getDescripcion());
-                    tarea.getUbicaciones().add(ubicacion); // Agregar la ubicación a cada tarea
+                    tareaRepository.save(tarea);
+                    UbicacionTarea ubicacionTarea = new UbicacionTarea(ubicacion, tarea);
+                    ubicacionTareaRepository.save(ubicacionTarea);
                     return tarea;
                 })
                 .collect(Collectors.toSet());
-        ubicacion.setTareas(tareas);
-        tareaRepository.saveAll(tareas);
-        return ubicacionRepository.save(ubicacion);
+        return ubicacion;
     }
+
 
     @Override
     public Ubicacion updateUbicacion(Long id, UbicacionDTO ubicacionDTO) {
@@ -110,18 +121,20 @@ public class UbicacionService implements UbicacionServiceInterface {
     public List<Ubicacion> findAllAvailableForTarea(Long tareaId) {
         // Obtén todas las ubicaciones
         List<Ubicacion> allUbicaciones = ubicacionRepository.findAll();
-
+        // Obtén todas las relaciones de ubicación y tarea
+        List<UbicacionTarea> allUbicacionTareas = ubicacionTareaRepository.findAllByTareaIdAndDeletedFalse(tareaId);
+        Set<Long> ocupiedUbicacionIds = allUbicacionTareas.stream()
+                .map(ubicacionTarea -> ubicacionTarea.getUbicacion().getId())
+                .collect(Collectors.toSet());
         // Filtra las ubicaciones que ya tienen asignada la tarea
         List<Ubicacion> availableUbicaciones = allUbicaciones.stream()
-                .filter(ubicacion -> !ubicacion.getTareas().stream()
-                        .anyMatch(tarea -> tarea.getId().equals(tareaId)))
+                .filter(ubicacion -> !ocupiedUbicacionIds.contains(ubicacion.getId()))
                 .collect(Collectors.toList());
-
         return availableUbicaciones;
     }
+
     public List<Ubicacion> findAllBySociedadOrderedById(Sociedad sociedad) {
         return ubicacionRepository.findAllBySociedadOrderById(sociedad);
     }
-
 }
 

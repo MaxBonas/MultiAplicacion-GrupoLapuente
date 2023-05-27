@@ -25,11 +25,8 @@ public class Ubicacion {
     private String name;
 
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "ubicacion_tarea",
-            joinColumns = @JoinColumn(name = "ubicacion_id"),
-            inverseJoinColumns = @JoinColumn(name = "tarea_id"))
-    private Set<Tarea> tareas = new HashSet<>();
+    @OneToMany(mappedBy = "ubicacion")
+    private Set<UbicacionTarea> tareas = new HashSet<>();
 
     @OneToMany(mappedBy = "ubicacion")
     @JsonIgnore
@@ -49,7 +46,7 @@ public class Ubicacion {
         this.sociedad = sociedad;
     }
 
-    public Ubicacion(Long id, String name, Set<Tarea> tareas, Set<TareaCumplida> tareasCumplidas, Sociedad sociedad) {
+    public Ubicacion(Long id, String name, Set<UbicacionTarea> tareas, Set<TareaCumplida> tareasCumplidas, Sociedad sociedad) {
         this.id = id;
         this.name = name;
         this.tareas = tareas;
@@ -57,7 +54,7 @@ public class Ubicacion {
         this.sociedad = sociedad;
     }
 
-    public Ubicacion(String name, Set<Tarea> tareas, Set<TareaCumplida> tareasCumplidas, Sociedad sociedad) {
+    public Ubicacion(String name, Set<UbicacionTarea> tareas, Set<TareaCumplida> tareasCumplidas, Sociedad sociedad) {
         this.name = name;
         this.tareas = tareas;
         this.tareasCumplidas = tareasCumplidas;
@@ -81,11 +78,11 @@ public class Ubicacion {
         this.name = name;
     }
 
-    public Set<Tarea> getTareas() {
+    public Set<UbicacionTarea> getTareas() {
         return tareas;
     }
 
-    public void setTareas(Set<Tarea> tareas) {
+    public void setTareas(Set<UbicacionTarea> tareas) {
         this.tareas = tareas;
     }
 

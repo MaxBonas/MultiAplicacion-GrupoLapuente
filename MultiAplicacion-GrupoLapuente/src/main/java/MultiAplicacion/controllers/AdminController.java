@@ -9,6 +9,7 @@ import MultiAplicacion.repositories.*;
 import MultiAplicacion.services.InformeService;
 import MultiAplicacion.services.MensajeService;
 import MultiAplicacion.services.SociedadService;
+import MultiAplicacion.services.UbicacionTareaService;
 import MultiAplicacion.services.interfaces.TareaCumplidaServiceInterface;
 import MultiAplicacion.services.interfaces.TareaServiceInterface;
 import MultiAplicacion.services.interfaces.UbicacionServiceInterface;
@@ -42,8 +43,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpSession;
 
@@ -86,6 +89,8 @@ public class AdminController implements AdminControllerInterface {
     private MensajeService mensajeService;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private UbicacionTareaService ubicacionTareaService;
 
 
     @GetMapping("/adminsmenu")
@@ -243,10 +248,13 @@ public class AdminController implements AdminControllerInterface {
 
         Map<Ubicacion, List<Pair<Long, Pair<String, String>>>> tareasAgrupadasPorUbicacion = ubicaciones.stream()
                 .collect(Collectors.toMap(
-                        ubicacion -> ubicacion,
-                        ubicacion -> ubicacion.getTareas().stream()
-                                .sorted(Comparator.comparing(Tarea::getId)) // Ordena las tareas por tareaId
-                                .map(tarea -> Pair.of(tarea.getId(), Pair.of(tarea.getName(), tarea.getDescripcion())))
+                        Function.identity(),
+                        ubicacion -> ubicacionTareaService.getAllByUbicacionId(ubicacion.getId()).stream()
+                                .map(ubicacionTarea -> {
+                                    Tarea tarea = ubicacionTarea.getTarea();
+                                    return Pair.of(tarea.getId(), Pair.of(tarea.getName(), tarea.getDescripcion()));
+                                })
+                                .sorted(Comparator.comparing(Pair::getKey)) // Ordena las tareas por tareaId
                                 .collect(Collectors.toList()),
                         (u1, u2) -> u1, // En caso de conflicto, toma el primer valor
                         LinkedHashMap::new // Conserva el orden de las ubicaciones
@@ -256,8 +264,6 @@ public class AdminController implements AdminControllerInterface {
 
         return "admins/ubicaciones";
     }
-
-
     @PostMapping("/ubicaciones")
     public String addUbicacion(@PathVariable("sociedadId") Long sociedadId, @ModelAttribute UbicacionDTO ubicacionDTO, RedirectAttributes redirectAttributes) {
         ubicacionDTO.setSociedadId(sociedadId);
@@ -308,7 +314,11 @@ public class AdminController implements AdminControllerInterface {
             model.addAttribute("message", "La fecha proporcionada no puede ser una fecha futura.");
             return "/error";
         }
+        // Convertir LocalDate a String en formato 'yyyy-MM-dd'
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String fechaString = fecha.format(formatter);
 
+        model.addAttribute("fechaString", fechaString);
         List<Ubicacion> ubicaciones = ubicacionService.findAll();
         Map<Long, List<TareaCumplida>> tareasCumplidasMananaMap = new HashMap<>();
         Map<Long, List<TareaCumplida>> tareasCumplidasTardeMap = new HashMap<>();
@@ -341,6 +351,7 @@ public class AdminController implements AdminControllerInterface {
 
     @PostMapping("/informes/diario/export")
     public void exportarInformeDiarioExcel(@RequestParam("fecha") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fecha, HttpServletResponse response, HttpSession session) throws IOException {
+        System.out.println("Fecha recibida: " + fecha);
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         response.setHeader("Content-Disposition", "attachment; filename=Informe_Diario_Tareas" + fecha + ".xlsx");
 
@@ -508,8 +519,6 @@ public class AdminController implements AdminControllerInterface {
             throw new NotFoundException("Sociedad no encontrada con el ID: " + sociedadId);
         }
     }
-
-
     /*
     private void addLogoToSheet(Sheet sheet, Workbook workbook, String sociedadId) {
         InputStream logoInputStream = null;

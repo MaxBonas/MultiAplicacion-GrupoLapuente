@@ -18,6 +18,7 @@
     <h2>Tareas Pendientes</h2>
     <form th:action="@{'/worker/' + ${worker.sociedad.id} + '/ubicaciones/' + ${ubicacionId} + '/tareas'}" th:object="${tareaCumplidaListWrapper}" method="post">
         <input type="hidden" name="turno" th:value="${turnoInformado}" />
+        <input type="hidden" name="workers" th:value="${workersTurno}" />
         <table>
             <thead>
             <tr>

@@ -127,7 +127,7 @@ public class WorkerController implements WorkerControllerInterface {
     }
 
     @PostMapping("/ubicaciones/{ubicacionId}/tareas")
-    public String updateTareas(@PathVariable Long sociedadId, @PathVariable Long ubicacionId, @RequestParam Turno turno,
+    public String updateTareas(@PathVariable Long sociedadId, @PathVariable Long ubicacionId, @RequestParam Turno turno, @RequestParam String workers,
                                @ModelAttribute("tareaCumplidaListWrapper") TareaCumplidaListWrapper tareaCumplidaListWrapper,
                                RedirectAttributes redirectAttributes, @AuthenticationPrincipal UserDetails userDetails) {
         List<TareaCumplida> tareasCumplidasNo = tareaCumplidaListWrapper.getTareasCumplidas();
@@ -147,8 +147,10 @@ public class WorkerController implements WorkerControllerInterface {
         }
 
         redirectAttributes.addAttribute("turno", turno);
+        redirectAttributes.addAttribute("workers", workers);
         return "redirect:/worker/" + sociedadId + "/ubicaciones/" + ubicacionId + "/tareas";
     }
+
 /*
     @GetMapping("/password")
     public String showChangePasswordForm(@PathVariable Long sociedadId, Model model, @AuthenticationPrincipal UserDetails userDetails) {

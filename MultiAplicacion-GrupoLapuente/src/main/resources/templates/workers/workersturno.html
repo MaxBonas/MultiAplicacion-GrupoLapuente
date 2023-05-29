@@ -23,6 +23,11 @@
         <option value="TARDE">Tarde</option>
       </select>
     </div>
+    <h2>¿Quiénes han trabajado en este turno?</h2>
+    <div th:each="worker : ${allWorkers}">
+      <input type="checkbox" name="workers" th:value="${worker.name}"><span th:text="${worker.name}"></span><br>
+    </div>
+    <br>
     <button type="submit" class="button button-primary">Continuar</button>
   </form>
   <a href="/worker/{sociedadId}/ubicaciones" th:href="@{/worker/{sociedadId}/ubicaciones(sociedadId=${worker.sociedad.id})}" class="button">Cancelar</a>

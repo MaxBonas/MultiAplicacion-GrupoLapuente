@@ -21,6 +21,6 @@ public interface WorkerServiceInterface {
     void cambiarPassword(Long workerId, String oldPassword, String newPassword);
     Worker updateWorker(Long id, WorkerDTO workerDTO);
     List<Worker> getWorkersBySociedad(Long sociedadId);
-    void crearTareasCumplidasVacias(Long workerId, Long ubicacionId, LocalDateTime fecha, Turno turno);
+    void crearTareasCumplidasVacias(Long workerId, Long ubicacionId, LocalDateTime fecha, Turno turno, String workers);
     void deleteRoleByUserId(Long userId);
 }

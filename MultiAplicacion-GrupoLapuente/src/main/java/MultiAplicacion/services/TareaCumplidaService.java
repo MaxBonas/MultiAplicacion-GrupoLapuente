@@ -66,11 +66,11 @@ public class TareaCumplidaService implements TareaCumplidaServiceInterface {
         TareaCumplida existingTareaCumplida = tareaCumplidaRepository.findById(tareaCumplidaId).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "No existe la tarea cumplida con id: " + tareaCumplidaId + " en la base de datos"));
-
         existingTareaCumplida.setCumplida(tareaCumplida.isCumplida());
         existingTareaCumplida.setWorker(tareaCumplida.getWorker());
-        existingTareaCumplida.setComentario(tareaCumplida.getComentario());
-
+        if (existingTareaCumplida.getTarea().getName().equals("¿Quien ha trabajado en este turno?")) {
+            existingTareaCumplida.setComentario(tareaCumplida.getComentario());
+        }
         return tareaCumplidaRepository.save(existingTareaCumplida);
     }
 

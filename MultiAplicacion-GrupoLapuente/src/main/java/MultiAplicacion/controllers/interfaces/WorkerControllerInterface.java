@@ -21,7 +21,7 @@ public interface WorkerControllerInterface {
     public String updateTareas(@PathVariable Long sociedadId, @PathVariable Long ubicacionId, @RequestParam Turno turno,
                                @ModelAttribute("tareaCumplidaListWrapper") TareaCumplidaListWrapper tareaCumplidaListWrapper,
                                RedirectAttributes redirectAttributes, @AuthenticationPrincipal UserDetails userDetails);
-    String showTareas(@PathVariable Long sociedadId, @PathVariable Long ubicacionId, @RequestParam Turno turno, Model model, @AuthenticationPrincipal UserDetails userDetails);
+    String showTareas(@PathVariable Long sociedadId, @PathVariable Long ubicacionId, @RequestParam Turno turno, @RequestParam List<String> workers, Model model, @AuthenticationPrincipal UserDetails userDetails);
     //MIssatges
     String showTablonAnuncios(@PathVariable Long sociedadId, Model model, @AuthenticationPrincipal UserDetails userDetails);
     String showMensaje(@PathVariable Long sociedadId, @PathVariable Long id, Model model, @AuthenticationPrincipal UserDetails userDetails);

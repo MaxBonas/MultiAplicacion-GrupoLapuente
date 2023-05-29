@@ -11,6 +11,7 @@
     <h1 th:text="${ubicacion.name}">Nombre de la ubicación</h1>
     <h3 th:text="${#dates.format(#dates.createToday(), 'dd/MM/yyyy')}">Fecha actual</h3>
     <h3 th:text="${turnoInformado}">Turno informado</h3>
+    <h2>Trabajadores en este turno: <span th:text="${workersTurno}"></span></h2>
     <img id="logo" class="logo" src="" alt="Logotipo">
 </header>
 <main>

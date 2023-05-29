@@ -94,7 +94,7 @@ public class WorkerService implements WorkerServiceInterface {
     }
 
     @Override
-    public void crearTareasCumplidasVacias(Long workerId, Long ubicacionId, LocalDateTime fecha, Turno turno) {
+    public void crearTareasCumplidasVacias(Long workerId, Long ubicacionId, LocalDateTime fecha, Turno turno, String workers) {
         Worker worker = workerRepository.findById(workerId).orElseThrow(() -> new NoSuchElementException("Trabajador no encontrado"));
         Ubicacion ubicacion = ubicacionRepository.findById(ubicacionId).orElseThrow(() -> new NoSuchElementException("Ubicación no encontrada"));
 
@@ -104,7 +104,8 @@ public class WorkerService implements WorkerServiceInterface {
             List<UbicacionTarea> ubicacionTareas = ubicacionTareaRepository.findAllByUbicacionId(ubicacionId);
             for (UbicacionTarea ubicacionTarea : ubicacionTareas) {
                 Tarea tarea = ubicacionTarea.getTarea();
-                TareaCumplidaDTO tareaCumplidaDTO = new TareaCumplidaDTO(tarea.getId(), tarea.getName(), workerId, ubicacionId, false, worker.getName(), fecha, turno, null);
+                String comentario = tarea.getName().equals("¿Quien ha trabajado en este turno?") ? workers : null;
+                TareaCumplidaDTO tareaCumplidaDTO = new TareaCumplidaDTO(tarea.getId(), tarea.getName(), workerId, ubicacionId, tarea.getName().equals("¿Quien ha trabajado en este turno?"), worker.getName(), fecha, turno, comentario);
                 tareaCumplidaService.save(tareaCumplidaDTO);
             }
         }

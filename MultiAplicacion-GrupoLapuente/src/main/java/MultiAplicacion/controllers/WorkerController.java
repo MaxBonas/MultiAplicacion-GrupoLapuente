@@ -86,12 +86,13 @@ public class WorkerController implements WorkerControllerInterface {
         }
         model.addAttribute("worker", worker);
         model.addAttribute("ubicacionId", ubicacionId);
-
+        // Agregar todos los trabajadores de la sociedad al modelo
+        model.addAttribute("allWorkers", workerService.getAllWorkers());
         return "workers/workersturno";
     }
 
     @GetMapping("/ubicaciones/{ubicacionId}/tareas")
-    public String showTareas(@PathVariable Long sociedadId, @PathVariable Long ubicacionId, @RequestParam Turno turno, Model model, @AuthenticationPrincipal UserDetails userDetails) {
+    public String showTareas(@PathVariable Long sociedadId, @PathVariable Long ubicacionId, @RequestParam Turno turno, @RequestParam List<String> workers, Model model, @AuthenticationPrincipal UserDetails userDetails) {
         Worker worker = workerService.findByName(userDetails.getUsername());
         // Añadir validación de sociedad
         if (!worker.getSociedad().getId().equals(sociedadId)) {
@@ -104,8 +105,9 @@ public class WorkerController implements WorkerControllerInterface {
 
         // Verifica si hay tareas cumplidas antes de crear tareas cumplidas vacías
         if (tareasCumplidasSi.isEmpty()) {
-            workerService.crearTareasCumplidasVacias(worker.getId(), ubicacionId, fecha, turno);
+            workerService.crearTareasCumplidasVacias(worker.getId(), ubicacionId, fecha, turno, String.join(", ", workers));
         }
+
 
         List<TareaCumplida> tareasCumplidasNo = tareaCumplidaService.findTareasCumplidasByUbicacionAndFechaAndTurnoAndCumplida(ubicacion, fecha, turno, false);
 
@@ -119,6 +121,7 @@ public class WorkerController implements WorkerControllerInterface {
         TareaCumplidaListWrapper tareaCumplidaListWrapper = new TareaCumplidaListWrapper();
         tareaCumplidaListWrapper.setTareasCumplidas(tareasCumplidasNo);
         model.addAttribute("tareaCumplidaListWrapper", tareaCumplidaListWrapper);
+        model.addAttribute("workersTurno", String.join(", ", workers));
 
         return "workers/workerstareas";
     }

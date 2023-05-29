@@ -40,7 +40,7 @@
   <th:block th:each="ubicacion : ${ubicaciones}">
     <div class="table-container">
       <h2 th:text="${ubicacion.name}"></h2>
-      <h3>Turno Mañana</h3>
+      <h3>Turno Mañana - Trabajadores: <span th:text="${workersTurnoMananaMap[ubicacion.id]}"></span></h3>
       <table>
         <thead>
         <tr>
@@ -61,7 +61,7 @@
         </tr>
         </tbody>
       </table>
-      <h3>Turno Tarde</h3>
+      <h3>Turno Tarde - Trabajadores: <span th:text="${workersTurnoTardeMap[ubicacion.id]}"></span></h3>
       <table>
         <thead>
         <tr>

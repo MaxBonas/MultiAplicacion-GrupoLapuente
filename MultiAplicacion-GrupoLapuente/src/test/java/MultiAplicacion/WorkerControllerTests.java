@@ -21,6 +21,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -130,7 +131,9 @@ class WorkerControllerTests {
     @Test
     @WithMockUser(roles = "WORKER")
     void showTareasTest() throws Exception {
-        mockMvc.perform(get("/worker/1/ubicaciones/1/tareas").param("turno", "MANANA"))
+        mockMvc.perform(get("/worker/1/ubicaciones/1/tareas")
+                        .param("turno", "MANANA")
+                        .param("workers", "worker1")) // Añade esto
                 .andExpect(status().isOk())
                 .andExpect(view().name("workers/workerstareas"))
                 .andExpect(model().attributeExists("worker", "ubicacion", "turnoInformado", "tareasCumplidasNo", "tareasCumplidasSi", "tareaCumplida", "tareaCumplidaListWrapper"));
@@ -138,6 +141,7 @@ class WorkerControllerTests {
         verify(workerService).findByName(any());
         verify(ubicacionService).findById(any());
     }
+
 
     @Test
     @WithMockUser(roles = "WORKER")
@@ -152,14 +156,18 @@ class WorkerControllerTests {
         tareaCumplidaListWrapper.setTareasCumplidas(tareasCumplidasNo);
 
         mockMvc.perform(post("/worker/1/ubicaciones/1/tareas")
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .param("turno", "MANANA")
+                        .param("workers", "worker1")
                         .flashAttr("tareaCumplidaListWrapper", tareaCumplidaListWrapper))
                 .andExpect(status().isFound())
-                .andExpect(redirectedUrl("/worker/1/ubicaciones/1/tareas?turno=MANANA"));
+                .andExpect(redirectedUrl("/worker/1/ubicaciones/1/tareas?turno=MANANA&workers=worker1"));
 
         verify(workerService).findByName(any());
         verify(tareaCumplidaService).updateTareaCumplida(any(), any());
     }
+
+
 
 
 
@@ -248,11 +256,14 @@ class WorkerControllerTests {
 
         when(workerService.findByName(any())).thenReturn(worker);
 
-        mockMvc.perform(get("/worker/2/ubicaciones/1/tareas").param("turno", "MANANA"))
+        mockMvc.perform(get("/worker/2/ubicaciones/1/tareas")
+                        .param("turno", "MANANA")
+                        .param("workers", "worker1"))  // Agregado el parámetro 'workers'
                 .andExpect(status().isForbidden());
 
         verify(workerService).findByName(any());
     }
+
 
     @Test
     @WithMockUser(roles = "WORKER")
@@ -273,11 +284,13 @@ class WorkerControllerTests {
 
         mockMvc.perform(post("/worker/2/ubicaciones/1/tareas")
                         .param("turno", "MANANA")
+                        .param("workers", "worker1") // Agregamos el parámetro 'workers'
                         .flashAttr("tareaCumplidaListWrapper", tareaCumplidaListWrapper))
                 .andExpect(status().isForbidden());
 
         verify(workerService).findByName(any());
     }
+
 
 
 
@@ -312,13 +325,16 @@ class WorkerControllerTests {
 
         mockMvc.perform(post("/worker/1/ubicaciones/1/tareas")
                         .param("turno", "MANANA")
+                        .param("workers", "worker1")
                         .flashAttr("tareaCumplidaListWrapper", tareaCumplidaListWrapper))
                 .andExpect(status().isFound())
-                .andExpect(redirectedUrl("/worker/1/ubicaciones/1/tareas?turno=MANANA"));
+                .andExpect(redirectedUrl("/worker/1/ubicaciones/1/tareas?turno=MANANA&workers=worker1")); // Aquí se cambia la URL esperada
 
         verify(workerService).findByName(any());
         verify(tareaCumplidaService, never()).updateTareaCumplida(any(), any());
     }
+
+
 
 
     //Estos son los tests de cambiar password para el worker que ahora mismo no usamos

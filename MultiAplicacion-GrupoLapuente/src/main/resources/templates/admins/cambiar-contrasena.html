@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Cambiar Contraseña</title>
+  <link rel="stylesheet" href="../../static/css/styles.css" th:href="@{/css/styles.css}">
+  <script th:src="@{/js/logo.js}"></script>
+</head>
+<body onload="updateLogo('${session.sociedadSeleccionadaId}')">
+<header>
+  <div style="display: flex; justify-content: space-between; width: 100%;">
+    <img id="logo" class="logo" src="" alt="Logotipo">
+
+    <div style="text-align: center;">
+  <h1>Cambiar Contraseña</h1>
+    </div>
+    <!-- Opciones de usuario -->
+    <div class="dropdown">
+      <button class="dropbtn" th:text="${#httpServletRequest.userPrincipal?.name ?: 'Invitado'}">Opciones de usuario</button>
+      <div class="dropdown-content">
+        <a th:href="@{/admin/{sociedadId}/cambiar-contrasena(sociedadId=${session.sociedadId})}">Cambiar Contraseña</a>
+        <a href="/logout">Salir</a>
+      </div>
+    </div>
+  </div>
+</header>
+<main>
+  <form th:action="@{/admin/{sociedadId}/cambiar-contrasena(sociedadId=${session.sociedadId})}" method="post" onsubmit="return validatePasswords()">
+    <div class="input-container">
+      <label for="newPassword"><strong>Nueva Contraseña:</strong></label>
+      <div>
+        <input type="password" name="newPassword" id="newPassword" placeholder="Nueva Contraseña" required>
+      </div>
+    </div>
+    <div class="input-container">
+      <label for="confirmPassword"><strong>Confirmar Contraseña:</strong></label>
+      <div>
+        <input type="password" name="confirmPassword" id="confirmPassword" placeholder="Confirmar Contraseña" required>
+      </div>
+    </div>
+
+    <button type="submit">Cambiar Contraseña</button>
+  </form>
+</main>
+<script>
+    function validatePasswords() {
+        var newPassword = document.getElementById("newPassword").value;
+        var confirmPassword = document.getElementById("confirmPassword").value;
+
+        if (newPassword != confirmPassword) {
+            alert("Las contraseñas no coinciden");
+            return false;
+        }
+
+        return true;
+    }
+</script>
+<div class="button-group">
+  <a th:href="@{/admin/{sociedadId}/adminsmenu(sociedadId=${session.sociedadId})}" class="button">Volver al Menú de Administrador</a>
+</div>
+</body>
+</html>

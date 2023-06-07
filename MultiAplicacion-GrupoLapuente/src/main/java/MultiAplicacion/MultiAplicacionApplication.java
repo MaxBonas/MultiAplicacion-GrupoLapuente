@@ -1,6 +1,8 @@
 package MultiAplicacion;
 
 
+import MultiAplicacion.entities.Admin;
+import MultiAplicacion.entities.Role;
 import MultiAplicacion.repositories.AdminRepository;
 import MultiAplicacion.repositories.InformeRepository;
 import MultiAplicacion.repositories.RoleRepository;
@@ -86,8 +88,9 @@ public class MultiAplicacionApplication implements CommandLineRunner {
 		sociedadService.save(gestora);
 		sociedadService.save(turolense);
 
-		if (adminRepository.findByName("Admin1").isEmpty()) {
-			Admin testAdmin1 = new Admin("Admin1", "Admin1@gmail.com", passwordEncoder.encode("123456"), goodPolish);
+
+		if (adminRepository.findByName("max.bonas").isEmpty()) {
+			Admin testAdmin1 = new Admin("max.bonas", "max.bonas@grupolapuente.com", passwordEncoder.encode("max"), sociedadRepository.findByName("GoodPolish S.L:"));
 			adminRepository.save(testAdmin1);
 			roleRepository.save(new Role("ADMIN", testAdmin1));
 		}

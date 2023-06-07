@@ -9,9 +9,23 @@
 </head>
 <body onload="updateLogo('${session.sociedadSeleccionadaId}')">
 <header>
-    <h1>Tareas y Ubicaciones</h1>
-    <h3>Menú de Administrador</h3>
-    <img id="logo" class="logo" src="" alt="Logotipo">
+    <div style="display: flex; justify-content: space-between; width: 100%;">
+        <img id="logo" class="logo" src="" alt="Logotipo">
+
+        <div style="text-align: center;">
+            <h1>Multiaplicación Grupo Lapuente</h1>
+            <h3>Menú de Administrador</h3>
+        </div>
+
+        <!-- Opciones de usuario -->
+        <div class="dropdown">
+            <button class="dropbtn" th:text="${#httpServletRequest.userPrincipal?.name ?: 'Invitado'}">Opciones de usuario</button>
+            <div class="dropdown-content">
+                <a th:href="@{/admin/{sociedadId}/cambiar-contrasena(sociedadId=${session.sociedadId})}">Cambiar Contraseña</a>
+                <a href="/logout">Salir</a>
+            </div>
+        </div>
+    </div>
 </header>
 <main>
     <div class="tablon-anuncios">
@@ -29,8 +43,10 @@
             <li><a class="menu-button" th:href="@{/admin/{sociedadId}/workers(sociedadId=${session.sociedadId})}">Trabajadores</a></li>
             <li><a class="menu-button" th:href="@{/admin/{sociedadId}/ubicaciones(sociedadId=${session.sociedadId})}">Ubicaciones y Tareas</a></li>
             <li><a class="menu-button" th:href="@{/admin/{sociedadId}/informes/diario/request(sociedadId=${session.sociedadId})}">Informe Diario</a></li>
+<!--
             <li><a class="menu-button" href="#" onclick="showUnderDevelopmentAlert();">Informe Mensual</a></li>
             <li><a class="menu-button" href="#" onclick="showUnderDevelopmentAlert();">Informe Turno y Ubicación</a></li>
+-->
             <li><a class="menu-button" href="#" onclick="showUnderDevelopmentAlert();">Cambiar Sociedad</a></li>
             <li><a class="menu-button" th:href="@{/admin/{sociedadId}/tablonanuncios(sociedadId=${session.sociedadId})}">Mensajes</a></li>
         </ul>

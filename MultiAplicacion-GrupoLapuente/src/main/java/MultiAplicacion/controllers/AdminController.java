@@ -6,10 +6,7 @@ import MultiAplicacion.ENUMs.Turno;
 import MultiAplicacion.controllers.interfaces.AdminControllerInterface;
 import MultiAplicacion.entities.*;
 import MultiAplicacion.repositories.*;
-import MultiAplicacion.services.InformeService;
-import MultiAplicacion.services.MensajeService;
-import MultiAplicacion.services.SociedadService;
-import MultiAplicacion.services.UbicacionTareaService;
+import MultiAplicacion.services.*;
 import MultiAplicacion.services.interfaces.TareaCumplidaServiceInterface;
 import MultiAplicacion.services.interfaces.TareaServiceInterface;
 import MultiAplicacion.services.interfaces.UbicacionServiceInterface;
@@ -25,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -91,6 +89,8 @@ public class AdminController implements AdminControllerInterface {
     private UserRepository userRepository;
     @Autowired
     private UbicacionTareaService ubicacionTareaService;
+    @Autowired
+    private AdminService adminService;
 
 
     @GetMapping("/adminsmenu")
@@ -172,7 +172,16 @@ public class AdminController implements AdminControllerInterface {
         redirectAttributes.addFlashAttribute("message", "Trabajador eliminado exitosamente");
         return "redirect:/admin/{sociedadId}/workers";
     }
-
+    @GetMapping("/cambiar-contrasena")
+    public String showChangePasswordForm(@PathVariable Long sociedadId, Model model) {
+        return "admins/cambiar-contrasena";
+    }
+    @PostMapping("/cambiar-contrasena")
+    public String changePasswordAdmin(@RequestParam String newPassword, RedirectAttributes redirectAttributes, @AuthenticationPrincipal UserDetails currentUser) {
+        adminService.changePasswordAdmin(currentUser, newPassword);
+        redirectAttributes.addFlashAttribute("message", "Contraseña actualizada exitosamente");
+        return "redirect:/admin/{sociedadId}/adminsmenu";
+    }
     @GetMapping("/ubicaciones/asignar")
     public String showAssignTareaForm(@RequestParam Long ubicacionId, Model model) {
         List<Tarea> tareas = tareaService.findAllDistinctByName();
@@ -243,7 +252,7 @@ public class AdminController implements AdminControllerInterface {
         Sociedad sociedad = sociedadService.findById(sociedadId)
                 .orElseThrow(() -> new NotFoundException("Sociedad no encontrada con el ID: " + sociedadId));
 
-        List<Ubicacion> ubicaciones = ubicacionService.findAllBySociedadOrderedById(sociedad);
+        List<Ubicacion> ubicaciones = ubicacionService.findAllBySociedad(sociedad);
         model.addAttribute("ubicaciones", ubicaciones);
 
         Map<Ubicacion, List<Pair<Long, Pair<String, String>>>> tareasAgrupadasPorUbicacion = ubicaciones.stream()
@@ -301,6 +310,7 @@ public class AdminController implements AdminControllerInterface {
 
     @PostMapping("/informes/diario")
     public String informeDiario(@PathVariable("sociedadId") Long sociedadId, @RequestParam("fecha") String fechaStr, Model model) {
+        Sociedad sociedad = sociedadService.findById(sociedadId).orElseThrow(() -> new IllegalArgumentException("Sociedad no encontrada con ID: " + sociedadId));
         LocalDate fecha;
 
         try {
@@ -314,14 +324,16 @@ public class AdminController implements AdminControllerInterface {
             model.addAttribute("message", "La fecha proporcionada no puede ser una fecha futura.");
             return "/error";
         }
-        // Convertir LocalDate a String en formato 'yyyy-MM-dd'
+
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String fechaString = fecha.format(formatter);
 
         model.addAttribute("fechaString", fechaString);
-        List<Ubicacion> ubicaciones = ubicacionService.findAll();
+        List<Ubicacion> ubicaciones = ubicacionService.findAllBySociedad(sociedad);
         Map<Long, List<TareaCumplida>> tareasCumplidasMananaMap = new HashMap<>();
         Map<Long, List<TareaCumplida>> tareasCumplidasTardeMap = new HashMap<>();
+        Map<Long, String> trabajadoresMananaMap = new HashMap<>();
+        Map<Long, String> trabajadoresTardeMap = new HashMap<>();
         boolean hayTareas = false;
 
         for (Ubicacion ubicacion : ubicaciones) {
@@ -332,6 +344,30 @@ public class AdminController implements AdminControllerInterface {
                 hayTareas = true;
             }
 
+            String trabajadoresManana = tareasCumplidasManana.stream()
+                    .filter(tarea -> tarea.getTarea().getName().equals("¿Quien ha trabajado en este turno?"))
+                    .findFirst()
+                    .map(TareaCumplida::getComentario)
+                    .orElse("Nadie trabajó aquí");
+
+            String trabajadoresTarde = tareasCumplidasTarde.stream()
+                    .filter(tarea -> tarea.getTarea().getName().equals("¿Quien ha trabajado en este turno?"))
+                    .findFirst()
+                    .map(TareaCumplida::getComentario)
+                    .orElse("Nadie trabajó aquí");
+
+            trabajadoresMananaMap.put(ubicacion.getId(), trabajadoresManana);
+            trabajadoresTardeMap.put(ubicacion.getId(), trabajadoresTarde);
+
+            // Filtrar las listas para excluir la tarea de "¿Quien ha trabajado en este turno?"
+            tareasCumplidasManana = tareasCumplidasManana.stream()
+                    .filter(tarea -> !tarea.getTarea().getName().equals("¿Quien ha trabajado en este turno?"))
+                    .collect(Collectors.toList());
+
+            tareasCumplidasTarde = tareasCumplidasTarde.stream()
+                    .filter(tarea -> !tarea.getTarea().getName().equals("¿Quien ha trabajado en este turno?"))
+                    .collect(Collectors.toList());
+
             tareasCumplidasMananaMap.put(ubicacion.getId(), tareasCumplidasManana);
             tareasCumplidasTardeMap.put(ubicacion.getId(), tareasCumplidasTarde);
         }
@@ -339,6 +375,8 @@ public class AdminController implements AdminControllerInterface {
         model.addAttribute("ubicaciones", ubicaciones);
         model.addAttribute("tareasCumplidasMananaMap", tareasCumplidasMananaMap);
         model.addAttribute("tareasCumplidasTardeMap", tareasCumplidasTardeMap);
+        model.addAttribute("trabajadoresMananaMap", trabajadoresMananaMap);
+        model.addAttribute("trabajadoresTardeMap", trabajadoresTardeMap);
         model.addAttribute("fecha", fecha);
 
         if (!hayTareas) {
@@ -348,15 +386,17 @@ public class AdminController implements AdminControllerInterface {
         return "informes/informeDiario";
     }
 
-
     @PostMapping("/informes/diario/export")
     public void exportarInformeDiarioExcel(@RequestParam("fecha") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fecha, HttpServletResponse response, HttpSession session) throws IOException {
+        String sociedadSeleccionadaId = session.getAttribute("sociedadSeleccionadaId") != null ? session.getAttribute("sociedadSeleccionadaId").toString() : "1"; // O cualquier otro valor predeterminado que desees utilizar
+        Sociedad sociedad = sociedadService.findById(Long.valueOf(sociedadSeleccionadaId)).orElseThrow(() -> new IllegalArgumentException("Sociedad no encontrada con ID: " + sociedadSeleccionadaId));
         System.out.println("Fecha recibida: " + fecha);
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         response.setHeader("Content-Disposition", "attachment; filename=Informe_Diario_Tareas" + fecha + ".xlsx");
 
         try (Workbook workbook = new XSSFWorkbook()) {
-            List<Ubicacion> ubicaciones = ubicacionService.findAll();
+            List<Ubicacion> ubicaciones = ubicacionService.findAllBySociedad(sociedad);
+
             Map<Long, List<TareaCumplida>> tareasCumplidasMananaMap = new HashMap<>();
             Map<Long, List<TareaCumplida>> tareasCumplidasTardeMap = new HashMap<>();
 
@@ -368,7 +408,6 @@ public class AdminController implements AdminControllerInterface {
                 tareasCumplidasTardeMap.put(ubicacion.getId(), tareasCumplidasTarde);
 
                 Sheet sheet = workbook.createSheet(cleanSheetName(ubicacion.getName()));
-                String sociedadSeleccionadaId = session.getAttribute("sociedadSeleccionadaId") != null ? session.getAttribute("sociedadSeleccionadaId").toString() : "1"; // O cualquier otro valor predeterminado que desees utilizar
                 // Aquí, implementa el método para llenar la hoja de cálculo con los datos
                 fillSheetWithData(sheet, workbook, ubicacion, tareasCumplidasManana, tareasCumplidasTarde, sociedadSeleccionadaId);
             }
@@ -388,7 +427,7 @@ public class AdminController implements AdminControllerInterface {
         turnTitleStyle.setFillForegroundColor(IndexedColors.DARK_BLUE.getIndex());
         turnTitleStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
-        // En la función fillSheetWithData, antes de crear la ubicacionRow
+        // Estilo para el título de la ubicación
         CellStyle titleStyle = workbook.createCellStyle();
         Font titleFont = workbook.createFont();
         titleFont.setBold(true);
@@ -396,22 +435,44 @@ public class AdminController implements AdminControllerInterface {
         titleFont.setColor(IndexedColors.DARK_BLUE.getIndex());
         titleStyle.setFont(titleFont);
 
+        // Este código debería estar en tu método fillSheetWithData justo después de definir los estilos
+        String trabajadoresManana = tareasCumplidasManana.stream()
+                .filter(tarea -> tarea.getTarea().getName().equals("¿Quien ha trabajado en este turno?"))
+                .findFirst()
+                .map(TareaCumplida::getComentario)
+                .orElse("Nadie trabajó aquí");
+
+        String trabajadoresTarde = tareasCumplidasTarde.stream()
+                .filter(tarea -> tarea.getTarea().getName().equals("¿Quien ha trabajado en este turno?"))
+                .findFirst()
+                .map(TareaCumplida::getComentario)
+                .orElse("Nadie trabajó aquí");
+
+        // Filtrar las listas para excluir la tarea de "¿Quien ha trabajado en este turno?"
+        tareasCumplidasManana = tareasCumplidasManana.stream()
+                .filter(tarea -> !tarea.getTarea().getName().equals("¿Quien ha trabajado en este turno?"))
+                .collect(Collectors.toList());
+
+        tareasCumplidasTarde = tareasCumplidasTarde.stream()
+                .filter(tarea -> !tarea.getTarea().getName().equals("¿Quien ha trabajado en este turno?"))
+                .collect(Collectors.toList());
+
         // Escribir el nombre de la ubicación
         Row ubicacionRow = sheet.createRow(0);
-        // Después de crear la fila de ubicación (ubicacionRow)
         ubicacionRow.setHeightInPoints(25);
         Cell ubicacionCell = ubicacionRow.createCell(0);
         ubicacionCell.setCellValue(ubicacion.getName());
-        // Aplicar estilo a la celda de ubicación
-        ubicacionCell.setCellStyle(titleStyle);
+        ubicacionCell.setCellStyle(titleStyle);  // Aplica el estilo a la celda de ubicación
 
-        // Escribir título de turno Mañana
+
+        // Escribir título de turno Mañana y la lista de trabajadores
         Row titleRow = sheet.createRow(1);
         Cell titleCell = titleRow.createCell(0);
-        // Aplicar estilo a los títulos de turno
         titleCell.setCellStyle(turnTitleStyle);
-
         titleCell.setCellValue("Mañana");
+
+        Cell trabajadoresCell = titleRow.createCell(1);
+        trabajadoresCell.setCellValue(trabajadoresManana);
 
         // Escribir las cabeceras de la tabla de Turno Mañana
         Row headerRow = sheet.createRow(2);
@@ -427,13 +488,14 @@ public class AdminController implements AdminControllerInterface {
         // Espacio entre las tablas
         rowIndex++;
 
-        // Escribir título de turno Tarde
+        // Escribir título de turno Tarde y la lista de trabajadores
         titleRow = sheet.createRow(rowIndex++);
         titleCell = titleRow.createCell(0);
-        // Aplicar estilo a los títulos de turno
         titleCell.setCellStyle(turnTitleStyle);
-
         titleCell.setCellValue("Tarde");
+
+        trabajadoresCell = titleRow.createCell(1);
+        trabajadoresCell.setCellValue(trabajadoresTarde);
 
         // Escribir las cabeceras de la tabla de Turno Tarde
         headerRow = sheet.createRow(rowIndex++);

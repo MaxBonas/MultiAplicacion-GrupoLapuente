@@ -9,9 +9,23 @@
 </head>
 <body onload="updateLogo('${session.sociedadSeleccionadaId}')">
 <header>
+  <div style="display: flex; justify-content: space-between; width: 100%;">
+    <img id="logo" class="logo" src="" alt="Logotipo">
+
+    <div style="text-align: center;">
   <h1>Tareas y Ubicaciones</h1>
   <h3>Mensajes</h3>
-  <img id="logo" class="logo" src="" alt="Logotipo">
+  </div>
+
+  <!-- Opciones de usuario -->
+  <div class="dropdown">
+    <button class="dropbtn" th:text="${#httpServletRequest.userPrincipal?.name ?: 'Invitado'}">Opciones de usuario</button>
+    <div class="dropdown-content">
+      <a th:href="@{/admin/{sociedadId}/cambiar-contrasena(sociedadId=${session.sociedadId})}">Cambiar Contraseña</a>
+      <a href="/logout">Salir</a>
+    </div>
+  </div>
+  </div>
 </header>
 <main>
   <h2>Tablón de Anuncios</h2>

@@ -66,7 +66,7 @@ public class UbicacionService implements UbicacionServiceInterface {
 
     @Override
     public List<Ubicacion> findAllBySociedad(Sociedad sociedad) {
-        return ubicacionRepository.findBySociedad(sociedad);
+        return ubicacionRepository.findBySociedadCustomOrder(sociedad);
     }
     @Override
     public void deleteById(Long id) {

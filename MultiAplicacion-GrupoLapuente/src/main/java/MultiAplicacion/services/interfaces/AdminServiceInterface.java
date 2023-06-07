@@ -1,7 +1,7 @@
 package MultiAplicacion.services.interfaces;
 
 import MultiAplicacion.entities.Admin;
-import MultiAplicacion.entities.Sociedad;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Optional;
 
@@ -10,4 +10,5 @@ public interface AdminServiceInterface {
     Optional<Admin> findAdminByName(String name);
     Optional<Admin> findAdminByEmail(String email);
     void adminDeleteById(Long id);
+    void changePasswordAdmin(UserDetails userDetails, String newPassword);
 }

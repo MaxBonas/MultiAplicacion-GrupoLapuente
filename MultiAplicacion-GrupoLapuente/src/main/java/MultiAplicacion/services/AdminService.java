@@ -2,17 +2,14 @@ package MultiAplicacion.services;
 
 import MultiAplicacion.entities.Admin;
 import MultiAplicacion.entities.Role;
-import MultiAplicacion.entities.Sociedad;
-import MultiAplicacion.entities.Worker;
 import MultiAplicacion.repositories.AdminRepository;
 import MultiAplicacion.repositories.RoleRepository;
 import MultiAplicacion.repositories.SociedadRepository;
 import MultiAplicacion.services.interfaces.AdminServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
@@ -53,5 +50,11 @@ public class AdminService implements AdminServiceInterface {
     @Override
     public void adminDeleteById(Long id) {
         userService.deleteUserById(id);
+    }
+
+    public void changePasswordAdmin(UserDetails userDetails, String newPassword) {
+        Admin admin = adminRepository.findByName(userDetails.getUsername()).orElseThrow(() -> new IllegalArgumentException("Admin no encontrado con nombre de usuario: " + userDetails.getUsername()));
+        admin.setPassword(passwordEncoder.encode(newPassword));
+        adminRepository.save(admin);
     }
 }

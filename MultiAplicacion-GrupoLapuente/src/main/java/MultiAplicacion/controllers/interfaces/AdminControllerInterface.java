@@ -9,6 +9,8 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -31,6 +33,8 @@ public interface AdminControllerInterface {
     String updateWorker(@PathVariable Long sociedadId, @PathVariable Long id, @ModelAttribute WorkerDTO workerDTO, RedirectAttributes redirectAttributes);
     String getWorker(@PathVariable Long id, Model model);
     String deleteWorker(@PathVariable Long sociedadId, @PathVariable Long id, RedirectAttributes redirectAttributes);
+    String changePasswordAdmin(@RequestParam String newPassword, RedirectAttributes redirectAttributes, @AuthenticationPrincipal UserDetails currentUser);
+    String showChangePasswordForm(@PathVariable Long sociedadId, Model model);
     String showEditTareaForm(@PathVariable Long id, Model model);
     String updateTarea(@PathVariable Long sociedadId, @PathVariable Long id, @ModelAttribute TareaDTO tareaDTO, RedirectAttributes redirectAttributes);
     String deleteTarea(@PathVariable Long sociedadId, @PathVariable Long id, RedirectAttributes redirectAttributes);
@@ -43,7 +47,7 @@ public interface AdminControllerInterface {
     String showAssignTareaForm(@RequestParam Long ubicacionId, Model model);
     String createAndAssignTarea(@RequestParam Long ubicacionId, @RequestParam Long tareaId, @RequestParam(required = false) String name, @RequestParam(required = false) String descripcion, RedirectAttributes redirectAttributes);
     String informeDiarioRequest(@PathVariable("sociedadId") Long sociedadId, Model model);
-    String informeDiario(@PathVariable("sociedadId") Long sociedadId, @RequestParam("fecha") String fechaStr, Model model);
+    String informeDiario(@PathVariable("sociedadId") Long sociedadId, @RequestParam("fecha") String fechaStr, Model model) ;
 //Missatges:
     String showTablonAnuncios(@PathVariable Long sociedadId, Model model, HttpServletRequest request);
     String showCrearMensaje(@PathVariable Long sociedadId, Model model, HttpServletRequest request);

@@ -26,10 +26,23 @@
 </head>
 <body onload="updateLogo('${session.sociedadSeleccionadaId}')">
 <header>
+  <div style="display: flex; justify-content: space-between; width: 100%;">
+    <img id="logo" class="logo" src="" alt="Logotipo">
+
+    <div style="text-align: center;">
   <h1>Informe Diario</h1>
   <h2 th:text="'Fecha: ' + ${fecha}"></h2>
-  <img id="logo" class="logo" src="" alt="Logotipo">
+  </div>
 
+  <!-- Opciones de usuario -->
+  <div class="dropdown">
+    <button class="dropbtn" th:text="${#httpServletRequest.userPrincipal?.name ?: 'Invitado'}">Opciones de usuario</button>
+    <div class="dropdown-content">
+      <a th:href="@{/admin/{sociedadId}/cambiar-contrasena(sociedadId=${session.sociedadId})}">Cambiar Contraseña</a>
+      <a href="/logout">Salir</a>
+    </div>
+  </div>
+  </div>
 </header>
 <main>
   <br>
@@ -41,6 +54,7 @@
     <div class="table-container">
       <h2 th:text="${ubicacion.name}"></h2>
       <h3>Turno Mañana</h3>
+      <p th:text="${trabajadoresMananaMap[ubicacion.id]}"></p>
       <table>
         <thead>
         <tr>
@@ -62,6 +76,7 @@
         </tbody>
       </table>
       <h3>Turno Tarde</h3>
+      <p th:text="${trabajadoresTardeMap[ubicacion.id]}"></p>
       <table>
         <thead>
         <tr>

@@ -88,7 +88,7 @@ class AdminControllerTests {
         sociedad1.setName("Sociedad Test1");
 
         Sociedad sociedad2 = new Sociedad();
-        sociedad2.setId(1L);
+        sociedad2.setId(2L); // Asegúrate de que cada Sociedad tenga un ID único.
         sociedad2.setName("Sociedad Test2");
 
         List<Sociedad> sociedadList = new ArrayList<>();
@@ -96,6 +96,7 @@ class AdminControllerTests {
         sociedadList.add(sociedad2);
 
         when(sociedadService.findAll()).thenReturn(sociedadList);
+        when(sociedadService.findById(1L)).thenReturn(Optional.of(sociedad1)); // Agrega esta línea.
 
         admin = new Admin();
         admin.setName("admin1");
@@ -116,7 +117,7 @@ class AdminControllerTests {
         ubicaciones.add(ubicacion1);
         ubicaciones.add(ubicacion2);
 
-        when(ubicacionService.findAll()).thenReturn(ubicaciones);
+        when(ubicacionService.findAllBySociedad(sociedad1)).thenReturn(ubicaciones);
 
     }
 
@@ -178,7 +179,7 @@ class AdminControllerTests {
         WorkerDTO workerDTO = new WorkerDTO();
         workerDTO.setId(1L);
         workerDTO.setName("Worker Test Updated");
-        workerDTO.setCargo(Cargo.JEFE_DE_TURNO);
+        workerDTO.setCargo(Cargo.JEFE_DE_EQUIPO);
 
         mockMvc.perform(post("/admin/1/workers/1/update")
                         .flashAttr("workerDTO", workerDTO))
@@ -289,7 +290,7 @@ class AdminControllerTests {
 
         mockMvc.perform(get("/admin/{sociedadId}/tareas/{id}/delete", sociedadId, tareaId))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/admin/" + sociedadId + "/tareas"));
+                .andExpect(redirectedUrl("/admin/" + sociedadId + "/ubicaciones"));
 
         verify(tareaService).deleteTareaById(tareaId);
     }
@@ -304,7 +305,7 @@ class AdminControllerTests {
         ubicaciones.add(ubicacion1);
 
         when(sociedadService.findById(sociedadId)).thenReturn(Optional.of(new Sociedad()));
-        when(ubicacionService.findAllBySociedadOrderedById(any(Sociedad.class))).thenReturn(ubicaciones);
+        when(ubicacionService.findAllBySociedad(any(Sociedad.class))).thenReturn(ubicaciones);
 
         mockMvc.perform(get("/admin/{sociedadId}/ubicaciones", sociedadId))
                 .andExpect(status().isOk())
@@ -313,7 +314,7 @@ class AdminControllerTests {
                 .andExpect(model().attributeExists("tareasAgrupadasPorUbicacion"));
 
         verify(sociedadService).findById(sociedadId);
-        verify(ubicacionService).findAllBySociedadOrderedById(any(Sociedad.class));
+        verify(ubicacionService).findAllBySociedad(any(Sociedad.class));
     }
 
     @Test
@@ -372,7 +373,6 @@ class AdminControllerTests {
                 .andExpect(view().name("informes/informeDiarioRequest"));
 
     }
-
     @Test
     @WithMockUser(roles = "ADMIN")
     void informeDiarioTest() throws Exception {
@@ -388,10 +388,9 @@ class AdminControllerTests {
                 .andExpect(model().attributeExists("tareasCumplidasTardeMap"))
                 .andExpect(model().attribute("fecha", fecha));
 
-        verify(ubicacionService).findAll();
+        verify(ubicacionService).findAllBySociedad(any()); // Se modificó esta línea
         verify(tareaCumplidaService, times(2)).findTareasCumplidasByUbicacionAndFechaAndTurno(any(Ubicacion.class), eq(fecha.atStartOfDay()), eq(Turno.MANANA));
         verify(tareaCumplidaService, times(2)).findTareasCumplidasByUbicacionAndFechaAndTurno(any(Ubicacion.class), eq(fecha.atStartOfDay()), eq(Turno.TARDE));
-
     }
 
     @Test
@@ -411,10 +410,11 @@ class AdminControllerTests {
                 .andExpect(header().string("Content-Disposition", "attachment; filename=Informe_Diario_Tareas" + fecha + ".xlsx"))
                 .andExpect(content().contentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
 
-        verify(ubicacionService).findAll();
+        verify(ubicacionService).findAllBySociedad(any(Sociedad.class)); // Reemplazamos 'findAll()' por 'findAllBySociedad()'.
         verify(tareaCumplidaService, times(2)).findTareasCumplidasByUbicacionAndFechaAndTurno(any(Ubicacion.class), eq(fecha.atStartOfDay()), eq(Turno.MANANA));
         verify(tareaCumplidaService, times(2)).findTareasCumplidasByUbicacionAndFechaAndTurno(any(Ubicacion.class), eq(fecha.atStartOfDay()), eq(Turno.TARDE));
     }
+
 
     @Test
     @WithMockUser(roles = "ADMIN")
@@ -437,10 +437,11 @@ class AdminControllerTests {
                 .andExpect(model().attribute("fecha", fecha))
                 .andExpect(model().attribute("message", "No se encontraron tareas cumplidas para la fecha proporcionada."));
 
-        verify(ubicacionService).findAll();
+        verify(ubicacionService).findAllBySociedad(any(Sociedad.class)); // Cambia esta línea
         verify(tareaCumplidaService, times(2)).findTareasCumplidasByUbicacionAndFechaAndTurno(any(Ubicacion.class), eq(fecha.atStartOfDay()), eq(Turno.MANANA));
         verify(tareaCumplidaService, times(2)).findTareasCumplidasByUbicacionAndFechaAndTurno(any(Ubicacion.class), eq(fecha.atStartOfDay()), eq(Turno.TARDE));
     }
+
 
     @Test
     @WithMockUser(roles = "ADMIN")

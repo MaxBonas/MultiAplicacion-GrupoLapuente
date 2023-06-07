@@ -11,6 +11,9 @@ header {
     color: white;
     padding: 20px;
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 header::after {
@@ -109,15 +112,17 @@ input[type="text"], textarea, .large-select {
 }
 
 .logo {
-    position: absolute;
     top: 10px;
     left: 10px;
     max-width: 200px;
+
     padding: 5px;
     background-color: #ffffff;
     border: 1px solid #000000;
     border-radius: 5px;
     box-sizing: border-box;
+    height: auto;
+
 }
 
 /* Estilos para la página de error */
@@ -275,4 +280,43 @@ select {
     height: 1.5em;  /* Aumenta la altura */
     font-size: 1em;  /* Aumenta el tamaño de la fuente */
     box-sizing: border-box;
+}
+.dropdown {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: normal;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {background-color: #ddd;}
+
+.dropdown:hover .dropdown-content {display: block;}
+
+.dropbtn {
+  background-color: #CF0A2C;
+  color: white;
+  padding: 10px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+}
+
+.dropdown:hover .dropbtn {
+  background-color: #3e8e41;
 }

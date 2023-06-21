@@ -8,8 +8,8 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "ubicacion_tarea")
-@SQLDelete(sql = "UPDATE ubicacion_tarea SET deleted = true WHERE ubicacion_id = ? AND tarea_id = ?")
-@Where(clause = "deleted = false")
+@SQLDelete(sql = "UPDATE ubicacion_tarea SET deleted = 1 WHERE ubicacion_id = ? AND tarea_id = ?")
+@Where(clause = "deleted = 0")
 @IdClass(UbicacionTareaId.class)
 public class UbicacionTarea implements Serializable {
 
@@ -23,7 +23,7 @@ public class UbicacionTarea implements Serializable {
     @JoinColumn(name = "tarea_id")
     private Tarea tarea;
 
-    @Column(name = "deleted", nullable = false, columnDefinition = "boolean default false")
+    @Column(name = "deleted", nullable = false, columnDefinition = "BIT DEFAULT 0")
     private boolean deleted = false;
 
     // Constructores, getters y setters omitidos por brevedad

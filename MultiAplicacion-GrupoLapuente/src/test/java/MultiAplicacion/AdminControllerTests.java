@@ -1,21 +1,15 @@
 package MultiAplicacion;
 
 
-import MultiAplicacion.DTOs.TareaCumplidaListWrapper;
 import MultiAplicacion.DTOs.TareaDTO;
 import MultiAplicacion.DTOs.WorkerDTO;
 import MultiAplicacion.DTOs.UbicacionDTO;
 import MultiAplicacion.ENUMs.Cargo;
 import MultiAplicacion.ENUMs.Turno;
 import MultiAplicacion.controllers.AdminController;
-import MultiAplicacion.controllers.WorkerController;
 import MultiAplicacion.entities.*;
 import MultiAplicacion.repositories.*;
 import MultiAplicacion.services.*;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,16 +17,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.web.server.ResponseStatusException;
 
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -44,7 +34,6 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest

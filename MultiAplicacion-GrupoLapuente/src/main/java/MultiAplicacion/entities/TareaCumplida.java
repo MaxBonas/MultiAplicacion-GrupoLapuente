@@ -2,14 +2,15 @@ package MultiAplicacion.entities;
 
 import MultiAplicacion.ENUMs.Turno;
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Type;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@SQLDelete(sql = "UPDATE tareacumplida SET deleted = true WHERE id = ?")
-@Where(clause = "deleted = false")
+@SQLDelete(sql = "UPDATE tareacumplida SET deleted = 1 WHERE id = ?")
+@Where(clause = "deleted = 0")
 public class TareaCumplida {
 
     @Id
@@ -28,16 +29,17 @@ public class TareaCumplida {
     @JoinColumn(name = "ubicacion_id")
     private Ubicacion ubicacion;
 
-    @Column(nullable = true)
-    private boolean cumplida;
 
+    @Column(nullable = false)
+    @Type(type = "org.hibernate.type.NumericBooleanType")
+    private boolean cumplida;
 
     private LocalDateTime fechaCumplimiento;
 
     private Turno turno;
 
     private String comentario;
-    @Column(name = "deleted", nullable = false, columnDefinition = "boolean default false")
+    @Column(name = "deleted", nullable = false, columnDefinition = "BIT DEFAULT 0")
     private boolean deleted = false;
 
     @ManyToOne

@@ -11,8 +11,8 @@ import org.hibernate.annotations.Where;
 
 @Entity
 @Table(name = "users")
-@SQLDelete(sql = "UPDATE users SET deleted = true WHERE id = ?")
-@Where(clause = "deleted = false")
+@SQLDelete(sql = "UPDATE users SET deleted = 1 WHERE id = ?")
+@Where(clause = "deleted = 0")
 public abstract class User {
 
     @Id
@@ -43,7 +43,7 @@ public abstract class User {
     @OneToMany(mappedBy = "receptor", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private Set<Mensaje> mensajesRecibidos = new HashSet<>();
-    @Column(name = "deleted", nullable = false, columnDefinition = "boolean default false")
+    @Column(name = "deleted", nullable = false, columnDefinition = "BIT DEFAULT 0")
     private boolean deleted = false;
 
     public User(Long id, String name, String password, Sociedad sociedad) {

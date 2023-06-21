@@ -6,8 +6,8 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@SQLDelete(sql = "UPDATE mensaje SET deleted = true WHERE id = ?")
-@Where(clause = "deleted = false")
+@SQLDelete(sql = "UPDATE mensaje SET deleted = 1 WHERE id = ?")
+@Where(clause = "deleted = 0")
 public class Mensaje {
 
     @Id
@@ -38,7 +38,7 @@ public class Mensaje {
 
     @Column(nullable = false)
     private boolean circular;
-    @Column(name = "deleted", nullable = false, columnDefinition = "boolean default false")
+    @Column(name = "deleted", nullable = false, columnDefinition = "BIT DEFAULT 0")
     private boolean deleted = false;
 
     public Mensaje() {

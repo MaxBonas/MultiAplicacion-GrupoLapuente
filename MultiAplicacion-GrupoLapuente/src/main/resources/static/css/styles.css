@@ -114,16 +114,16 @@ input[type="text"], textarea, .large-select {
 .logo {
     top: 10px;
     left: 10px;
-    max-width: 200px;
+    max-height: 120px; /* Cambiar max-width a max-height */
+    width: auto; /* Asegurarse de que la width se ajuste automáticamente */
 
     padding: 5px;
     background-color: #ffffff;
     border: 1px solid #000000;
     border-radius: 5px;
     box-sizing: border-box;
-    height: auto;
-
 }
+
 
 /* Estilos para la página de error */
 .error-page {
@@ -318,5 +318,7 @@ select {
 }
 
 .dropdown:hover .dropbtn {
-  background-color: #3e8e41;
+    background-color: #FFFFFF;
+    color: black; /* Color del texto a negro cuando se pasa el ratón */
 }
+

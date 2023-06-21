@@ -14,8 +14,8 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 @Entity
-@SQLDelete(sql = "UPDATE informe SET deleted = true WHERE id = ?")
-@Where(clause = "deleted = false")
+@SQLDelete(sql = "UPDATE informe SET deleted = 1 WHERE id = ?")
+@Where(clause = "deleted = 0")
 public class Informe {
 
     @Id
@@ -42,7 +42,7 @@ public class Informe {
     )
     private Set<Worker> workers = new HashSet<>();
 
-    @Column(name = "deleted", nullable = false, columnDefinition = "boolean default false")
+    @Column(name = "deleted", nullable = false, columnDefinition = "BIT DEFAULT 0")
     private boolean deleted = false;
 
 

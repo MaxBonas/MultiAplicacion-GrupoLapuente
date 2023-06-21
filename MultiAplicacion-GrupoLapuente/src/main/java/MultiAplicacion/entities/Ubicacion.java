@@ -12,8 +12,8 @@ import org.hibernate.annotations.Where;
 
 @Entity
 @Table(name = "ubicaciones")
-@SQLDelete(sql = "UPDATE ubicaciones SET deleted = true WHERE id = ?")
-@Where(clause = "deleted = false")
+@SQLDelete(sql = "UPDATE ubicaciones SET deleted = 1 WHERE id = ?")
+@Where(clause = "deleted = 0")
 public class Ubicacion {
 
     @Id
@@ -35,7 +35,7 @@ public class Ubicacion {
     @ManyToOne
     @JoinColumn(name = "sociedad_id", nullable = false)
     private Sociedad sociedad;
-    @Column(name = "deleted", nullable = false, columnDefinition = "boolean default false")
+    @Column(name = "deleted", nullable = false, columnDefinition = "BIT DEFAULT 0")
     private boolean deleted = false;
 
     public Ubicacion() {

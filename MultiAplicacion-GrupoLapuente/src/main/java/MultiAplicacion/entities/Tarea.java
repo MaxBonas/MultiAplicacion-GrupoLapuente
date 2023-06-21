@@ -10,8 +10,8 @@ import org.hibernate.annotations.Where;
 
 @Entity
 @Table(name = "tareas")
-@SQLDelete(sql = "UPDATE tareas SET deleted = true WHERE id = ?")
-@Where(clause = "deleted = false")
+@SQLDelete(sql = "UPDATE tareas SET deleted = 1 WHERE id = ?")
+@Where(clause = "deleted = 0")
 public class Tarea {
 
     @Id
@@ -28,7 +28,7 @@ public class Tarea {
     @NotBlank(message = "This field can't be blank")
     @NotNull(message = "This field can't be null")
     private String descripcion;
-    @Column(name = "deleted", nullable = false, columnDefinition = "boolean default false")
+    @Column(name = "deleted", nullable = false, columnDefinition = "BIT DEFAULT 0")
     private boolean deleted = false;
 
     public Tarea() {}

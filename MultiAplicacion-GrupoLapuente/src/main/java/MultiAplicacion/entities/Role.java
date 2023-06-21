@@ -7,15 +7,15 @@ import org.hibernate.annotations.Where;
 import javax.persistence.*;
 
 @Entity
-@SQLDelete(sql = "UPDATE role SET deleted = true WHERE id = ?")
-@Where(clause = "deleted = false")
+@SQLDelete(sql = "UPDATE role SET deleted = 1 WHERE id = ?")
+@Where(clause = "deleted = 0")
 public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String role;
-    @Column(name = "deleted", nullable = false, columnDefinition = "boolean default false")
+    @Column(name = "deleted", nullable = false, columnDefinition = "BIT DEFAULT 0")
     private boolean deleted = false;
 
     @ManyToOne

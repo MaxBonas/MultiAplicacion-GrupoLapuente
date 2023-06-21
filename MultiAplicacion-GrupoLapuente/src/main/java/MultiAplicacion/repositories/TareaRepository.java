@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface TareaRepository extends JpaRepository<Tarea, Long> {
         List<Tarea> findByUbicaciones(Ubicacion ubicacion);
-        @Query("SELECT DISTINCT t FROM Tarea t GROUP BY t.name")
+        @Query("SELECT t FROM Tarea t WHERE t.id IN (SELECT MIN(t2.id) FROM Tarea t2 GROUP BY t2.name)")
         List<Tarea> findAllDistinctByName();
         List<Tarea> findAllByOrderById();
 }

@@ -8,11 +8,24 @@
 </head>
 <body onload="updateLogo('${session.sociedadSeleccionadaId}')">
 <header>
-    <h1 th:text="${ubicacion.name}">Nombre de la ubicación</h1>
-    <h3 th:text="${#dates.format(#dates.createToday(), 'dd/MM/yyyy')}">Fecha actual</h3>
-    <h3 th:text="${turnoInformado}">Turno informado</h3>
-    <h2>Trabajadores en este turno: <span th:text="${workersTurno}"></span></h2>
-    <img id="logo" class="logo" src="" alt="Logotipo">
+    <div style="display: flex; justify-content: space-between; width: 100%;">
+        <img id="logo" class="logo" src="" alt="Logotipo">
+
+        <div style="text-align: center;">
+            <h1 th:text="${ubicacion.name}">Nombre de la ubicación</h1>
+            <h3 th:text="${#dates.format(#dates.createToday(), 'dd/MM/yyyy')}">Fecha actual</h3>
+            <h3 th:text="${turnoInformado}">Turno informado</h3>
+            <h4>Equipo: <span th:text="${workersTurno}"></span></h4>
+        </div>
+
+        <!-- Opciones de usuario -->
+        <div class="dropdown">
+            <button class="dropbtn" th:text="${#httpServletRequest.userPrincipal?.name ?: 'Invitado'}">Opciones de usuario</button>
+            <div class="dropdown-content">
+                <a href="/logout">Salir</a>
+            </div>
+        </div>
+    </div>
 </header>
 <main>
     <h2>Tareas Pendientes</h2>

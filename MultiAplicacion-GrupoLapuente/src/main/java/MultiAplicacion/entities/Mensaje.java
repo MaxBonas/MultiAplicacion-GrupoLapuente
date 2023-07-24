@@ -5,15 +5,20 @@ import org.hibernate.annotations.Where;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+// La anotación @Entity indica que esta clase es una entidad que se mapeará con una tabla en la base de datos
 @Entity
+// La anotación @SQLDelete se usa para modificar el comportamiento de la operación de eliminación. En este caso, en lugar de eliminar registros, se marca como eliminado.
 @SQLDelete(sql = "UPDATE mensaje SET deleted = 1 WHERE id = ?")
+// La anotación @Where se utiliza para filtrar los registros que tienen el campo "deleted" igual a 0 (no eliminados).
 @Where(clause = "deleted = 0")
 public class Mensaje {
 
+    // La anotación @Id y @GeneratedValue se utilizan para auto-generar la clave primaria de la tabla.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // La anotación @ManyToOne indica que existe una relación de muchos a uno entre la entidad Mensaje y la entidad User.
     @ManyToOne
     @JoinColumn(name = "emisor_id", nullable = false)
     private User emisor;
@@ -27,6 +32,7 @@ public class Mensaje {
     @Column(nullable = false)
     private String asunto;
 
+    // La anotación @Column se utiliza para definir la configuración de la columna. En este caso, la columna no puede ser nula y su tipo es TEXT.
     @Column(nullable = false, columnDefinition = "TEXT")
     private String contenido;
 
@@ -41,9 +47,11 @@ public class Mensaje {
     @Column(name = "deleted", nullable = false, columnDefinition = "BIT DEFAULT 0")
     private boolean deleted = false;
 
+    // Constructor por defecto de la clase Mensaje
     public Mensaje() {
     }
 
+    // Constructor de la clase Mensaje con parámetros
     public Mensaje(User emisor, User receptor, String asunto, String contenido, LocalDateTime fechaHora, boolean leido, boolean circular, boolean activo) {
         this.emisor = emisor;
         this.receptor = receptor;

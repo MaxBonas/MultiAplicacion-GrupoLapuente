@@ -9,14 +9,19 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+// La anotación @SQLDelete se usa para modificar el comportamiento de la operación de eliminación. En este caso, en lugar de eliminar registros, se marca como eliminado.
 @SQLDelete(sql = "UPDATE tareacumplida SET deleted = 1 WHERE id = ?")
+// La anotación @Where se utiliza para filtrar los registros que tienen el campo "deleted" igual a 0 (no eliminados).
 @Where(clause = "deleted = 0")
 public class TareaCumplida {
 
+    // La anotación @Id y @GeneratedValue se utilizan para auto-generar la clave primaria de la tabla.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // La anotación @ManyToOne indica que existe una relación de muchos a uno entre las entidades TareaCumplida, Tarea, Worker y Ubicacion.
+    // FetchType.LAZY significa que la inicialización de la relación se retrasa hasta que se accede a la propiedad.
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tarea_id")
     private Tarea tarea;
@@ -29,7 +34,6 @@ public class TareaCumplida {
     @JoinColumn(name = "ubicacion_id")
     private Ubicacion ubicacion;
 
-
     @Column(nullable = false)
     @Type(type = "org.hibernate.type.NumericBooleanType")
     private boolean cumplida;
@@ -39,11 +43,15 @@ public class TareaCumplida {
     private Turno turno;
 
     private String comentario;
+
     @Column(name = "deleted", nullable = false, columnDefinition = "BIT DEFAULT 0")
     private boolean deleted = false;
 
+    // Constructor por defecto de la clase TareaCumplida
     public TareaCumplida() {}
 
+    // Constructores de la clase TareaCumplida con parámetros
+    // Estos constructores inicializan un objeto TareaCumplida con los atributos específicos
     public TareaCumplida(Tarea tarea, Worker worker, Ubicacion ubicacion, boolean cumplida, LocalDateTime fechaCumplimiento, Turno turno, String comentario) {
         this.tarea = tarea;
         this.worker = worker;

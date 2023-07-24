@@ -11,27 +11,32 @@ import org.hibernate.annotations.Where;
 
 @Entity
 @Table(name = "users")
+// La anotación @SQLDelete se usa para modificar el comportamiento de la operación de eliminación. En este caso, en lugar de eliminar registros, se marca como eliminado.
 @SQLDelete(sql = "UPDATE users SET deleted = 1 WHERE id = ?")
+// La anotación @Where se utiliza para filtrar los registros que tienen el campo "deleted" igual a 0 (no eliminados).
 @Where(clause = "deleted = 0")
 public abstract class User {
 
+    // La anotación @Id y @GeneratedValue se utilizan para auto-generar la clave primaria de la tabla.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Las anotaciones @Column, @NotBlank y @NotNull se usan para validar que el campo name no esté vacío o nulo y para indicar que es un campo único en la base de datos.
     @Column(unique = true, nullable = false, length = 191)
-    @NotBlank(message = "This field can't be blank")
+    @NotBlank(message = "Este campo no puede estar vacío")
     private String name;
 
     @Column(nullable = false)
-    @NotBlank(message = "This field can't be blank")
+    @NotBlank(message = "Este campo no puede estar vacío")
     private String password;
 
-
+    // La anotación @OneToMany indica que existe una relación de uno a muchos entre las entidades User y Role.
     @OneToMany(mappedBy = "user",fetch = FetchType.EAGER)
     @JsonIgnore
-    private Set<Role> roles = new HashSet<>(); // A Set is a List without duplicates
+    private Set<Role> roles = new HashSet<>(); // Un Set es una lista sin duplicados
 
+    // La anotación @ManyToOne indica que existe una relación de muchos a uno entre la entidad User y la entidad Sociedad.
     @ManyToOne
     @JoinColumn(name = "sociedad_id", nullable = false)
     private Sociedad sociedad;
@@ -43,9 +48,12 @@ public abstract class User {
     @OneToMany(mappedBy = "receptor", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private Set<Mensaje> mensajesRecibidos = new HashSet<>();
+
     @Column(name = "deleted", nullable = false, columnDefinition = "BIT DEFAULT 0")
     private boolean deleted = false;
 
+    // Constructores de la clase User con parámetros
+    // Estos constructores inicializan un objeto User con los atributos específicos
     public User(Long id, String name, String password, Sociedad sociedad) {
         this.id = id;
         this.name = name;
@@ -68,8 +76,11 @@ public abstract class User {
         this.mensajesRecibidos = mensajesRecibidos;
     }
 
+    // Constructor por defecto de la clase User
     public User() {
     }
+
+    // Getters and setters
 
     public String getPassword() {
         return password;

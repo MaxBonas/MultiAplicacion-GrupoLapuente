@@ -10,29 +10,38 @@ import org.hibernate.annotations.Where;
 
 @Entity
 @Table(name = "tareas")
+// La anotación @SQLDelete se usa para modificar el comportamiento de la operación de eliminación. En este caso, en lugar de eliminar registros, se marca como eliminado.
 @SQLDelete(sql = "UPDATE tareas SET deleted = 1 WHERE id = ?")
+// La anotación @Where se utiliza para filtrar los registros que tienen el campo "deleted" igual a 0 (no eliminados).
 @Where(clause = "deleted = 0")
 public class Tarea {
 
+    // La anotación @Id y @GeneratedValue se utilizan para auto-generar la clave primaria de la tabla.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "This field can't be blank")
-    @NotNull(message = "This field can't be null")
+    // Las anotaciones @NotBlank y @NotNull se usan para validar que el campo name no esté vacío o nulo
+    @NotBlank(message = "Este campo no puede estar vacío")
+    @NotNull(message = "Este campo no puede ser nulo")
     private String name;
 
+    // La anotación @OneToMany indica que existe una relación de uno a muchos entre la entidad Tarea y la entidad UbicacionTarea.
     @OneToMany(mappedBy = "tarea")
     private Set<UbicacionTarea> ubicaciones = new HashSet<>();
 
-    @NotBlank(message = "This field can't be blank")
-    @NotNull(message = "This field can't be null")
+    @NotBlank(message = "Este campo no puede estar vacío")
+    @NotNull(message = "Este campo no puede ser nulo")
     private String descripcion;
+
     @Column(name = "deleted", nullable = false, columnDefinition = "BIT DEFAULT 0")
     private boolean deleted = false;
 
+    // Constructor por defecto de la clase Tarea
     public Tarea() {}
 
+    // Constructor de la clase Tarea con parámetros
+    // Estos constructores inicializan un objeto Tarea con un nombre, descripción y ubicaciones específicas
     public Tarea(String name, String descripcion) {
         this.name = name;
         this.descripcion = descripcion;
@@ -50,6 +59,8 @@ public class Tarea {
         this.ubicaciones = ubicaciones;
         this.descripcion = descripcion;
     }
+
+    // Métodos getters y setters
 
     public Long getId() {
         return id;

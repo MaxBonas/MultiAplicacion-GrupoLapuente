@@ -12,19 +12,23 @@ import org.hibernate.annotations.Where;
 
 @Entity
 @Table(name = "ubicaciones")
+// La anotación @SQLDelete se usa para modificar el comportamiento de la operación de eliminación. En este caso, en lugar de eliminar registros, se marca como eliminado.
 @SQLDelete(sql = "UPDATE ubicaciones SET deleted = 1 WHERE id = ?")
+// La anotación @Where se utiliza para filtrar los registros que tienen el campo "deleted" igual a 0 (no eliminados).
 @Where(clause = "deleted = 0")
 public class Ubicacion {
 
+    // La anotación @Id y @GeneratedValue se utilizan para auto-generar la clave primaria de la tabla.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "This field can't be blank")
-    @NotNull(message = "This field can't be null")
+    // Las anotaciones @NotBlank y @NotNull se usan para validar que el campo name no esté vacío o nulo
+    @NotBlank(message = "Este campo no puede estar vacío")
+    @NotNull(message = "Este campo no puede ser nulo")
     private String name;
 
-
+    // La anotación @OneToMany indica que existe una relación de uno a muchos entre las entidades Ubicacion y UbicacionTarea.
     @OneToMany(mappedBy = "ubicacion")
     private Set<UbicacionTarea> tareas = new HashSet<>();
 
@@ -32,15 +36,20 @@ public class Ubicacion {
     @JsonIgnore
     private Set<TareaCumplida> tareasCumplidas = new HashSet<>();
 
+    // La anotación @ManyToOne indica que existe una relación de muchos a uno entre la entidad Ubicacion y la entidad Sociedad.
     @ManyToOne
     @JoinColumn(name = "sociedad_id", nullable = false)
     private Sociedad sociedad;
+
     @Column(name = "deleted", nullable = false, columnDefinition = "BIT DEFAULT 0")
     private boolean deleted = false;
 
+    // Constructor por defecto de la clase Ubicacion
     public Ubicacion() {
     }
 
+    // Constructores de la clase Ubicacion con parámetros
+    // Estos constructores inicializan un objeto Ubicacion con los atributos específicos
     public Ubicacion(String name, Sociedad sociedad) {
         this.name = name;
         this.sociedad = sociedad;
@@ -60,7 +69,7 @@ public class Ubicacion {
         this.tareasCumplidas = tareasCumplidas;
         this.sociedad = sociedad;
     }
-// Getters and setters
+    // Getters and setters
 
     public Long getId() {
         return id;

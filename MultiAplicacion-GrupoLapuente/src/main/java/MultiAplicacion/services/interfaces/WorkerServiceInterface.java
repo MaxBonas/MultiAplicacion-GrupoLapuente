@@ -3,7 +3,6 @@ package MultiAplicacion.services.interfaces;
 import MultiAplicacion.DTOs.TareaCumplidaDTO;
 import MultiAplicacion.DTOs.WorkerDTO;
 import MultiAplicacion.ENUMs.Turno;
-import MultiAplicacion.entities.Informe;
 import MultiAplicacion.entities.TareaCumplida;
 import MultiAplicacion.entities.Ubicacion;
 import MultiAplicacion.entities.Worker;

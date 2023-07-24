@@ -4,13 +4,11 @@ package MultiAplicacion;
 import MultiAplicacion.entities.Admin;
 import MultiAplicacion.entities.Role;
 import MultiAplicacion.repositories.AdminRepository;
-import MultiAplicacion.repositories.InformeRepository;
 import MultiAplicacion.repositories.RoleRepository;
 import MultiAplicacion.repositories.SociedadRepository;
 import MultiAplicacion.repositories.TareaRepository;
 import MultiAplicacion.repositories.UbicacionRepository;
 import MultiAplicacion.repositories.WorkerRepository;
-import MultiAplicacion.services.InformeService;
 import MultiAplicacion.services.SociedadService;
 import MultiAplicacion.services.TareaCumplidaService;
 import MultiAplicacion.services.TareaService;
@@ -55,10 +53,6 @@ public class MultiAplicacionApplication implements CommandLineRunner {
 
 	@Autowired
 	TareaCumplidaService tareaCumplidaService;
-	@Autowired
-	InformeRepository informeRepository;
-	@Autowired
-	InformeService informeService;
 
 	@Autowired
 	SociedadRepository sociedadRepository;

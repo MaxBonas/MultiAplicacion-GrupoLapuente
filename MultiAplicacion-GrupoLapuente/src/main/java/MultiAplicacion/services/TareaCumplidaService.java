@@ -34,8 +34,6 @@ public class TareaCumplidaService implements TareaCumplidaServiceInterface {
 
     @Autowired
     private UbicacionRepository ubicacionRepository;
-    @Autowired
-    private InformeRepository informeRepository;
 
     @Override
     public List<TareaCumplida> getAllTareasCumplidas() {
@@ -85,7 +83,6 @@ public class TareaCumplidaService implements TareaCumplidaServiceInterface {
         tareaCumplida.setComentario(tareaCumplidaDTO.getComentario());
         tareaCumplida.setTarea(tareaRepository.findById(tareaCumplidaDTO.getTareaId()).orElseThrow(() -> new NoSuchElementException("Tarea no encontrada")));
         tareaCumplida.setUbicacion(ubicacionRepository.findById(tareaCumplidaDTO.getUbicacionId()).orElseThrow(() -> new NoSuchElementException("Ubicacion no encontrada")));
-        tareaCumplida.setInforme(null);
         return tareaCumplidaRepository.save(tareaCumplida);
     }
 

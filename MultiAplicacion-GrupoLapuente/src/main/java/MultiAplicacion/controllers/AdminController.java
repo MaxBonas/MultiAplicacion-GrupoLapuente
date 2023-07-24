@@ -66,13 +66,9 @@ public class AdminController implements AdminControllerInterface {
     private TareaCumplidaServiceInterface tareaCumplidaService;
 
     @Autowired
-    private InformeService informeService;
-    @Autowired
     private TareaRepository tareaRepository;
     @Autowired
     private TareaCumplidaRepository tareaCumplidaRepository;
-    @Autowired
-    private InformeRepository informeRepository;
 
     @Autowired
     private WorkerRepository workerRepository;

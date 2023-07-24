@@ -35,18 +35,12 @@ public class WorkerService implements WorkerServiceInterface {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private InformeRepository informeRepository;
-
-    @Autowired
     private SociedadRepository sociedadRepository;
 
     @Autowired
     private RoleRepository roleRepository;
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private InformeService informeService;
     @Autowired
     private TareaCumplidaService tareaCumplidaService;
     @Autowired

@@ -42,13 +42,9 @@ public class TareaCumplida {
     @Column(name = "deleted", nullable = false, columnDefinition = "BIT DEFAULT 0")
     private boolean deleted = false;
 
-    @ManyToOne
-    @JoinColumn(name = "informe_id", nullable = true)
-    private Informe informe;
-
     public TareaCumplida() {}
 
-    public TareaCumplida(Tarea tarea, Worker worker, Ubicacion ubicacion, boolean cumplida, LocalDateTime fechaCumplimiento, Turno turno, String comentario, Informe informe) {
+    public TareaCumplida(Tarea tarea, Worker worker, Ubicacion ubicacion, boolean cumplida, LocalDateTime fechaCumplimiento, Turno turno, String comentario) {
         this.tarea = tarea;
         this.worker = worker;
         this.ubicacion = ubicacion;
@@ -56,10 +52,9 @@ public class TareaCumplida {
         this.fechaCumplimiento = fechaCumplimiento;
         this.turno = turno;
         this.comentario = comentario;
-        this.informe = informe;
     }
 
-    public TareaCumplida(Long id, Tarea tarea, Worker worker, Ubicacion ubicacion, boolean cumplida, LocalDateTime fechaCumplimiento, Turno turno, String comentario, Informe informe) {
+    public TareaCumplida(Long id, Tarea tarea, Worker worker, Ubicacion ubicacion, boolean cumplida, LocalDateTime fechaCumplimiento, Turno turno, String comentario) {
         this.id = id;
         this.tarea = tarea;
         this.worker = worker;
@@ -68,7 +63,6 @@ public class TareaCumplida {
         this.fechaCumplimiento = fechaCumplimiento;
         this.turno = turno;
         this.comentario = comentario;
-        this.informe = informe;
     }
     // SETTERS Y GETTERS
 
@@ -130,14 +124,6 @@ public class TareaCumplida {
 
     public void setCumplida(Boolean cumplida) {
         this.cumplida = cumplida;
-    }
-
-    public Informe getInforme() {
-        return informe;
-    }
-
-    public void setInforme(Informe informe) {
-        this.informe = informe;
     }
 
     public boolean isCumplida() {

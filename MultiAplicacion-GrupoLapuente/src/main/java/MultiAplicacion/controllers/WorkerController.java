@@ -87,7 +87,9 @@ public class WorkerController implements WorkerControllerInterface {
         model.addAttribute("worker", worker);
         model.addAttribute("ubicacionId", ubicacionId);
         // Agregar todos los trabajadores de la sociedad al modelo
-        model.addAttribute("allWorkers", workerService.getAllWorkers());
+        List<Worker> allWorkers = workerService.getAllWorkers();
+        allWorkers.sort(Comparator.comparing(Worker::getName));
+        model.addAttribute("allWorkers", allWorkers);
         return "workers/workersturno";
     }
 

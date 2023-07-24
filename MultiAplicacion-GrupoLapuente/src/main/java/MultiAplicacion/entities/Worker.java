@@ -18,10 +18,6 @@ public class Worker extends User {
     @OneToMany(mappedBy = "worker")
     @JsonIgnore
     private Set<TareaCumplida> tareasCumplidas = new HashSet<>();
-    @ManyToMany(mappedBy = "workers")
-    @JsonIgnore
-    private Set<Informe> informes = new HashSet<>();
-
 
     public Worker() {}
 

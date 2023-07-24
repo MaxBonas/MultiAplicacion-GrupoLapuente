@@ -322,3 +322,16 @@ select {
     color: black; /* Color del texto a negro cuando se pasa el ratón */
 }
 
+.worker-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  width: 60%;
+  margin: auto;
+}
+
+.worker-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}

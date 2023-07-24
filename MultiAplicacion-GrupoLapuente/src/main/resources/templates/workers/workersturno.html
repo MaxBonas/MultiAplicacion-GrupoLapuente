@@ -36,9 +36,14 @@
         <option value="TARDE">Tarde</option>
       </select>
     </div>
+    <br>
     <h2>¿Quiénes han trabajado en este turno?</h2>
-    <div th:each="worker : ${allWorkers}">
-      <input type="checkbox" name="workers" th:value="${worker.name}"><span th:text="${worker.name}"></span><br>
+    <h4>(incluyendote a ti mismo)</h4>
+    <div class="worker-list">
+      <div th:each="worker : ${allWorkers}" class="worker-item">
+        <input type="checkbox" name="workers" th:value="${worker.name}">
+        <span th:text="${worker.name}"></span>
+      </div>
     </div>
     <br>
     <button type="submit" class="button button-primary">Continuar</button>
@@ -46,5 +51,15 @@
   <a href="/worker/{sociedadId}/ubicaciones" th:href="@{/worker/{sociedadId}/ubicaciones(sociedadId=${worker.sociedad.id})}" class="button">Cancelar</a>
   <a href="/worker/{sociedadId}/workersmenu" th:href="@{/worker/{sociedadId}/workersmenu(sociedadId=${worker.sociedad.id})}" class="button">Volver al Menú de Trabajadores</a>
 </main>
+<script>
+  document.querySelector('form').addEventListener('submit', function(event) {
+    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    var checked = Array.from(checkboxes).some(checkbox => checkbox.checked);
+    if (!checked) {
+      alert('Es necesario que selecciones un trabajador para continuar');
+      event.preventDefault();
+    }
+  });
+</script>
 </body>
 </html>

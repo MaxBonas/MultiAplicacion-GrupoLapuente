@@ -33,27 +33,26 @@ import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+// Esta anotación define que esta clase es un controlador en el marco Spring MVC.
+// La anotación @RequestMapping establece la ruta base para todas las rutas manejadas por este controlador.
 @Controller
 @RequestMapping("/worker/{sociedadId}")
 public class WorkerController implements WorkerControllerInterface {
+
+    // Logger para registrar eventos en este controlador
     private final Logger logger = LoggerFactory.getLogger(WorkerController.class);
 
+    // Inyección de dependencias de varios servicios y repositorios que serán usados en este controlador
     @Autowired
     private WorkerServiceInterface workerService;
-
     @Autowired
     private UbicacionServiceInterface ubicacionService;
-
     @Autowired
     private WorkerRepository workerRepository;
-
     @Autowired
     private UbicacionRepository ubicacionRepository;
-
     @Autowired
     private TareaCumplidaRepository tareaCumplidaRepository;
-
     @Autowired
     private TareaCumplidaService tareaCumplidaService;
     @Autowired
@@ -61,12 +60,14 @@ public class WorkerController implements WorkerControllerInterface {
     @Autowired
     private UserRepository userRepository;
 
+    // Este método gestiona las solicitudes GET a la ruta /worker/{sociedadId}/ubicaciones
+    // Retorna la vista de todas las ubicaciones disponibles para un trabajador en una sociedad específica.
     @GetMapping("/ubicaciones")
     public String getAllUbicaciones(Model model, @AuthenticationPrincipal UserDetails userDetails, @PathVariable Long sociedadId) {
         Worker worker = workerService.findByName(userDetails.getUsername());
         Sociedad workerSociedad = worker.getSociedad();
 
-        // Añadir validación de sociedad
+        // Si el ID de la sociedad del trabajador no coincide con el ID de la sociedad en la ruta, se lanza una excepción
         if (!workerSociedad.getId().equals(sociedadId)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Acceso denegado");
         }
@@ -77,42 +78,53 @@ public class WorkerController implements WorkerControllerInterface {
         return "workers/workersubicaciones";
     }
 
+    // Este método gestiona las solicitudes GET a la ruta /worker/{sociedadId}/ubicaciones/{ubicacionId}/selectturno
+    // Retorna la vista donde un trabajador puede seleccionar su turno en una ubicación específica.
     @GetMapping("/ubicaciones/{ubicacionId}/selectturno")
     public String selectTurno(@PathVariable Long sociedadId, @PathVariable Long ubicacionId, Model model, @AuthenticationPrincipal UserDetails userDetails) {
         Worker worker = workerService.findByName(userDetails.getUsername());
-        // Añadir validación de sociedad
+
+        // Si el ID de la sociedad del trabajador no coincide con el ID de la sociedad en la ruta, se lanza una excepción
         if (!worker.getSociedad().getId().equals(sociedadId)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Acceso denegado");
         }
+
         model.addAttribute("worker", worker);
         model.addAttribute("ubicacionId", ubicacionId);
+
         // Agregar todos los trabajadores de la sociedad al modelo
         List<Worker> allWorkers = workerService.getAllWorkers();
         allWorkers.sort(Comparator.comparing(Worker::getName));
         model.addAttribute("allWorkers", allWorkers);
+
         return "workers/workersturno";
     }
-
+    // Este método gestiona las solicitudes GET a la ruta /worker/{sociedadId}/ubicaciones/{ubicacionId}/tareas
+// Retorna la vista de todas las tareas disponibles para un trabajador en una ubicación y turno específicos.
     @GetMapping("/ubicaciones/{ubicacionId}/tareas")
     public String showTareas(@PathVariable Long sociedadId, @PathVariable Long ubicacionId, @RequestParam Turno turno, @RequestParam List<String> workers, Model model, @AuthenticationPrincipal UserDetails userDetails) {
         Worker worker = workerService.findByName(userDetails.getUsername());
-        // Añadir validación de sociedad
+
+        // Si el ID de la sociedad del trabajador no coincide con el ID de la sociedad en la ruta, se lanza una excepción
         if (!worker.getSociedad().getId().equals(sociedadId)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Acceso denegado");
         }
+
         Ubicacion ubicacion = ubicacionService.findById(ubicacionId);
         LocalDateTime fecha = LocalDateTime.now();
 
+        // Buscar las tareas que ya se han cumplido
         List<TareaCumplida> tareasCumplidasSi = tareaCumplidaService.findTareasCumplidasByUbicacionAndFechaAndTurnoAndCumplida(ubicacion, fecha, turno, true);
 
-        // Verifica si hay tareas cumplidas antes de crear tareas cumplidas vacías
+        // Si no hay tareas cumplidas, crear tareas cumplidas vacías
         if (tareasCumplidasSi.isEmpty()) {
             workerService.crearTareasCumplidasVacias(worker.getId(), ubicacionId, fecha, turno, String.join(", ", workers));
         }
 
-
+        // Buscar las tareas que aún no se han cumplido
         List<TareaCumplida> tareasCumplidasNo = tareaCumplidaService.findTareasCumplidasByUbicacionAndFechaAndTurnoAndCumplida(ubicacion, fecha, turno, false);
 
+        // Agregar datos al modelo para ser usados en la vista
         model.addAttribute("worker", worker);
         model.addAttribute("ubicacion", ubicacion);
         model.addAttribute("turnoInformado", turno);
@@ -128,79 +140,91 @@ public class WorkerController implements WorkerControllerInterface {
         return "workers/workerstareas";
     }
 
+    // Este método gestiona las solicitudes POST a la ruta /worker/{sociedadId}/ubicaciones/{ubicacionId}/tareas
+// Actualiza las tareas cumplidas y no cumplidas de un trabajador en una ubicación y turno específicos.
     @PostMapping("/ubicaciones/{ubicacionId}/tareas")
     public String updateTareas(@PathVariable Long sociedadId, @PathVariable Long ubicacionId, @RequestParam Turno turno, @RequestParam String workers,
                                @ModelAttribute("tareaCumplidaListWrapper") TareaCumplidaListWrapper tareaCumplidaListWrapper,
                                RedirectAttributes redirectAttributes, @AuthenticationPrincipal UserDetails userDetails) {
         List<TareaCumplida> tareasCumplidasNo = tareaCumplidaListWrapper.getTareasCumplidas();
 
-        logger.info("TareasCumplidasNo: {}", tareasCumplidasNo);
-
         Worker currentWorker = workerService.findByName(userDetails.getUsername());
-        // Añadir validación de sociedad
+
+        // Si el ID de la sociedad del trabajador no coincide con el ID de la sociedad en la ruta, se lanza una excepción
         if (!currentWorker.getSociedad().getId().equals(sociedadId)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Acceso denegado");
         }
+
+        // Actualiza cada tarea cumplida con la información del trabajador y la actualiza en el servicio
         for (TareaCumplida tareaCumplida : tareasCumplidasNo) {
-            logger.info("TareaCumplida ID: {}", tareaCumplida.getId());
             tareaCumplida.setWorker(currentWorker);
-            logger.info("TareaCumplida Worker: {}", tareaCumplida.getWorker());
             tareaCumplidaService.updateTareaCumplida(tareaCumplida.getId(), tareaCumplida);
         }
 
+        // Redirige al trabajador de vuelta a la lista de tareas con los atributos actualizados
         redirectAttributes.addAttribute("turno", turno);
         redirectAttributes.addAttribute("workers", workers);
         return "redirect:/worker/" + sociedadId + "/ubicaciones/" + ubicacionId + "/tareas";
     }
 
 /*
-    @GetMapping("/password")
-    public String showChangePasswordForm(@PathVariable Long sociedadId, Model model, @AuthenticationPrincipal UserDetails userDetails) {
-        Worker worker = workerService.findByName(userDetails.getUsername());
-        // Añadir validación de sociedad
-        if (!worker.getSociedad().getId().equals(sociedadId)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Acceso denegado");
-        }
-        model.addAttribute("worker", worker);
-        return "workers/cambiar-password";
+// Este método gestiona las solicitudes GET a la ruta /worker/{sociedadId}/password
+// Retorna una vista para que el trabajador pueda cambiar su contraseña.
+@GetMapping("/password")
+public String showChangePasswordForm(@PathVariable Long sociedadId, Model model, @AuthenticationPrincipal UserDetails userDetails) {
+    Worker worker = workerService.findByName(userDetails.getUsername());
+
+    // Si el ID de la sociedad del trabajador no coincide con el ID de la sociedad en la ruta, se lanza una excepción
+    if (!worker.getSociedad().getId().equals(sociedadId)) {
+        throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Acceso denegado");
+    }
+    model.addAttribute("worker", worker);
+    return "workers/cambiar-password";
+}
+
+// Este método gestiona las solicitudes POST a la ruta /worker/{sociedadId}/password
+// Actualiza la contraseña del trabajador si se cumplen las condiciones.
+@PostMapping("/password")
+public String cambiarPassword(@AuthenticationPrincipal UserDetails userDetails, @RequestParam String oldPassword, @RequestParam String newPassword, @RequestParam String confirmNewPassword, RedirectAttributes redirectAttributes) {
+    Worker worker = workerService.findByName(userDetails.getUsername());
+
+    // Si alguna de las contraseñas está vacía, se redirige al formulario de cambio de contraseña con un mensaje de error
+    if (oldPassword.isEmpty() || newPassword.isEmpty() || confirmNewPassword.isEmpty()) {
+        redirectAttributes.addFlashAttribute("errorMessage", "Los campos de contraseña no pueden estar vacíos");
+        return "redirect:/worker/" + worker.getSociedad().getId() + "/password";
     }
 
-
-    @PostMapping("/password")
-    public String cambiarPassword(@AuthenticationPrincipal UserDetails userDetails, @RequestParam String oldPassword, @RequestParam String newPassword, @RequestParam String confirmNewPassword, RedirectAttributes redirectAttributes) {
-        Worker worker = workerService.findByName(userDetails.getUsername());
-
-        // Agrega la validación para entradas vacías
-        if (oldPassword.isEmpty() || newPassword.isEmpty() || confirmNewPassword.isEmpty()) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Los campos de contraseña no pueden estar vacíos");
-            return "redirect:/worker/" + worker.getSociedad().getId() + "/password";
-        }
-
-        if (!newPassword.equals(confirmNewPassword)) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Las contraseñas nuevas no coinciden");
-            return "redirect:/worker/" + worker.getSociedad().getId() + "/password";
-        }
-
-        try {
-            workerService.cambiarPassword(worker.getId(), oldPassword, newPassword);
-            redirectAttributes.addFlashAttribute("successMessage", "Contraseña cambiada exitosamente");
-        } catch (ResponseStatusException e) {
-            redirectAttributes.addFlashAttribute("errorMessage", e.getReason());
-        }
-        return "redirect:/worker/" + worker.getSociedad().getId() + "/workersmenu";
+    // Si las nuevas contraseñas no coinciden, se redirige al formulario de cambio de contraseña con un mensaje de error
+    if (!newPassword.equals(confirmNewPassword)) {
+        redirectAttributes.addFlashAttribute("errorMessage", "Las contraseñas nuevas no coinciden");
+        return "redirect:/worker/" + worker.getSociedad().getId() + "/password";
     }
 
+    // Intenta cambiar la contraseña. Si se lanza una excepción, se redirige al formulario de cambio de contraseña con un mensaje de error
+    try {
+        workerService.cambiarPassword(worker.getId(), oldPassword, newPassword);
+        redirectAttributes.addFlashAttribute("successMessage", "Contraseña cambiada exitosamente");
+    } catch (ResponseStatusException e) {
+        redirectAttributes.addFlashAttribute("errorMessage", e.getReason());
+    }
+    return "redirect:/worker/" + worker.getSociedad().getId() + "/workersmenu";
+}
 */
+
+    // Este método gestiona las solicitudes GET a la ruta /worker/{sociedadId}/workersmenu
+// Retorna una vista del menú principal para los trabajadores.
     @GetMapping("/workersmenu")
     public String workerMenu(@PathVariable Long sociedadId, Model model, @AuthenticationPrincipal UserDetails userDetails) {
         Worker worker = workerService.findByName(userDetails.getUsername());
-        // Añadir validación de sociedad
+
+        // Si el ID de la sociedad del trabajador no coincide con el ID de la sociedad en la ruta, se lanza una excepción
         if (!worker.getSociedad().getId().equals(sociedadId)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Acceso denegado");
         }
         model.addAttribute("worker", worker);
         return "workers/workersmenu";
     }
+
 
     // Métodos de mensajes
     @GetMapping("/tablonanuncios")

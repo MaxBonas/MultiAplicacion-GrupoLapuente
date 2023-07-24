@@ -33,4 +33,4 @@ build/
 .vscode/
 
 # Nuevo
-src/main/resources/application.properties
+MultiAplicacion-GrupoLapuente/src/main/resources/application.properties

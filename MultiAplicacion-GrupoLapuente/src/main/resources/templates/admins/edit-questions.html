@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Preguntas</title>
+    <link rel="stylesheet" href="../../static/css/styles.css" th:href="@{/css/styles.css}">
+    <script th:src="@{/js/logo.js}"></script>
+</head>
+<body onload="updateLogo('${session.sociedadSeleccionadaId}')">
+<header>
+    <div style="display: flex; justify-content: space-between; width: 100%;">
+        <img id="logo" class="logo" src="" alt="Logotipo">
+        <div style="text-align: center;">
+            <h1>Editar Preguntas del Cuestionario</h1>
+        </div>
+        <div class="dropdown">
+            <button class="dropbtn" th:text="${#httpServletRequest.userPrincipal?.name ?: 'Invitado'}">Opciones de usuario</button>
+            <div class="dropdown-content">
+                <a th:href="@{/admin/{sociedadId}/cambiar-contrasena(sociedadId=${session.sociedadId})}">Cambiar Contraseña</a>
+                <a href="/logout">Salir</a>
+            </div>
+        </div>
+    </div>
+</header>
+<main class="main">
+    <form th:action="@{/admin/{sociedadId}/update-questions(sociedadId=${sociedadId})}" method="post">
+        <div th:each="question, iterStat : ${questions}" class="question-form-group">
+            <label class="question-label" th:text="'Pregunta ' + ${iterStat.count} + ':'"></label>
+            <textarea class="question-input" th:name="|question_${question.id}|" required th:text="${question.text}"></textarea>
+            <p class="current-text">Actual: <span th:text="${question.text}"></span></p>
+        </div>
+        <div class="form-buttons">
+            <button type="submit" class="button-save">Guardar Cambios</button>
+            <a th:href="@{/admin/{sociedadId}/adminsmenu(sociedadId=${sociedadId})}" class="button-back">Volver al Menú</a>
+        </div>
+    </form>
+</main>
+</body>
+</html>

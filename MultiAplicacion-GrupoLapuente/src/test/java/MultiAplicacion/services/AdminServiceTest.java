@@ -20,6 +20,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.persistence.EntityNotFoundException;
@@ -30,6 +31,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
+@ActiveProfiles("test")
 class AdminServiceTest {
 
     @Autowired
@@ -233,5 +235,37 @@ class AdminServiceTest {
             adminService.changePasswordAdmin(userDetails, "12345");
         });
     }
+
+    @Test
+    void createAdmin_saveAdminFails_shouldHandleException() {
+        when(adminRepository.save(any())).thenThrow(new RuntimeException("Error al guardar el admin"));
+        assertThrows(RuntimeException.class, () -> adminService.createAdmin("admin1", "admin1@test.com", "1234", 1L));
+    }
+
+    @Test
+    void changePasswordAdmin_nonExistentUser_shouldThrowException() {
+        UserDetails userDetails = User.builder().username("noexist").password("1234").roles("ADMIN").build();
+        when(adminRepository.findByName("noexist")).thenReturn(Optional.empty());
+        assertThrows(IllegalArgumentException.class, () -> adminService.changePasswordAdmin(userDetails, "newPass"));
+    }
+
+    @Test
+    void createAdmin_verifiesCorrectAdminProperties() {
+        String expectedName = "admin1";
+        String expectedEmail = "admin1@test.com";
+        String rawPassword = "1234";
+        Long sociedadId = 1L;
+
+        adminService.createAdmin(expectedName, expectedEmail, rawPassword, sociedadId);
+
+        ArgumentCaptor<Admin> adminCaptor = ArgumentCaptor.forClass(Admin.class);
+        verify(adminRepository).save(adminCaptor.capture());
+
+        Admin capturedAdmin = adminCaptor.getValue();
+        assertEquals(expectedName, capturedAdmin.getName());
+        assertEquals(expectedEmail, capturedAdmin.getEmail());
+        // Asumiendo que se verifica la contraseña codificada, lo cual puede ser complicado dependiendo de cómo se mockea el PasswordEncoder
+    }
+
 
 }

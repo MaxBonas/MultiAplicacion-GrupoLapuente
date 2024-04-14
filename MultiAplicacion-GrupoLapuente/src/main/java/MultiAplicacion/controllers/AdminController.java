@@ -83,6 +83,10 @@ public class AdminController implements AdminControllerInterface {
     private UbicacionTareaService ubicacionTareaService;
     @Autowired
     private AdminService adminService;
+    @Autowired
+    private QuizRecordService quizRecordService;
+    @Autowired
+    private QuestionRepository questionRepository;
 
     // Las anotaciones @GetMapping y @PostMapping definen qué métodos del controlador manejan qué rutas HTTP.
     @GetMapping("/adminsmenu")
@@ -844,5 +848,72 @@ public class AdminController implements AdminControllerInterface {
         return "redirect:/admin/{sociedadId}/tablonanuncios";
     }
 
+    @GetMapping("/edit-questions")
+    public String showEditQuestionsForm(@PathVariable("sociedadId") Long sociedadId, Model model) {
+        List<Question> questions = questionRepository.findAll();
+        model.addAttribute("questions", questions);
+        model.addAttribute("sociedadId", sociedadId);
+        return "admins/edit-questions"; // Asegúrate de que sociedadId está disponible para la vista
+    }
+
+    @PostMapping("/update-questions")
+    public String updateQuestions(@PathVariable("sociedadId") Long sociedadId, @RequestParam Map<String, String> params, RedirectAttributes redirectAttributes) {
+        params.forEach((key, value) -> {
+            if (key.startsWith("question")) {
+                Long questionId = Long.parseLong(key.split("_")[1]);
+                Question question = questionRepository.findById(questionId)
+                        .orElseThrow(() -> new IllegalArgumentException("Invalid question ID"));
+                question.setText(value);
+                questionRepository.save(question);
+            }
+        });
+        redirectAttributes.addFlashAttribute("message", "Preguntas actualizadas correctamente");
+        // Corrección para usar Spring URL building
+        return "redirect:/admin/" + sociedadId + "/edit-questions";
+    }
+
+    @GetMapping("/informes/informeCuestionario")
+    public String showQuizReports(@PathVariable("sociedadId") Long sociedadId, Model model) {
+        LocalDateTime endDate = LocalDateTime.now();
+        LocalDateTime startDate = endDate.minusDays(7);
+
+        List<QuizRecord> passedRecords = quizRecordService.findQuizRecordsByDateRangeAndStatus(startDate, endDate, true);
+        List<QuizRecord> failedRecords = quizRecordService.findQuizRecordsByDateRangeAndStatus(startDate, endDate, false);
+
+        List<String> formattedPassedDates = quizRecordService.formatQuizRecordDates(passedRecords);
+        List<String> formattedFailedDates = quizRecordService.formatQuizRecordDates(failedRecords);
+
+        model.addAttribute("startDate", startDate.toLocalDate());
+        model.addAttribute("endDate", endDate.toLocalDate());
+        model.addAttribute("passedRecords", passedRecords);
+        model.addAttribute("failedRecords", failedRecords);
+        model.addAttribute("formattedPassedDates", formattedPassedDates);
+        model.addAttribute("formattedFailedDates", formattedFailedDates);
+        return "informes/informeCuestionario";
+    }
+
+    @PostMapping("/informes/informeCuestionario")
+    public String filterQuizReports(@PathVariable("sociedadId") Long sociedadId,
+                                    @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                                    @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+                                    Model model) {
+        LocalDateTime startDateTime = startDate.atStartOfDay();
+        LocalDateTime endDateTime = endDate.atTime(23, 59, 59);
+
+        List<QuizRecord> passedRecords = quizRecordService.findQuizRecordsByDateRangeAndStatus(startDateTime, endDateTime, true);
+        List<QuizRecord> failedRecords = quizRecordService.findQuizRecordsByDateRangeAndStatus(startDateTime, endDateTime, false);
+
+        List<String> formattedPassedDates = quizRecordService.formatQuizRecordDates(passedRecords);
+        List<String> formattedFailedDates = quizRecordService.formatQuizRecordDates(failedRecords);
+
+        model.addAttribute("startDate", startDate);
+        model.addAttribute("endDate", endDate);
+        model.addAttribute("passedRecords", passedRecords);
+        model.addAttribute("failedRecords", failedRecords);
+        model.addAttribute("formattedPassedDates", formattedPassedDates);
+        model.addAttribute("formattedFailedDates", formattedFailedDates);
+
+        return "informes/informeCuestionario";
+    }
 }
 

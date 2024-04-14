@@ -1,9 +1,8 @@
 package MultiAplicacion.services;
 
+import MultiAplicacion.DTOs.TareaCumplidaDTO;
 import MultiAplicacion.DTOs.WorkerDTO;
-import MultiAplicacion.entities.Sociedad;
-import MultiAplicacion.entities.Ubicacion;
-import MultiAplicacion.entities.Worker;
+import MultiAplicacion.entities.*;
 import MultiAplicacion.ENUMs.Turno;
 import MultiAplicacion.repositories.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,13 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -28,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
+@ActiveProfiles("test")
 class WorkerServiceTest {
 
     @Autowired

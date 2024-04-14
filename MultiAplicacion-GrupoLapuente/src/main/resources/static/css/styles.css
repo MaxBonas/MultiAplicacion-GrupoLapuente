@@ -335,3 +335,154 @@ select {
   align-items: center;
   gap: 10px;
 }
+
+.quiz-slide {
+    text-align: center;
+    padding: 20px;
+    background-size: contain; /* Cambia a cover para que la imagen cubra todo el espacio disponible */
+    background-position: center top; /* Ajusta la imagen al centro y arriba */
+    background-repeat: no-repeat; /* Evita que la imagen se repita */
+    position: relative;
+    height: 100vh;
+    display: flex;
+    justify-content: center; /* Centra el contenido horizontalmente */
+    align-items: center; /* Centra el contenido verticalmente */
+    flex-direction: column; /* Alinea el contenido en columna para que la pregunta esté arriba y el fondo detrás */
+}
+
+.quiz-slide::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.5); /* Fondo blanco con 50% de transparencia para suavizar el fondo */
+    z-index: 0; /* Asegúrate de que el fondo esté detrás del contenido */
+}
+
+.question-background {
+    position: relative;
+    z-index: 2; /* Mantiene el texto y los botones encima del efecto de fondo */
+    background: rgba(255, 255, 255, 0.6);
+    margin: auto;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 600px; /* Ajusta este valor según necesidades */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: auto;
+}
+
+.alert-container {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.alert-image {
+    max-width: 100%;
+    height: auto;
+}
+
+.answers {
+    display: flex;
+    justify-content: center; /* Centra los checkboxes horizontalmente */
+    gap: 20px; /* Espacio entre los checkboxes */
+    margin-top: 20px; /* Espacio entre la pregunta y los checkboxes */
+}
+
+.quiz-answer {
+    font-size: 20px; /* Tamaño de la fuente de las respuestas */
+    display: flex;
+    align-items: center; /* Alinea verticalmente el texto con el checkbox */
+}
+
+.quiz-answer input[type="radio"] {
+    margin: 0px 10px 0px 50px; /* Espaciado alrededor del checkbox, ajusta según necesites */
+    cursor: pointer;
+    transform: scale(1.5); /* Aumenta el tamaño del checkbox */
+}
+
+/* Añadir al final de tu archivo CSS existente */
+
+.alert-container {
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.6); /* Fondo blanco con 80% de transparencia */
+    padding: 40px;
+    border-radius: 10px;
+    position: relative; /* Necesario para el posicionamiento del background */
+    max-width: 600px; /* Limita el ancho del contenedor */
+    margin: 50px auto; /* Centra el contenedor */
+}
+
+.alert-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('/images/alertImage1.png'); /* Ajusta la ruta según sea necesario */
+    background-size: 50% auto; /* Hace que la imagen sea la mitad de grande */
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 0.6; /* 80% de transparencia */
+    z-index: -1; /* Coloca el background detrás del texto */
+}
+
+.alert-message {
+    font-size: 28px;
+    margin-bottom: 20px; /* Espacio entre el mensaje y el botón */
+}
+
+.alert-back-button {
+    font-size: 20px;
+    padding: 10px 20px;
+    color: #ffffff;
+    background-color: #007bff;
+    border-radius: 5px;
+    text-decoration: none;
+    display: inline-block;
+}
+.question-form-group {
+    margin-bottom: 30px;
+    text-align: left;
+}
+
+.question-label {
+    font-weight: bold; /* Hace el texto en negrita */
+    display: block; /* Asegura que la etiqueta esté encima del input */
+    margin-bottom: 5px;
+}
+
+.question-input {
+    width: 100%;
+    height: 3em; /* Dos líneas de altura */
+    margin-bottom: 5px;
+    box-sizing: border-box; /* Incluye el padding y el borde en la altura */
+    resize: none; /* Evita que el usuario cambie el tamaño */
+}
+
+.current-text {
+    font-size: 0.9em;
+    color: #666;
+    padding-left: 10px;
+    margin-bottom: 20px;
+}
+
+/* Estilos para los botones para mantener la coherencia */
+.button-save, .button-back {
+    padding: 10px 20px;
+    font-size: 16px;
+    text-align: center;
+    margin: 5px; /* Espacio ligero alrededor de los botones para separación */
+    display: inline-block; /* Asegura que los botones se muestren en línea */
+    background-color: #00619F;
+    color: #FFFFFF;
+    border-radius: 5px;
+    border: 1px solid #005385;
+}
+
+.button-save:hover,
+.button-back:hover {
+    background-color: #005385; /* Cambio de color al pasar el ratón */
+}

@@ -5,14 +5,12 @@
   <title>Menú de Trabajadores</title>
   <link rel="stylesheet" href="../../static/css/styles.css" th:href="@{/css/styles.css}">
   <script th:src="@{/js/logo.js}"></script>
-  <!-- Incluimos el js del menú de administrador si lo necesitamos en el de trabajadores -->
   <script th:src="@{/js/adminsmenu.js}"></script>
 </head>
 <body onload="updateLogo('${session.sociedadSeleccionadaId}')">
 <header>
   <div style="display: flex; justify-content: space-between; width: 100%;">
     <img id="logo" class="logo" src="" alt="Logotipo">
-
     <div style="text-align: center;">
       <h1>Multiaplicación Grupo Lapuente</h1>
       <h3>Menú de Trabajadores</h3>

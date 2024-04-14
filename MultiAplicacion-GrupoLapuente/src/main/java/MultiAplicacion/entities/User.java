@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "users")

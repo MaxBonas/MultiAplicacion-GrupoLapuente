@@ -9,6 +9,5 @@ public interface UserServiceInterface {
     void deleteUserById(Long id);
     List<User> getAllUsers();
     List<User> findAllBySociedadId(Long sociedadId);
-
 }
 

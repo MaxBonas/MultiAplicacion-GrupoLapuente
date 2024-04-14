@@ -13,21 +13,22 @@ import MultiAplicacion.services.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.security.test.context.support.WithMockUser;
 
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.*;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.mockito.Mockito.*;
@@ -38,6 +39,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
 class AdminControllerTests {
 
     @Autowired
@@ -67,6 +69,12 @@ class AdminControllerTests {
     @MockBean
     private SociedadRepository sociedadRepository;
 
+    @MockBean
+    private QuestionRepository questionRepository;
+
+    @MockBean
+    private QuizRecordService quizRecordService;
+
     Admin admin;
 
     @BeforeEach
@@ -94,6 +102,8 @@ class AdminControllerTests {
 
         when(adminRepository.findByName(any())).thenReturn(Optional.of(admin));
 
+        when(adminRepository.findByName("admin1")).thenReturn(Optional.of(admin));
+
         List<Ubicacion> ubicaciones = new ArrayList<>();
         Ubicacion ubicacion1 = new Ubicacion();
         ubicacion1.setId(1L);
@@ -108,6 +118,32 @@ class AdminControllerTests {
 
         when(ubicacionService.findAllBySociedad(sociedad1)).thenReturn(ubicaciones);
 
+        Question question = new Question();
+        question.setId(1L);
+        question.setText("Is safety gear required?");
+        List<Question> questions = Arrays.asList(question);
+
+        when(questionRepository.findAll()).thenReturn(questions);
+
+        // Configuración de QuizRecord con Usuario correctamente asociado
+        QuizRecord quizRecord = new QuizRecord();
+        quizRecord.setId(1L);
+        quizRecord.setUser(admin);  // Asegúrate que User no es null
+        quizRecord.setDate(LocalDateTime.now());
+        quizRecord.setPassed(true);
+
+        List<QuizRecord> passedRecords = Arrays.asList(quizRecord);
+        List<QuizRecord> failedRecords = new ArrayList<>();
+
+        when(quizRecordService.findQuizRecordsByDateRangeAndStatus(any(LocalDateTime.class), any(LocalDateTime.class), eq(true)))
+                .thenReturn(passedRecords);
+        when(quizRecordService.findQuizRecordsByDateRangeAndStatus(any(LocalDateTime.class), any(LocalDateTime.class), eq(false)))
+                .thenReturn(failedRecords);
+
+        when(quizRecordService.formatQuizRecordDates(passedRecords))
+                .thenReturn(Arrays.asList("2023-01-01 00:00")); // Proporciona datos consistentes
+        when(quizRecordService.formatQuizRecordDates(failedRecords))
+                .thenReturn(new ArrayList<>()); // Lista vacía para fechas fallidas
     }
 
     @Test
@@ -411,25 +447,22 @@ class AdminControllerTests {
         Long sociedadId = 1L;
         LocalDate fecha = LocalDate.now().minusDays(1);
 
-        when(tareaCumplidaService.findTareasCumplidasByUbicacionAndFechaAndTurno(any(Ubicacion.class), eq(fecha.atStartOfDay()), eq(Turno.MANANA)))
-                .thenReturn(Collections.emptyList());
-        when(tareaCumplidaService.findTareasCumplidasByUbicacionAndFechaAndTurno(any(Ubicacion.class), eq(fecha.atStartOfDay()), eq(Turno.TARDE)))
+        when(tareaCumplidaService.findTareasCumplidasByUbicacionAndFechaAndTurno(any(Ubicacion.class), eq(fecha.atStartOfDay()), any(Turno.class)))
                 .thenReturn(Collections.emptyList());
 
         mockMvc.perform(post("/admin/{sociedadId}/informes/diario", sociedadId)
                         .param("fecha", fecha.toString()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("informes/informeDiario"))
-                .andExpect(model().attributeExists("ubicaciones"))
-                .andExpect(model().attributeExists("tareasCumplidasMananaMap"))
-                .andExpect(model().attributeExists("tareasCumplidasTardeMap"))
+                .andExpect(model().attributeExists("ubicaciones", "tareasCumplidasMananaMap", "tareasCumplidasTardeMap"))
                 .andExpect(model().attribute("fecha", fecha))
                 .andExpect(model().attribute("message", "No se encontraron tareas cumplidas para la fecha proporcionada."));
 
-        verify(ubicacionService).findAllBySociedad(any(Sociedad.class)); // Cambia esta línea
+        verify(ubicacionService).findAllBySociedad(any(Sociedad.class));
         verify(tareaCumplidaService, times(2)).findTareasCumplidasByUbicacionAndFechaAndTurno(any(Ubicacion.class), eq(fecha.atStartOfDay()), eq(Turno.MANANA));
         verify(tareaCumplidaService, times(2)).findTareasCumplidasByUbicacionAndFechaAndTurno(any(Ubicacion.class), eq(fecha.atStartOfDay()), eq(Turno.TARDE));
     }
+
 
 
     @Test
@@ -457,6 +490,81 @@ class AdminControllerTests {
                 .andExpect(view().name("/error"))
                 .andExpect(model().attribute("message", "La fecha proporcionada no puede ser una fecha futura."));
     }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void showEditQuestionsForm_ReturnsCorrectView() throws Exception {
+        mockMvc.perform(get("/admin/1/edit-questions"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("admins/edit-questions"))
+                .andExpect(model().attributeExists("questions", "sociedadId"))
+                .andExpect(model().attribute("sociedadId", 1L));
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void updateQuestions_RedirectsCorrectly() throws Exception {
+        // Asegúrate de que la pregunta exista y devuelva un objeto válido
+        Question existingQuestion = new Question();
+        existingQuestion.setId(1L);
+        existingQuestion.setText("Original Text");
+
+        when(questionRepository.findById(1L)).thenReturn(Optional.of(existingQuestion));
+
+        mockMvc.perform(post("/admin/1/update-questions")
+                        .param("question_1", "Updated text"))  // Asegúrate de que los parámetros coincidan con lo esperado en el controlador
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/admin/1/edit-questions"));
+
+        verify(questionRepository).save(any(Question.class));  // Verifica que se guarde la pregunta actualizada
+
+        // Opcional: Verifica que la pregunta fue actualizada con el nuevo texto
+        ArgumentCaptor<Question> questionCaptor = ArgumentCaptor.forClass(Question.class);
+        verify(questionRepository).save(questionCaptor.capture());
+        assertEquals("Updated text", questionCaptor.getValue().getText());
+    }
+
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void showQuizReports_ReturnsCorrectView() throws Exception {
+        LocalDateTime startDate = LocalDate.now().minusDays(7).atStartOfDay();
+        LocalDateTime endDate = LocalDate.now().atTime(23, 59, 59);
+
+        when(quizRecordService.findQuizRecordsByDateRangeAndStatus(startDate, endDate, true))
+                .thenReturn(Collections.singletonList(new QuizRecord()));
+        when(quizRecordService.findQuizRecordsByDateRangeAndStatus(startDate, endDate, false))
+                .thenReturn(Collections.singletonList(new QuizRecord()));
+        when(quizRecordService.formatQuizRecordDates(any()))
+                .thenReturn(Collections.singletonList("2023-01-01 00:00"));
+
+        mockMvc.perform(get("/admin/1/informes/informeCuestionario"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("informes/informeCuestionario"))
+                .andExpect(model().attributeExists("startDate", "endDate", "passedRecords", "failedRecords", "formattedPassedDates", "formattedFailedDates"));
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void filterQuizReports_ReturnsUpdatedData() throws Exception {
+        LocalDate startDate = LocalDate.now().minusDays(10);
+        LocalDate endDate = LocalDate.now();
+        LocalDateTime startDateTime = startDate.atStartOfDay();
+        LocalDateTime endDateTime = endDate.atTime(23, 59, 59);
+
+        mockMvc.perform(post("/admin/1/informes/informeCuestionario")
+                        .param("startDate", startDate.toString())  // LocalDate formato YYYY-MM-DD
+                        .param("endDate", endDate.toString()))
+                .andExpect(status().isOk())
+                .andExpect(view().name("informes/informeCuestionario"))
+                .andExpect(model().attributeExists("startDate", "endDate", "passedRecords", "failedRecords", "formattedPassedDates", "formattedFailedDates"))
+                .andExpect(model().attribute("startDate", startDate))
+                .andExpect(model().attribute("endDate", endDate));
+
+        verify(quizRecordService).findQuizRecordsByDateRangeAndStatus(startDateTime, endDateTime, true);
+        verify(quizRecordService).findQuizRecordsByDateRangeAndStatus(startDateTime, endDateTime, false);
+    }
+
 
     /*
     @Test

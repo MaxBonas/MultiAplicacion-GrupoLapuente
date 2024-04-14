@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Cuestionario de Seguridad</title>
+    <link rel="stylesheet" href="../../static/css/styles.css" th:href="@{/css/styles.css}">
+</head>
+<body>
+<header>
+    <h1>Cuestionario de Seguridad Diario</h1>
+</header>
+<form id="quizForm" th:action="@{/worker/{sociedadId}/quiz/process(sociedadId=${sociedadId})}" method="post" th:data-sociedadid="${sociedadId}">
+    <main id="quiz-container">
+        <th:block th:each="question, iterStat : ${questions}">
+            <section class="quiz-slide" th:data-background="@{'/images/QuizImage' + ${iterStat.count} + '.png'}">
+                <div class="question-background">
+                    <h2 th:text="${question.text}">Pregunta</h2>
+                    <div class="answers">
+                        <label class="quiz-answer"><input type="radio" name="answers[${iterStat.index}]" value="yes" class="yes"> Sí</label>
+                        <label class="quiz-answer"><input type="radio" name="answers[${iterStat.index}]" value="no" class="no"> No</label>
+                    </div>
+                </div>
+            </section>
+        </th:block>
+    </main>
+    <button type="submit" style="display: none;">Enviar</button>
+</form>
+<script src="/js/quiz.js"></script>
+</body>
+</html>

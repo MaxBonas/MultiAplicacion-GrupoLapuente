@@ -1,36 +1,45 @@
-HELP.md
+# Compiled source #
+###################
 target/
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+build/
+dist/
+out/
+*.class
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
+# Logs and databases #
+######################
+*.log
+*.db
+*.sql
+*.tar.gz
 
-### IntelliJ IDEA ###
-.idea
+# Java specific #
+#################
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# IDE specific #
+################
+.idea/
 *.iws
 *.iml
 *.ipr
-
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
-
-### VS Code ###
 .vscode/
+.nbproject/
+.nbdist/
+.nb-gradle/
 
-# Nuevo
-MultiAplicacion-GrupoLapuente/src/main/resources/application.properties
+# OS specific #
+###############
+.DS_Store
+Thumbs.db
+
+# Application properties that might contain sensitive data #
+############################################################
+*prod.properties
+*test.properties

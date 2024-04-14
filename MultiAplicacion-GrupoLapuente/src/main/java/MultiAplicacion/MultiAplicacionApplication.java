@@ -1,8 +1,11 @@
 package MultiAplicacion;
 
 
-import MultiAplicacion.entities.Admin;
-import MultiAplicacion.entities.Role;
+import MultiAplicacion.DTOs.TareaCumplidaDTO;
+import MultiAplicacion.DTOs.TareaDTO;
+import MultiAplicacion.DTOs.UbicacionDTO;
+import MultiAplicacion.ENUMs.Turno;
+import MultiAplicacion.entities.*;
 import MultiAplicacion.repositories.AdminRepository;
 import MultiAplicacion.repositories.RoleRepository;
 import MultiAplicacion.repositories.SociedadRepository;
@@ -19,8 +22,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.time.LocalDateTime;
+import java.util.*;
+
+import static MultiAplicacion.ENUMs.Cargo.*;
 
 //TODO arreglar el metodo InformarTarea en el controlador y en la vista
 //TODO hacer funcional el CambioSociedad.
@@ -65,9 +74,15 @@ public class MultiAplicacionApplication implements CommandLineRunner {
 	}
 
 	@Override
+	public void run(String... args) throws Exception {
+
+	}
+/*
+	@Override
+	@Profile("!test")
 	public void run(String... args) {
 		//Introducció de dades de mostra de manera forçada
-/*
+
 		Sociedad goodPolish = new Sociedad("GoodPolish S.L:");
 		Sociedad lapuente = new Sociedad("Lapuente S.L:");
 		Sociedad spb = new Sociedad("Stainless Products BCN S.L:");
@@ -102,19 +117,19 @@ public class MultiAplicacionApplication implements CommandLineRunner {
 		}
 
 		if (workerRepository.findByName("Juan Test").isEmpty()) {
-			Worker workertest1 = new Worker("Juan Test", passwordEncoder.encode("123456"), "Operario", goodPolish);
+			Worker workertest1 = new Worker("Juan Test", passwordEncoder.encode("123456"), OPERARIO, goodPolish);
 			workerRepository.save(workertest1);
 			roleRepository.save(new Role("WORKER", workertest1));
 		}
 
 		if (workerRepository.findByName("Marcos Test").isEmpty()) {
-			Worker workertest2 = new Worker("Marcos Test", passwordEncoder.encode("123456"), "Jefe de equipo", goodPolish);
+			Worker workertest2 = new Worker("Marcos Test", passwordEncoder.encode("123456"), JEFE_DE_EQUIPO, goodPolish);
 			workerRepository.save(workertest2);
 			roleRepository.save(new Role("WORKER", workertest2));
 		}
 
 		if (workerRepository.findByName("Francisco Test").isEmpty()) {
-			Worker workertest3 = new Worker("Francisco Test", passwordEncoder.encode("123456"), "Limpieza", goodPolish);
+			Worker workertest3 = new Worker("Francisco Test", passwordEncoder.encode("123456"), MANTENIMIENTO, goodPolish);
 			workerRepository.save(workertest3);
 			roleRepository.save(new Role("WORKER", workertest3));
 		}
@@ -221,13 +236,13 @@ public class MultiAplicacionApplication implements CommandLineRunner {
 
 		TareaCumplidaDTO tareaCumplida1 = new TareaCumplidaDTO(tareaSaved1.getId(), tareaSaved1.getName(),
 				workerCristian.getId(), ubicacionSaved1.getId(), true, workerCristian.getName(),
-				LocalDateTime.now().minusDays(1), Turno.MANANA);
+				LocalDateTime.now().minusDays(1), Turno.MANANA, "Comentario de prueba");
 		TareaCumplidaDTO tareaCumplida2 = new TareaCumplidaDTO(tareaSaved2.getId(), tareaSaved2.getName(),
 				workerJeff.getId(), ubicacionSaved2.getId(), false, workerJeff.getName(),
-				LocalDateTime.now().minusDays(1), Turno.TARDE);
+				LocalDateTime.now().minusDays(1), Turno.TARDE, "Comentario de prueba 2");
 		TareaCumplidaDTO tareaCumplida3 = new TareaCumplidaDTO(tareaSaved3.getId(), tareaSaved3.getName(),
 				workerJordi.getId(), ubicacionSaved3.getId(), true, workerJordi.getName(),
-				LocalDateTime.now().minusDays(2), Turno.MANANA);
+				LocalDateTime.now().minusDays(2), Turno.MANANA, "Comentario de prueba 3");
 
 		List<TareaCumplidaDTO> tareasCumplidas1 = new ArrayList<>();
 		tareasCumplidas1.add(tareaCumplida1);
@@ -235,7 +250,7 @@ public class MultiAplicacionApplication implements CommandLineRunner {
 
 		List<TareaCumplidaDTO> tareasCumplidas2 = new ArrayList<>();
 		tareasCumplidas2.add(tareaCumplida3);
-
+/*
 		InformeDTO informe1 = new InformeDTO(LocalDateTime.now().minusDays(1), ubicacionSaved1.getId(), Turno.MANANA,
 				 "Informe de prueba1", tareasCumplidas1);
 		InformeDTO informe2 = new InformeDTO(LocalDateTime.now().minusDays(2), ubicacionSaved2.getId(), Turno.MANANA,
@@ -247,7 +262,7 @@ public class MultiAplicacionApplication implements CommandLineRunner {
 // Actualizar las tareas cumplidas del informe 1
 		TareaCumplidaDTO tareaCumplida4 = new TareaCumplidaDTO(tareaSaved4.getId(), tareaSaved4.getName(),
 				workerCristian.getId(), ubicacionSaved1.getId(), true, workerCristian.getName(),
-				LocalDateTime.now().minusDays(1), Turno.MANANA);
+				LocalDateTime.now().minusDays(1), Turno.MANANA, "Comentario de prueba 4");
 		List<TareaCumplidaDTO> tareasCumplidasActualizadas = new ArrayList<>(tareasCumplidas1);
 		tareasCumplidasActualizadas.add(tareaCumplida4);
 		informeService.updateTareasCumplidasDeInforme(informeSaved1.getId(), tareasCumplidasActualizadas);
@@ -260,7 +275,7 @@ public class MultiAplicacionApplication implements CommandLineRunner {
 		informeService.updateTareasCumplidasDeInforme(informeSaved2.getId(), tareasCumplidas2);
 
 		// Comprueba que las listas no estén vacías
-*/
-	}
 
+	}
+*/
 }

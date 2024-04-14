@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Alerta de Seguridad</title>
+    <link rel="stylesheet" href="../../static/css/styles.css" th:href="@{/css/styles.css}">
+    <script th:src="@{/js/logo.js}"></script>
+</head>
+<body onload="updateLogo()">
+<header>
+    <div style="display: flex; justify-content: space-between; width: 100%;">
+        <img id="logo" class="logo" src="" alt="Logotipo">
+        <div style="text-align: center;">
+            <h1>Alerta de Seguridad</h1>
+        </div>
+    </div>
+</header>
+<main class="alert-container">
+    <div style="position: relative; z-index: 2;">
+        <h2>El compromiso con la seguridad es obligatorio</h2>
+        <p style="font-size: 20px; font-weight: bold;">Se tomarán medidas si las preocupaciones persisten para garantizar la seguridad de todos en el lugar de trabajo.</p>
+        <a href="#" th:href="@{/worker/{sociedadId}/workersmenu(sociedadId=${sociedadId})}" class="alert-back-button">Volver al menú</a>
+    </div>
+</main>
+<script th:src="@{/js/quiz.js}"></script>
+</body>
+</html>

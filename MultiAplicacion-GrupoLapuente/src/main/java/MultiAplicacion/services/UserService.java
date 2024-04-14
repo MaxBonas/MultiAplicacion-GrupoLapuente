@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+import java.time.LocalDate;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -71,7 +72,5 @@ public class UserService implements UserServiceInterface {
     public List<User> findAllBySociedadId(Long sociedadId) {
         return userRepository.findBySociedadId(sociedadId);
     }
-
-
 }
 

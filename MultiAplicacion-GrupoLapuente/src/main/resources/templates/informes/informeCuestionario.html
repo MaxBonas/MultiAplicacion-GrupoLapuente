@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Informe de Cuestionarios</title>
+    <link rel="stylesheet" href="../../static/css/styles.css" th:href="@{/css/styles.css}">
+    <script th:src="@{/js/logo.js}"></script>
+</head>
+<body onload="updateLogo('${session.sociedadSeleccionadaId}')">
+<header>
+    <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background-color: #00416A; color: white; width: 100%;">
+        <img id="logo" class="logo" src="" alt="Logotipo" th:src="@{/img/logo.png}" style="margin-left: 20px;">
+
+        <!-- Aumentar tamaño del título -->
+        <h1 style="margin: 0; flex-grow: 2; text-align: center; font-size: 32px;">Informe de Cuestionarios</h1>
+
+        <div class="dropdown" style="margin-right: 20px;">
+            <button class="dropbtn" th:text="${#httpServletRequest.userPrincipal?.name ?: 'Invitado'}">Opciones de Usuario</button>
+            <div class="dropdown-content">
+                <a th:href="@{/admin/{sociedadId}/cambiar-contrasena(sociedadId=${session.sociedadId})}">Cambiar Contraseña</a>
+                <a href="/logout">Salir</a>
+            </div>
+        </div>
+    </div>
+</header>
+<main style="padding: 20px;">
+    <form th:action="@{/admin/{sociedadId}/informes/informeCuestionario(sociedadId=${sociedadId})}" method="post" style="margin-bottom: 20px;">
+        Desde: <input type="date" name="startDate" th:value="${startDate}" required>
+        Hasta: <input type="date" name="endDate" th:value="${endDate}" required>
+        <button type="submit" class="button">Actualizar Filtro</button>
+    </form>
+    <div style="display: flex; justify-content: space-between;">
+        <div>
+            <h2>Cuestionarios Pasados</h2>
+            <table>
+                <thead>
+                <tr>
+                    <th>Nombre Usuario</th>
+                    <th>Fecha</th>
+                    <th>Resultado</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="record, stat : ${passedRecords}">
+                    <td th:text="${record.user.name}"></td>
+                    <td th:text="${formattedPassedDates[stat.index]}"></td>
+                    <td>SI</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <h2>Cuestionarios No Pasados</h2>
+            <table>
+                <thead>
+                <tr>
+                    <th>Nombre Usuario</th>
+                    <th>Fecha</th>
+                    <th>Resultado</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="record, stat : ${failedRecords}">
+                    <td th:text="${record.user.name}"></td>
+                    <td th:text="${formattedFailedDates[stat.index]}"></td>
+                    <td>NO</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- Botón Volver al Menú -->
+    <div class="button-group" style="margin-top: 20px;">
+        <a href="/admin/{sociedadId}/adminsmenu" th:href="@{/admin/{sociedadId}/adminsmenu(sociedadId=${session.sociedadId})}" class="button">Volver al Menú de Administrador</a>
+    </div>
+</main>
+<footer style="text-align: center; padding: 10px; margin-top: 20px; background-color: #f1f1f1;">
+    Generado por Sistema de Informes de Cuestionarios
+</footer>
+</body>
+</html>

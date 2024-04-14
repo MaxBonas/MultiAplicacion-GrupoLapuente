@@ -43,16 +43,12 @@
             <li><a class="menu-button" th:href="@{/admin/{sociedadId}/workers(sociedadId=${session.sociedadId})}">Trabajadores</a></li>
             <li><a class="menu-button" th:href="@{/admin/{sociedadId}/ubicaciones(sociedadId=${session.sociedadId})}">Ubicaciones y Tareas</a></li>
             <li><a class="menu-button" th:href="@{/admin/{sociedadId}/informes/diario/request(sociedadId=${session.sociedadId})}">Informe Diario</a></li>
-<!--
-            <li><a class="menu-button" href="#" onclick="showUnderDevelopmentAlert();">Informe Mensual</a></li>
-            <li><a class="menu-button" href="#" onclick="showUnderDevelopmentAlert();">Informe Turno y Ubicación</a></li>
--->
+            <li><a class="menu-button" th:href="@{/admin/{sociedadId}/informes/informeCuestionario(sociedadId=${session.sociedadId})}">Informe de Cuestionarios</a>
+            <li><a class="menu-button" th:href="@{/admin/{sociedadId}/edit-questions(sociedadId=${session.sociedadId})}">Editar Cuestionario</a></li>
             <li><a class="menu-button" href="#" onclick="showUnderDevelopmentAlert();">Cambiar Sociedad</a></li>
             <li><a class="menu-button" th:href="@{/admin/{sociedadId}/tablonanuncios(sociedadId=${session.sociedadId})}">Mensajes</a></li>
         </ul>
     </div>
-    <!-- ... -->
-
     <a href="/logout" class="button">Salir</a>
 </main>
 </body>
